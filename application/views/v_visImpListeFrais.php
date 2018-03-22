@@ -5,7 +5,8 @@ $this->load->helper('url');
 class MYPDF extends TCPDF {
 
     //Page header
-    public function Header() {
+    public function Header()
+    {
         // Logo
         $image_file = file_get_contents(img_url('logo.png'));
         $this->Image('@'.$image_file, 15, 10, 32, '', 'PNG', '', 'B', false, 300, '', false, false, 0, false, false, false);
@@ -20,7 +21,8 @@ class MYPDF extends TCPDF {
 	}
 	
 	// Page footer
-    public function Footer() {
+    public function Footer()
+    {
         // Position at 15 mm from bottom
         $this->SetY(-15);
         // Set font
@@ -74,40 +76,40 @@ $html = '
 <html>
 	<head>
 		<style>
-			.title1{
+			.title1 {
 				font-size: 18px; 
 				font-weight: bold; 
 				text-align: center; 
 				text-decoration: underline;
 			}
 			
-			.title2{
+			.title2 {
 				font-weight: bold; 
 				text-decoration: underline;
 			}
 			
-			.bold{
+			.bold {
 				font-weight: bold; 
 			}
 			
-			.italic{
+			.italic {
 				font-style: italic; 
 			}
 			
-			th{
+			th {
 				background-color: #7A7B91;
 				font-weight: bold;
 			}
 			
-			.alignCenter{
+			.alignCenter {
 				text-align: center;
 			}
 
-			.alignLeft{
+			.alignLeft {
 				text-align: left;
 			}
 
-			.alignRight{
+			.alignRight {
 				text-align: right;
 			}
 		</style>
@@ -120,8 +122,10 @@ $html = '
 			<span class="bold">Identifiant :</span> '.$this->session->userdata('idUser').'<br>
 			<span class="bold">Visiteur :</span> '.$this->session->userdata('prenom').' '.$this->session->userdata('nom').'<br>
 			<span class="bold">Etat de la fiche :</span> '.$infosFiche['libEtat'].'';
-			if (isset($infosFiche['motifRefus'])){
-				if ($infosFiche['motifRefus'] != NULL){
+			if (isset($infosFiche['motifRefus']))
+			{
+				if ($infosFiche['motifRefus'] != NULL)
+				{
 					$html = $html.'
 					<br><br><span class="italic">Note : cette fiche a été précédemment refusée.</span>';
 				}
@@ -141,7 +145,8 @@ $html = '
 				</tr>
 			</thead>
 			<tbody>';
-				foreach ($lesFraisForfait as $unFrais){
+				foreach ($lesFraisForfait as $unFrais)
+				{
 					$idFrais = $unFrais['idfrais'];
 					$libelle = $unFrais['libelle'];
 					$quantite = $unFrais['quantite'];
@@ -171,7 +176,8 @@ $html = '
 				</tr>
 			</thead>
 			<tbody>';
-				foreach ($lesFraisHorsForfait as $unFraisHorsForfait){
+				foreach ($lesFraisHorsForfait as $unFraisHorsForfait)
+				{
 						$id = $unFraisHorsForfait['id'];
 						$mois = $unFraisHorsForfait['mois'];
 						$date = $unFraisHorsForfait['date'];
@@ -181,10 +187,14 @@ $html = '
 						$justificatifFichier = $unFraisHorsForfait['justificatifFichier'];
 						$libEtat = ' ['.$unFraisHorsForfait['libEtat'].']';
 								
-						if (isset($justificatifFichier)){
-							if($justificatifFichier != NULL){
+						if (isset($justificatifFichier))
+						{
+							if ($justificatifFichier != NULL)
+							{
 								$justificatifNom = anchor('c_visiteur/telJustificatif/'.$mois.'/'.$id.'/'.$justificatifFichier, $justificatifNom, 'class="anchorText" title="Télécharger le justificatif" download');
-							}else{
+							}
+							else
+							{
 								$justificatifNom = 'Aucun';
 							}
 						}

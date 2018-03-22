@@ -1,4 +1,5 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class A_visiteur extends CI_Model {
 
@@ -14,7 +15,7 @@ class A_visiteur extends CI_Model {
 	/**
 	 * Accueil du visiteur
 	 * La fonction crée un dépôt dédié au visiteur pour le stockage
-	 * éventuel de pièces jointes liées aux frais hors forfait
+	 * éventuel de pièces jointes liées aux frais hors forfait.
 	 * De plus elle intègre un mécanisme de contrôle d'existence des 
 	 * fiches de frais sur les 6 derniers mois. 
 	 * Si l'une d'elle est absente, elle est créée.
@@ -29,7 +30,8 @@ class A_visiteur extends CI_Model {
 		$idUtilisateur = $this->session->userdata('idUser');
 		
 		// crée un dossier dédié au visiteur
-		if (!file_exists('application/views/uploads/'.$idUtilisateur)){
+		if ( ! file_exists('application/views/uploads/'.$idUtilisateur))
+		{
 			mkdir('application/views/uploads/'.$idUtilisateur, 0777, true);
 		}
 		
@@ -37,8 +39,10 @@ class A_visiteur extends CI_Model {
 		$lesMois = $this->functionsLib->getSixDerniersMois();
 		
 		// contrôle de l'existence des 6 dernières fiches et création si nécessaire
-		foreach ($lesMois as $unMois){
-			if(!$this->dataAccess->existeFiche($idUtilisateur, $unMois)){
+		foreach ($lesMois as $unMois)
+		{
+			if ( ! $this->dataAccess->existeFiche($idUtilisateur, $unMois))
+			{
 				$this->dataAccess->creeFiche($idUtilisateur, $unMois);
 			}
 		}
@@ -47,8 +51,10 @@ class A_visiteur extends CI_Model {
 		$datesCreation = $this->dataAccess->getLesDatesCreation($idUtilisateur);
 		
 		// on passe les fiches de frais non signées de plus de 12 mois en invalide
-		foreach ($datesCreation as $lesDates){
-			if ($this->functionsLib->estDateDepassee($lesDates)){
+		foreach ($datesCreation as $lesDates)
+		{
+			if ($this->functionsLib->estDateDepassee($lesDates))
+			{
 				$lesMois = $this->functionsLib->getMois($lesDates);
 				$this->dataAccess->invalideFiche($idUtilisateur, $lesMois);
 			}
@@ -113,7 +119,7 @@ class A_visiteur extends CI_Model {
 		$data['mesFiches'] = $this->dataAccess->visGetFiches($idUtilisateur);		
 		
 		$this->templates->load('t_visiteur', 'v_visMesFiches', $data);	
-	}	
+	}
 
 	/**
 	 * Présente le détail de la fiche sélectionnée 
@@ -140,7 +146,7 @@ class A_visiteur extends CI_Model {
 	 * @param $mois : le mois de la fiche dont on souhaite consulter le motif de refus 
 	*/
 	public function voirMotifRefus($idUtilisateur, $mois)
-	{	
+	{
 		$data['numAnnee'] = substr($mois, 0, 4);
 		$data['numMois'] = substr($mois, 4, 2);
 		$data['leMotifRefus'] = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);

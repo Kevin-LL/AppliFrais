@@ -9,8 +9,10 @@
 		<form id="refuser" method="post" action="<?php echo base_url('c_comptable/refuFiche/'.$infosUtil['id'].'/'.$numAnnee.$numMois);?>">
 			<div class="formList">
 				<?php
-					if (isset($leMotifRefus['motifRefus'])){
-						if ($leMotifRefus['motifRefus'] != NULL){
+					if (isset($leMotifRefus['motifRefus']))
+					{
+						if ($leMotifRefus['motifRefus'] != NULL)
+						{
 							echo
 							'<p>
 								<label class="formLabel">Ancien motif :</label>

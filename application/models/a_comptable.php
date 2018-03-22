@@ -1,4 +1,5 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class A_comptable extends CI_Model {
 
@@ -151,7 +152,7 @@ class A_comptable extends CI_Model {
 	 * @param $mois : le mois de la fiche dont on souhaite ajouter un motif de refus 
 	*/
 	public function ajouterMotifRefus($idUtilisateur, $mois)
-	{	
+	{
 		$data['numAnnee'] = substr($mois, 0, 4);
 		$data['numMois'] = substr($mois, 4, 2);
 		$data['infosUtil'] = $this->dataAccess->getLesInfosUtilisateur($idUtilisateur);

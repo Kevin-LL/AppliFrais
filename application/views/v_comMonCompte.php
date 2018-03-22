@@ -5,15 +5,17 @@
 	<h3>Détails de mon compte</h3>
 </div>
 <div id="contenuList">
-	<?php 
-		if (isset($notifyInfo)){ 
+	<?php
+		if (isset($notifyInfo))
+		{
 			echo
 			'<div class="notify info">
 				'.$notifyInfo.'
 				<span onclick="closeNotify(this);">&#10006;</span>
 			</div>';
 		}
-		if (isset($notifyError)){ 
+		if (isset($notifyError))
+		{
 			echo
 			'<div class="notify error">
 				'.$notifyError.'

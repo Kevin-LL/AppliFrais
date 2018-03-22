@@ -1,4 +1,5 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Contrôleur par défaut de l'application
@@ -19,7 +20,7 @@ class C_default extends CI_Controller {
 	{
 		$this->load->model('authentif');
 		
-		if (!$this->authentif->estConnecte()) 
+		if ( ! $this->authentif->estConnecte())
 		{
 			$data = array();
 			$this->templates->load('t_connexion', 'v_connexion', $data);
@@ -46,9 +47,9 @@ class C_default extends CI_Controller {
 		
 		$login = $this->input->post('login');
 		$mdp = $this->input->post('mdp');
-		
-		$authUser = $this->authentif->authentifier($login, $mdp);
 
+		$authUser = $this->authentif->authentifier($login, $mdp);
+		
 		if (empty($authUser))
 		{
 			$data = array('erreur' => 'Login ou mot de passe incorrect.');

@@ -5,8 +5,9 @@
 	<h3>Liste des fiches de frais mises en paiement</h3>
 </div>
 <div id="contenuList">
-	<?php 
-		if (isset($notifyInfo)){ 
+	<?php
+		if (isset($notifyInfo))
+		{
 			echo
 			'<div class="notify info">
 				'.$notifyInfo.'
@@ -41,7 +42,8 @@
 			</thead>
 			<tbody>
 				<?php
-					foreach ($suiviPaiement as $uneFiche){
+					foreach ($suiviPaiement as $uneFiche)
+					{
 						$action = anchor('c_comptable/rembourseFiche/'.$uneFiche['idUtilisateur'].'/'.$uneFiche['mois'], 'Rembourser', 'class="anchorCell" title="Rembourser la fiche" onclick="return confirm(\'Voulez-vous vraiment rembourser cette fiche ?\');"');
 						
 						echo 

@@ -5,15 +5,17 @@
 	<h3>Modifier la fiche de frais du mois <?php echo $numAnnee."-".$numMois.' | Visiteur : '.$infosUtil['id'].' '.$infosUtil['nom'];?></h3>
 </div>
 <div id="contenuList">
-	<?php 
-		if (isset($notifyInfo)){ 
+	<?php
+		if (isset($notifyInfo))
+		{
 			echo
 			'<div class="notify info">
 				'.$notifyInfo.'
 				<span onclick="closeNotify(this);">&#10006;</span>
 			</div>';
 		}
-		if (isset($notifyError)){ 
+		if (isset($notifyError))
+		{
 			echo
 			'<div class="notify error">
 				'.$notifyError.'
@@ -37,7 +39,8 @@
 					</thead>
 					<tbody>
 						<?php
-							foreach ($lesFraisForfait as $unFrais){
+							foreach ($lesFraisForfait as $unFrais)
+							{
 								$idFrais = $unFrais['idfrais'];
 								$libelle = $unFrais['libelle'];
 								$quantite = $unFrais['quantite'];
@@ -76,7 +79,8 @@
 				</thead>
 				<tbody>
 					<?php
-						foreach ($lesFraisHorsForfait as $unFraisHorsForfait){
+						foreach ($lesFraisHorsForfait as $unFraisHorsForfait)
+						{
 							$id = $unFraisHorsForfait['id'];
 							$idUtilisateur = $unFraisHorsForfait['idUtilisateur'];
 							$mois = $unFraisHorsForfait['mois'];
@@ -89,18 +93,24 @@
 							$libEtat = ' ['.$unFraisHorsForfait['libEtat'].']';
 							$status = '';
 								
-							if (isset($justificatifFichier)){
-								if($justificatifFichier != NULL){
+							if (isset($justificatifFichier))
+							{
+								if ($justificatifFichier != NULL)
+								{
 									$justificatifNom = anchor('c_comptable/telJustificatif/'.$idUtilisateur.'/'.$mois.'/'.$id.'/'.$justificatifFichier, $justificatifNom, 'class="anchorText" title="Télécharger le justificatif" download');
-								}else{
+								}
+								else
+								{
 									$justificatifNom = 'Aucun';
 								}
 							}
-								
-							if ($idEtat == 'VA'){
+							
+							if ($idEtat == 'VA')
+							{
 								$status = ' valid';
 							}
-							elseif ($idEtat == 'RE'){
+							elseif ($idEtat == 'RE')
+							{
 								$status = ' invalid';
 							}
 

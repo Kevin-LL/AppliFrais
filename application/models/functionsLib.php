@@ -1,4 +1,5 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class FunctionsLib extends CI_Model {
 
@@ -16,12 +17,15 @@ class FunctionsLib extends CI_Model {
 	*/
 	function dateFrancaisVersAnglais($maDate)
 	{
-		@list($jour, $mois, $annee) = explode('/', $maDate);
-		if ($this->estDateValide($maDate)){
-			return date('Y-m-d', mktime(0, 0, 0, $mois, $jour, $annee));
-		}else{
-			return date('Y-m-d');
-		}
+        @list ($jour, $mois, $annee) = explode('/', $maDate);
+        if ($this->estDateValide($maDate))
+        {
+            return date('Y-m-d', mktime(0, 0, 0, $mois, $jour, $annee));
+        }
+        else
+        {
+            return date('Y-m-d');
+        }
 	}
 	
 	/**
@@ -45,11 +49,12 @@ class FunctionsLib extends CI_Model {
 	*/
 	function getMois($date)
 	{
-		@list($jour, $mois, $annee) = explode('/', $date);
-		if (strlen($mois) == 1){
-			$mois = '0'.$mois;
-		}
-		return $annee.$mois;
+        @list ($jour, $mois, $annee) = explode('/', $date);
+        if (strlen($mois) == 1)
+        {
+            $mois = '0' . $mois;
+        }
+        return $annee . $mois;
 	}
 
 	/**
@@ -63,20 +68,22 @@ class FunctionsLib extends CI_Model {
 	*/
 	function getSixDerniersMois()
 	{
-		$lesMois = array();
-
-		$date = new datetime('now');
-		$interval = new DateInterval('P1M');
-		
-		for($i = 1; $i <= 6; $i++){
-			@list($jour, $mois, $annee) = explode('/', $date->format('d/m/Y'));
-			if (strlen($mois) == 1){
-				$mois = '0'.$mois;
-			}
-			$lesMois[] = $annee.$mois;
-			$date->sub($interval);
-		}
-		return $lesMois;
+        $lesMois = array();
+        
+        $date = new datetime('now');
+        $interval = new DateInterval('P1M');
+        
+        for ($i = 1; $i <= 6; $i ++)
+        {
+            @list ($jour, $mois, $annee) = explode('/', $date->format('d/m/Y'));
+            if (strlen($mois) == 1)
+            {
+                $mois = '0' . $mois;
+            }
+            $lesMois[] = $annee . $mois;
+            $date->sub($interval);
+        }
+        return $lesMois;
 	}
 
 	/**
@@ -85,7 +92,7 @@ class FunctionsLib extends CI_Model {
 	 * @param $valeur : la valeur saisie en paramètre
 	 * @return : vrai ou faux
 	*/
-	public function estEntierPositif($valeur) 
+	public function estEntierPositif($valeur)
 	{
 		return preg_match('/[^0-9]/', $valeur) == 0;
 	}
@@ -96,15 +103,17 @@ class FunctionsLib extends CI_Model {
 	 * @param $tabEntiers : le tableau saisie en paramètre
 	 * @return : vrai ou faux
 	*/
-	public function estTableauEntiers($tabEntiers) 
+	public function estTableauEntiers($tabEntiers)
 	{
-		$ok = true;
-		foreach ($tabEntiers as $unEntier){
-			if(!$this->estEntierPositif($unEntier)){
-				$ok = false; 
-			}
-		}
-		return $ok;
+        $ok = true;
+        foreach ($tabEntiers as $unEntier)
+        {
+            if ( ! $this->estEntierPositif($unEntier))
+            {
+                $ok = false;
+            }
+        }
+        return $ok;
 	}
 	
 	/**
@@ -131,20 +140,27 @@ class FunctionsLib extends CI_Model {
 	*/
 	function estDateValide($date)
 	{
-		$tabDate = explode('/', $date);
-		$dateOK = true;
-		if (count($tabDate) != 3){
-			$dateOK = false;
-		}else{
-			if (!$this->estTableauEntiers($tabDate)){
-				$dateOK = false;
-			}else{
-				if (!checkdate($tabDate[1], $tabDate[0], $tabDate[2])){
-					$dateOK = false;
-				}
-			}
-		}
-		return $dateOK;
+        $tabDate = explode('/', $date);
+        $dateOK = true;
+        if (count($tabDate) != 3)
+        {
+            $dateOK = false;
+        }
+        else
+        {
+            if ( ! $this->estTableauEntiers($tabDate))
+            {
+                $dateOK = false;
+            }
+            else
+            {
+                if ( ! checkdate($tabDate[1], $tabDate[0], $tabDate[2]))
+                {
+                    $dateOK = false;
+                }
+            }
+        }
+        return $dateOK;
 	}
 
 	/**

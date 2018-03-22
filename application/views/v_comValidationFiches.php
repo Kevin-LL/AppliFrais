@@ -5,8 +5,9 @@
 	<h3>Liste des fiches de frais à valider</h3>
 </div>
 <div id="contenuList">
-	<?php 
-		if (isset($notifyInfo)){ 
+	<?php
+		if (isset($notifyInfo))
+		{
 			echo
 			'<div class="notify info">
 				'.$notifyInfo.'
@@ -41,7 +42,8 @@
 			</thead>
 			<tbody>
 				<?php
-					foreach ($validationFiches as $uneFiche){
+					foreach ($validationFiches as $uneFiche)
+					{
 						$action1 = anchor('c_comptable/modFiche/'.$uneFiche['idUtilisateur'].'/'.$uneFiche['mois'], 'Modifier', 'class="anchorCell" title="Modifier la fiche"');
 						$action2 = anchor('c_comptable/validFiche/'.$uneFiche['idUtilisateur'].'/'.$uneFiche['mois'], 'Valider', 'class="anchorCell" title="Valider la fiche" onclick="return confirm(\'Voulez-vous vraiment valider cette fiche ?\');"');
 						$action3 = anchor('c_comptable/ajouterMotifRefus/'.$uneFiche['idUtilisateur'].'/'.$uneFiche['mois'], 'Refuser', 'class="anchorCell" title="Refuser la fiche"');

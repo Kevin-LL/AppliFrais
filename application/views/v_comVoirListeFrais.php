@@ -20,7 +20,8 @@
 				</thead>
 				<tbody>
 					<?php
-						foreach ($lesFraisForfait as $unFrais){
+						foreach ($lesFraisForfait as $unFrais)
+						{
 							$idFrais = $unFrais['idfrais'];
 							$libelle = $unFrais['libelle'];
 							$quantite = $unFrais['quantite'];
@@ -54,7 +55,8 @@
 				</thead>
 				<tbody>
 					<?php
-						foreach ($lesFraisHorsForfait as $unFraisHorsForfait){
+						foreach ($lesFraisHorsForfait as $unFraisHorsForfait)
+						{
 							$id = $unFraisHorsForfait['id'];
 							$idUtilisateur = $unFraisHorsForfait['idUtilisateur'];
 							$mois = $unFraisHorsForfait['mois'];
@@ -67,18 +69,24 @@
 							$libEtat = ' ['.$unFraisHorsForfait['libEtat'].']';
 							$status = '';
 								
-							if (isset($justificatifFichier)){
-								if($justificatifFichier != NULL){
+							if (isset($justificatifFichier))
+							{
+								if ($justificatifFichier != NULL)
+								{
 									$justificatifNom = anchor('c_comptable/telJustificatif/'.$idUtilisateur.'/'.$mois.'/'.$id.'/'.$justificatifFichier, $justificatifNom, 'class="anchorText" title="Télécharger le justificatif" download');
-								}else{
+								}
+								else
+								{
 									$justificatifNom = 'Aucun';
 								}
 							}
-								
-							if ($idEtat == 'VA'){
+							
+							if ($idEtat == 'VA')
+							{
 								$status = ' valid';
 							}
-							elseif ($idEtat == 'RE'){
+							elseif ($idEtat == 'RE')
+							{
 								$status = ' invalid';
 							}
 

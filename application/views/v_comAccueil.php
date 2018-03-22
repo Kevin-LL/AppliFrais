@@ -10,7 +10,7 @@
 			<li>En cas de révisions des montants appliqués aux forfaits, il vous sera possible de les actualiser;</li>
 			<li>Vous avez également la possibilité de valider ou refuser les frais hors forfait;</li>
 			<li>Si une fiche est mal renseignée, vous devrez la "refuser";</li>
-			<li>Une synthèse des fiches mises en paiement vous ait présenté afin de faciliter le processus de remboursement;</li>
+			<li>Une synthèse des fiches mises en paiement vous est présentée afin de faciliter le processus de remboursement;</li>
 		</ul>
 		<p>Au moyen du bandeau gauche, vous avez accès aux fonctionalités du profil comptable :</p>
 		<ul>

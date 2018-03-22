@@ -1,4 +1,5 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Authentif extends CI_Model {
 
@@ -11,7 +12,7 @@ class Authentif extends CI_Model {
 	 /**
 	 * Teste si un quelconque utilisateur est connecté
 	 * 
-	 * @return vrai ou faux 
+	 * @return vrai ou faux
 	 */
 	public function estConnecte()
 	{

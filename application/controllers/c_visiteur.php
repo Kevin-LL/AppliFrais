@@ -1,4 +1,5 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Contrôleur du module VISITEUR de l'application
@@ -20,7 +21,7 @@ class C_visiteur extends CI_Controller {
 		$this->load->model('authentif');
 		
 		// contrôle de la bonne authentification de l'utilisateur
-		if (!$this->authentif->estConnecte()) 
+		if ( ! $this->authentif->estConnecte())
 		{
 			// l'utilisateur n'est pas authentifié, on envoie la vue de connexion
 			$data = array();
@@ -83,26 +84,35 @@ class C_visiteur extends CI_Controller {
 				);
 				
 				// si les clés currentMdp et newMdp de $leMdp sont initialisées
-				if (isset($leMdp['currentMdp'], $leMdp['newMdp'])){
+				if (isset($leMdp['currentMdp'], $leMdp['newMdp']))
+				{
 					// si la clé newMdp n'est pas vide
-					if ($leMdp['newMdp'] !== ''){
+					if ($leMdp['newMdp'] !== '')
+					{
 						$leMdp['newMdp'] = password_hash($leMdp['newMdp'], PASSWORD_BCRYPT);
 						$infosUtil = $this->dataAccess->getLesInfosUtilisateur($idUtilisateur);
 						
-						// si le mdp de l'utilisateur est égal à la clé currentMdp
-						if (password_verify($leMdp['currentMdp'], $infosUtil['mdp'])){
+						// si la clé currentMdp est égal au mdp de l'utilisateur
+						if (password_verify($leMdp['currentMdp'], $infosUtil['mdp']))
+						{
 							// on active majSecurite puis monCompte du modèle visiteur
 							$this->a_visiteur->majSecurite($idUtilisateur, $leMdp['newMdp']);
 							$this->a_visiteur->monCompte($idUtilisateur, 'Modification(s) du mot de passe enregistrée(s) ...');
-						}else{
+						}
+						else
+						{
 							// sinon on active monCompte
 							$this->a_visiteur->monCompte($idUtilisateur, null, 'Le mot de passe actuel est incorrect.');
 						}
-					}else{
+					}
+					else
+					{
 						// sinon on active monCompte
 						$this->a_visiteur->monCompte($idUtilisateur, null, 'Nouveau mot de passe est un champ vide.');
 					}
-				}else{
+				}
+				else
+				{
 					// sinon on active monCompte
 					$this->a_visiteur->monCompte($idUtilisateur);
 				}
@@ -122,11 +132,14 @@ class C_visiteur extends CI_Controller {
 				);
 				
 				// si les clés ville, cp et adresse de $uneResidence sont initialisées
-				if (isset($uneResidence['ville'], $uneResidence['cp'], $uneResidence['adresse'])){
+				if (isset($uneResidence['ville'], $uneResidence['cp'], $uneResidence['adresse']))
+				{
 					// on active majResidence puis monCompte du modèle visiteur
 					$this->a_visiteur->majResidence($idUtilisateur, $uneResidence);
 					$this->a_visiteur->monCompte($idUtilisateur, 'Modification(s) du lieu de résidence enregistrée(s) ...');
-				}else{
+				}
+				else
+				{
 					// sinon on active monCompte
 					$this->a_visiteur->monCompte($idUtilisateur);
 				}
@@ -151,19 +164,25 @@ class C_visiteur extends CI_Controller {
 				$idUtilisateur = $this->session->userdata('idUser');
 				
 				// si le paramètre 0 de voirFiche est initialisé
-				if (isset($params[0])){
+				if (isset($params[0]))
+				{
 					$mois = $params[0];
 					$laFiche = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
 					
 					// si la fiche a un état défini
-					if (isset($laFiche['idEtat'])){
+					if (isset($laFiche['idEtat']))
+					{
 						// on active voirFiche du modèle visiteur
 						$this->a_visiteur->voirFiche($idUtilisateur, $mois);
-					}else{
+					}
+					else
+					{
 						// sinon on active mesFiches
 						$this->a_visiteur->mesFiches($idUtilisateur);
 					}
-				}else{
+				}
+				else
+				{
 					// sinon on active mesFiches
 					$this->a_visiteur->mesFiches($idUtilisateur);
 				}
@@ -176,19 +195,25 @@ class C_visiteur extends CI_Controller {
 				$idUtilisateur = $this->session->userdata('idUser');
 				
 				// si le paramètre 0 de voirMotifRefus est initialisé
-				if (isset($params[0])){
+				if (isset($params[0]))
+				{
 					$mois = $params[0];
 					$laFiche = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
 					
 					// si la fiche est Refusée
-					if ($laFiche['idEtat'] == 'RE'){
+					if ($laFiche['idEtat'] == 'RE')
+					{
 						// on active voirMotifRefus du modèle visiteur
 						$this->a_visiteur->voirMotifRefus($idUtilisateur, $mois);
-					}else{
+					}
+					else
+					{
 						// sinon on active mesFiches
 						$this->a_visiteur->mesFiches($idUtilisateur);
 					}
-				}else{
+				}
+				else
+				{
 					// sinon on active mesFiches
 					$this->a_visiteur->mesFiches($idUtilisateur);
 				}
@@ -201,22 +226,28 @@ class C_visiteur extends CI_Controller {
 				$idUtilisateur = $this->session->userdata('idUser');
 				
 				// si le paramètre 0 de modFiche est initialisé
-				if (isset($params[0])){
+				if (isset($params[0]))
+				{
 					$mois = $params[0];
 					// initialisation du mois de la fiche
 					$this->session->set_userdata('mois', $mois);
 					$laFiche = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
 					
 					// si la fiche est Créée ou Refusée
-					if ($laFiche['idEtat'] == 'CR' || $laFiche['idEtat'] == 'RE'){
+					if ($laFiche['idEtat'] == 'CR' || $laFiche['idEtat'] == 'RE')
+					{
 						// on active modFiche du modèle visiteur
 						$this->a_visiteur->modFiche($idUtilisateur, $mois);
-					}else{
+					}
+					else
+					{
 						// sinon on désactive mois et on active mesFiches
 						$this->session->unset_userdata('mois');
 						$this->a_visiteur->mesFiches($idUtilisateur);
 					}
-				}else{
+				}
+				else
+				{
 					// sinon on désactive mois et on active mesFiches
 					$this->session->unset_userdata('mois');
 					$this->a_visiteur->mesFiches($idUtilisateur);
@@ -230,20 +261,26 @@ class C_visiteur extends CI_Controller {
 				$idUtilisateur = $this->session->userdata('idUser');
 				
 				// si le paramètre 0 de signeFiche est initialisé
-				if (isset($params[0])){
+				if (isset($params[0]))
+				{
 					$mois = $params[0];
 					$laFiche = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
 					
 					// si la fiche est Créée ou Refusée
-					if ($laFiche['idEtat'] == 'CR' || $laFiche['idEtat'] == 'RE'){
+					if ($laFiche['idEtat'] == 'CR' || $laFiche['idEtat'] == 'RE')
+					{
 						// on active signeFiche puis mesFiches du modèle visiteur
 						$this->a_visiteur->signeFiche($idUtilisateur, $mois);
 						$this->a_visiteur->mesFiches($idUtilisateur, 'La fiche du mois '.substr_replace($mois, '-', 4, 0).' a été signée.');
-					}else{
+					}
+					else
+					{
 						// sinon on active mesFiches
 						$this->a_visiteur->mesFiches($idUtilisateur);
 					}
-				}else{
+				}
+				else
+				{
 					// sinon on active mesFiches
 					$this->a_visiteur->mesFiches($idUtilisateur);
 				}
@@ -258,19 +295,25 @@ class C_visiteur extends CI_Controller {
 				$idUtilisateur = $this->session->userdata('idUser');
 				
 				// si le paramètre 0 de impFiche est initialisé
-				if (isset($params[0])){
+				if (isset($params[0]))
+				{
 					$mois = $params[0];
 					$laFiche = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
 					
 					// si la fiche est Signée, Validée ou Remboursée
-					if ($laFiche['idEtat'] == 'CL' || $laFiche['idEtat'] == 'VA' || $laFiche['idEtat'] == 'RB'){
+					if ($laFiche['idEtat'] == 'CL' || $laFiche['idEtat'] == 'VA' || $laFiche['idEtat'] == 'RB')
+					{
 						// on active impFiche du modèle visiteur
 						$this->a_visiteur->impFiche($idUtilisateur, $mois);
-					}else{
+					}
+					else
+					{
 						// sinon on active mesFiches
 						$this->a_visiteur->mesFiches($idUtilisateur);
 					}
-				}else{
+				}
+				else
+				{
 					// sinon on active mesFiches
 					$this->a_visiteur->mesFiches($idUtilisateur);
 				}
@@ -283,20 +326,26 @@ class C_visiteur extends CI_Controller {
 				$idUtilisateur = $this->session->userdata('idUser');
 				
 				// si le paramètre 0 de supprFiche est initialisé
-				if (isset($params[0])){
+				if (isset($params[0]))
+				{
 					$mois = $params[0];
 					$laFiche = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
 					
 					// si la fiche est Invalide
-					if ($laFiche['idEtat'] == 'IN'){
+					if ($laFiche['idEtat'] == 'IN')
+					{
 						// on active supprFiche puis mesFiches du modèle visiteur
 						$this->a_visiteur->supprFiche($idUtilisateur, $mois);
 						$this->a_visiteur->mesFiches($idUtilisateur, 'La fiche du mois '.substr_replace($mois, '-', 4, 0).' a été supprimée.');
-					}else{
+					}
+					else
+					{
 						// sinon on active mesFiches
 						$this->a_visiteur->mesFiches($idUtilisateur);
 					}
-				}else{
+				}
+				else
+				{
 					// sinon on active mesFiches
 					$this->a_visiteur->mesFiches($idUtilisateur);
 				}
@@ -314,11 +363,14 @@ class C_visiteur extends CI_Controller {
 				$lesFrais = $this->input->post('lesFrais');
 				
 				// si $lesFrais est initialisé
-				if (isset($lesFrais)){
+				if (isset($lesFrais))
+				{
 					// on active majForfait puis modFiche du modèle visiteur
 					$this->a_visiteur->majForfait($idUtilisateur, $mois, $lesFrais);
 					$this->a_visiteur->modFiche($idUtilisateur, $mois, 'Modification(s) des éléments forfaitisés enregistrée(s) ...');
-				}else{
+				}
+				else
+				{
 					// sinon on désactive mois et on active mesFiches
 					$this->session->unset_userdata('mois');
 					$this->a_visiteur->mesFiches($idUtilisateur);
@@ -343,9 +395,11 @@ class C_visiteur extends CI_Controller {
 				);
 				
 				// si les clés dateFrais, libelle et montant de $uneLigne sont initialisées
-				if (isset($uneLigne['dateFrais'], $uneLigne['libelle'], $uneLigne['montant'])){
+				if (isset($uneLigne['dateFrais'], $uneLigne['libelle'], $uneLigne['montant']))
+				{
 					// création d'un dépôt pour les justificatifs des frais hors forfait
-					if (!file_exists('application/views/uploads/'.$idUtilisateur.'/'.$mois)){
+					if ( ! file_exists('application/views/uploads/'.$idUtilisateur.'/'.$mois))
+					{
 						mkdir('application/views/uploads/'.$idUtilisateur.'/'.$mois, 0777, true);
 					}
 					
@@ -361,12 +415,14 @@ class C_visiteur extends CI_Controller {
 					$this->load->library('upload', $config);
 					
 					// si le justificatif est initialisé on stocke son nom dans $uneLigne
-					if (isset($_FILES['justificatif']['name'])){
+					if (isset($_FILES['justificatif']['name']))
+					{
 						$uneLigne['justificatifNom'] = $_FILES['justificatif']['name'];
 					}
 					
 					// si le justificatif est mis en ligne
-					if ($this->upload->do_upload('justificatif')){
+					if ($this->upload->do_upload('justificatif'))
+					{
 						$data = $this->upload->data();
 						
 						// on stocke le fichier associé au justificatif dans $uneLigne
@@ -375,11 +431,14 @@ class C_visiteur extends CI_Controller {
 						// on active ajouteFrais puis modFiche du modèle visiteur
 						$this->a_visiteur->ajouteFrais($idUtilisateur, $mois, $uneLigne);
 						$this->a_visiteur->modFiche($idUtilisateur, $mois, 'Ligne "Hors forfait" ajoutée ... <br>Justificatif : '.$uneLigne['justificatifNom']);
-					}else{
+					}
+					else
+					{
 						// si le dépôt des justificatifs est vide on le supprime
 						$directory = scandir('application/views/uploads/'.$idUtilisateur.'/'.$mois);
 						$items_count = count($directory);
-						if ($items_count <= 2){
+						if ($items_count <= 2)
+						{
 							rmdir('application/views/uploads/'.$idUtilisateur.'/'.$mois);
 						}
 						
@@ -390,7 +449,9 @@ class C_visiteur extends CI_Controller {
 						$this->a_visiteur->ajouteFrais($idUtilisateur, $mois, $uneLigne);
 						$this->a_visiteur->modFiche($idUtilisateur, $mois, 'Ligne "Hors forfait" ajoutée ... <br>Justificatif : '.$error['error']);
 					}
-				}else{
+				}
+				else
+				{
 					// sinon on désactive mois et on active mesFiches
 					$this->session->unset_userdata('mois');
 					$this->a_visiteur->mesFiches($idUtilisateur);
@@ -406,35 +467,42 @@ class C_visiteur extends CI_Controller {
 				$mois = $this->session->userdata('mois');
 				
 				// si le paramètre 0 de supprFrais et mois sont initialisés
-				if (isset($params[0], $mois)){
+				if (isset($params[0], $mois))
+				{
 					$idLigneFrais = $params[0];
 					$leFrais = $this->dataAccess->getLesInfosHorsForfait($idUtilisateur, $mois, $idLigneFrais);
 					
 					// si l'identifiant du frais hors forfait existe
-					if (isset($leFrais['id'])){
+					if (isset($leFrais['id']))
+					{
 						// si un justificatif pour le frais hors forfait existe
-						if($leFrais['justificatifFichier'] != null){
-							
+						if($leFrais['justificatifFichier'] != null)
+						{
 							// on supprime le fichier associé au frais hors forfait
 							unlink('application/views/uploads/'.$idUtilisateur.'/'.$mois.'/'.$leFrais['justificatifFichier']);
 							
 							// si le dépôt des justificatifs est vide on le supprime
 							$directory = scandir('application/views/uploads/'.$idUtilisateur.'/'.$mois);
 							$items_count = count($directory);
-							if ($items_count <= 2){
+							if ($items_count <= 2)
+							{
 								rmdir('application/views/uploads/'.$idUtilisateur.'/'.$mois);
 							}
 						}
-							
+
 						// on active supprLigneFrais puis modFiche du modèle visiteur
 						$this->a_visiteur->supprLigneFrais($idUtilisateur, $mois, $idLigneFrais);
 						$this->a_visiteur->modFiche($idUtilisateur, $mois, 'Ligne "Hors forfait" supprimée ...');				
-					}else{
+					}
+					else
+					{
 						// sinon on désactive mois et on active mesFiches
 						$this->session->unset_userdata('mois');
 						$this->a_visiteur->mesFiches($idUtilisateur);
 					}
-				}else{
+				}
+				else
+				{
 					// sinon on désactive mois et on active mesFiches
 					$this->session->unset_userdata('mois');
 					$this->a_visiteur->mesFiches($idUtilisateur);
@@ -450,25 +518,31 @@ class C_visiteur extends CI_Controller {
 				$idUtilisateur = $this->session->userdata('idUser');
 				
 				// si les paramètres 0, 1 et 2 de telJustificatif sont initialisés
-				if (isset($params[0], $params[1], $params[2])){
+				if (isset($params[0], $params[1], $params[2]))
+				{
 					$mois = $params[0];
 					$idLigneFrais = $params[1];
 					$leFrais = $this->dataAccess->getLesInfosHorsForfait($idUtilisateur, $mois, $idLigneFrais);
 					$name = $params[2];
 					
 					// si l'identifiant du frais hors forfait existe
-					if (isset($leFrais['id'])){
+					if (isset($leFrais['id']))
+					{
 						// on recherche l'emplacement du fichier
 						$data = file_get_contents('application/views/uploads/'.$idUtilisateur.'/'.$mois.'/'.$name);
 						
 						// on lance le téléchargement
 						force_download($leFrais['justificatifNom'], $data);
-					}else{
+					}
+					else
+					{
 						// sinon on désactive mois et on active mesFiches
 						$this->session->unset_userdata('mois');
 						$this->a_visiteur->mesFiches($idUtilisateur);
 					}
-				}else{
+				}
+				else
+				{
 					// sinon on désactive mois et on active mesFiches
 					$this->session->unset_userdata('mois');
 					$this->a_visiteur->mesFiches($idUtilisateur);

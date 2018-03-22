@@ -6,8 +6,9 @@
 	<h3>Identification utilisateur</h3>
 </div>
 <div id="contenuList">
-	<?php 
-		if (isset($erreur)){ 
+	<?php
+		if (isset($erreur))
+		{
 			echo
 			'<div class="notify error">
 				'.$erreur.'

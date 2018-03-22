@@ -5,8 +5,9 @@
 	<h3>Liste de mes fiches de frais</h3>
 </div>
 <div id="contenuList">
-	<?php 
-		if (isset($notifyInfo)){ 
+	<?php
+		if (isset($notifyInfo))
+		{
 			echo
 			'<div class="notify info">
 				'.$notifyInfo.'
@@ -27,26 +28,34 @@
 			</thead>
 			<tbody>
 				<?php
-					foreach ($mesFiches as $uneFiche){
+					foreach ($mesFiches as $uneFiche)
+					{
 						$action1 = '';
 						$action2 = '';
 						$motifRefusLink = '';
 						$status = '';
 
-						if ($uneFiche['id'] == 'CR' || $uneFiche['id'] == 'RE'){
+						if ($uneFiche['id'] == 'CR' || $uneFiche['id'] == 'RE')
+						{
 							$action1 = anchor('c_visiteur/modFiche/'.$uneFiche['mois'], 'Modifier', 'class="anchorCell" title="Modifier la fiche"');
 							$action2 = anchor('c_visiteur/signeFiche/'.$uneFiche['mois'], 'Signer', 'class="anchorCell" title="Signer la fiche" onclick="return confirm(\'Voulez-vous vraiment signer cette fiche ?\');"');
-							if ($uneFiche['id'] == 'RE'){
+							if ($uneFiche['id'] == 'RE')
+							{
 								$status = ' invalid';
 								$motifRefusLink = ',&nbsp;'.anchor('c_visiteur/voirMotifRefus/'.$uneFiche['mois'], 'voir le motif', 'class="anchorText" title="Consulter le motif de refus"');
 							}
-						}elseif ($uneFiche['id'] == 'CL' || $uneFiche['id'] == 'VA' || $uneFiche['id'] == 'RB'){
+						}
+						elseif ($uneFiche['id'] == 'CL' || $uneFiche['id'] == 'VA' || $uneFiche['id'] == 'RB')
+						{
 							$action1 = anchor('c_visiteur/impFiche/'.$uneFiche['mois'], 'Imprimer', 'class="anchorCell" title="Imprimer la fiche"');
 							$action2 = '';
-							if ($uneFiche['id'] == 'VA' || $uneFiche['id'] == 'RB'){
+							if ($uneFiche['id'] == 'VA' || $uneFiche['id'] == 'RB')
+							{
 								$status = ' valid';
 							}
-						}elseif ($uneFiche['id'] == 'IN'){
+						}
+						elseif ($uneFiche['id'] == 'IN')
+						{
 							$action1 = anchor('c_visiteur/supprFiche/'.$uneFiche['mois'], 'Supprimer', 'class="anchorCell" title="Supprimer la fiche" onclick="return confirm(\'Voulez-vous vraiment supprimer cette fiche ?\');"');
 							$action2 = '';
 							$status = ' invalid';
