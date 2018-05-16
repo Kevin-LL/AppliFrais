@@ -33,7 +33,7 @@
 					$prenom = $infosUtil['prenom'];
 					$login = $infosUtil['login'];
 					$dateEmbauche = $infosUtil['dateEmbauche'];
-						
+					
 					echo
 					'<p>
 						<label class="formLabel">Groupe :</label>
@@ -64,7 +64,7 @@
 		</fieldset>
 	</div>
 	<div id="securiteUtilisateur">
-		<form id="securite" method="post" action="<?php echo base_url('c_visiteur/majSecurite');?>">
+		<form method="post" action="<?php echo base_url('c_visiteur/majSecurite');?>">
 			<fieldset>
 				<legend>Sécurité</legend>
 				<div class="formList">
@@ -77,7 +77,7 @@
 						<input id="txtNewMdp" class="input" name="newMdp" required="required" size="20" maxlength="60" value="" type="password"/>
 					</p>
 					<p class="formButtonsArea">
-						<input class="button" id="okSecu" value="Enregistrer" size="20" type="submit"/><input class="button" id="annulerSecu" value="Annuler" size="20" type="reset"/>
+						<input id="okSecurite" class="button" value="Enregistrer" type="submit"/><input id="annulerSecurite" class="button" value="Annuler" type="reset"/>
 					</p>
 				</div>
 			</fieldset>
@@ -100,7 +100,7 @@
 						</p>
 						<p>
 							<label class="formLabel" for="txtCP">Code postal :</label>
-							<input id="txtCP" class="input" name="cp" required="required" size="5" maxlength="5" value="'.$cp.'" oninput="modCodePostal();" type="text"/>
+							<input id="txtCP" class="input" name="cp" required="required" size="5" maxlength="5" value="'.$cp.'" oninput="checkCodePostal();" type="text"/>
 						</p>
 						<p>
 							<label class="formLabel" for="txtAdresse">Adresse :</label>
@@ -108,7 +108,7 @@
 						</p>';
 					?>
 					<p class="formButtonsArea">
-						<input class="button" id="okResi" value="Enregistrer" size="20" onclick="return checkCodePostal();" type="submit"/><input class="button" id="annulerResi" value="Annuler" size="20" onclick="resetResidence();" type="button"/>
+						<input id="okResidence" class="button" value="Enregistrer" onclick="return validCodePostal();" type="submit"/><input id="annulerResidence" class="button" value="Annuler" onclick="resetResidence();" type="button"/>
 					</p>
 				</div>
 			</fieldset>

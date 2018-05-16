@@ -28,7 +28,7 @@ class C_comptable extends CI_Controller {
 			$this->templates->load('t_connexion', 'v_connexion', $data);
 		}
 		// contrôle si l'utilisateur est un comptable
-		elseif ($this->session->userdata('idProfil') !== 'COM')
+		elseif ($this->session->userdata('idProfil') != 'COM')
 		{
 			// l'utilisateur n'est pas comptable, on envoie la vue de connexion
 			$data = array();
@@ -83,15 +83,17 @@ class C_comptable extends CI_Controller {
 				// si les clés currentMdp et newMdp de $leMdp sont initialisées
 				if (isset($leMdp['currentMdp'], $leMdp['newMdp']))
 				{
-					// si la clé newMdp n'est pas vide
-					if ($leMdp['newMdp'] !== '')
+					// si les clés currentMdp et newMdp de $leMdp ne sont pas vides
+					if ($leMdp['currentMdp'] != '' && $leMdp['newMdp'] != '')
 					{
-						$leMdp['newMdp'] = password_hash($leMdp['newMdp'], PASSWORD_BCRYPT);
 						$infosUtil = $this->dataAccess->getLesInfosUtilisateur($idUtilisateur);
 						
-						// si la clé currentMdp est égal au mdp de l'utilisateur
+						// si la clé currentMdp est égale au mdp de l'utilisateur
 						if (password_verify($leMdp['currentMdp'], $infosUtil['mdp']))
 						{
+							// hachage de la clé newMdp
+							$leMdp['newMdp'] = password_hash($leMdp['newMdp'], PASSWORD_BCRYPT);
+							
 							// on active majSecurite puis monCompte du modèle comptable
 							$this->a_comptable->majSecurite($idUtilisateur, $leMdp['newMdp']);
 							$this->a_comptable->monCompte($idUtilisateur, 'Modification(s) du mot de passe enregistrée(s) ...');
@@ -105,7 +107,7 @@ class C_comptable extends CI_Controller {
 					else
 					{
 						// sinon on active monCompte
-						$this->a_comptable->monCompte($idUtilisateur, null, 'Nouveau mot de passe est un champ vide.');
+						$this->a_comptable->monCompte($idUtilisateur, null, 'Un ou plusieurs champs sont vides.');
 					}
 				}
 				else
@@ -131,9 +133,18 @@ class C_comptable extends CI_Controller {
 				// si les clés ville, cp et adresse de $uneResidence sont initialisées
 				if (isset($uneResidence['ville'], $uneResidence['cp'], $uneResidence['adresse']))
 				{
-					// on active majResidence puis monCompte du modèle comptable
-					$this->a_comptable->majResidence($idUtilisateur, $uneResidence);
-					$this->a_comptable->monCompte($idUtilisateur, 'Modification(s) du lieu de résidence enregistrée(s) ...');
+					// si les clés ville, cp et adresse de $uneResidence ne sont pas vides
+					if ($uneResidence['ville'] != '' && $uneResidence['cp'] != '' && $uneResidence['adresse'] != '')
+					{
+						// on active majResidence puis monCompte du modèle comptable
+						$this->a_comptable->majResidence($idUtilisateur, $uneResidence);
+						$this->a_comptable->monCompte($idUtilisateur, 'Modification(s) du lieu de résidence enregistrée(s) ...');
+					}
+					else
+					{
+						// sinon on active monCompte
+						$this->a_comptable->monCompte($idUtilisateur, null, 'Un ou plusieurs champs sont vides.');
+					}
 				}
 				else
 				{
@@ -171,16 +182,16 @@ class C_comptable extends CI_Controller {
 				// si le paramètres 0 de rechercheVis et $laRecherche sont initialisés
 				if (isset($params[0], $laRecherche))
 				{
-					// si $laRecherche est un champ vide
-					if ($laRecherche == '')
+					// si $laRecherche n'est pas vide
+					if ($laRecherche != '')
 					{
 						// on active le paramètre 0 du modèle comptable
-						$this->a_comptable->$params[0]();
+						$this->a_comptable->$params[0]($laRecherche);
 					}
 					else
 					{
 						// sinon on active le paramètre 0
-						$this->a_comptable->$params[0](null, $laRecherche);
+						$this->a_comptable->$params[0]();
 					}
 				}
 				else
@@ -194,7 +205,7 @@ class C_comptable extends CI_Controller {
 			{
 				// charge le modèle comptable
 				$this->load->model('a_comptable');
-
+				
 				// si les paramètres 0 et 1 de voirFiche sont initialisés
 				if (isset($params[0], $params[1]))
 				{
@@ -264,18 +275,126 @@ class C_comptable extends CI_Controller {
 					$mois = $params[1];
 					$infosUtil = $this->dataAccess->getLesInfosUtilisateur($idUtilisateur);
 					$laFiche = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
+					$lesFrais = $this->dataAccess->getLesLignesHorsForfait($idUtilisateur, $mois);
 					
 					// si la fiche est Signée
 					if ($laFiche['idEtat'] == 'CL')
 					{
-						// on active validFiche puis validationFiches du modèle comptable
-						$this->a_comptable->validFiche($idUtilisateur, $mois);
-						$this->a_comptable->validationFiches('La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' a été validée.');
+						// tous les frais sont Validés
+						$fraisNonVA = false;
+						
+						// pour chaque $lesFrais en tant que $unFrais
+						foreach ($lesFrais as $unFrais)
+						{
+							// si des frais ne sont pas Validés
+							if ($unFrais['idEtat'] != 'VA')
+							{
+								// il existe des frais non Validés
+								$fraisNonVA = true;
+							}
+						}
+						
+						// si tous les frais sont Validés
+						if ($fraisNonVA == false)
+						{
+							// on active validFiche puis validationFiches du modèle comptable
+							$this->a_comptable->validFiche($idUtilisateur, $mois);
+							$this->a_comptable->validationFiches('%', 'La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' a été validée.');
+						}
+						else
+						{
+							// sinon on active validationFiches
+							$this->a_comptable->validationFiches('%', null, 'La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' comporte des frais non validés.');
+						}
 					}
 					else
 					{
 						// sinon on active validationFiches
 						$this->a_comptable->validationFiches();
+					}
+				}
+				else
+				{
+					// sinon on active validationFiches
+					$this->a_comptable->validationFiches();
+				}
+			}
+			/* validSelect */
+			elseif ($action == 'validSelect')
+			{
+				// charge le modèle comptable
+				$this->load->model('a_comptable');
+				
+				// obtention des données postées : $lesFiches
+				$lesFiches = $this->input->post('lesFiches');
+				
+				// si $lesFiches est initialisé
+				if (isset($lesFiches))
+				{
+					// aucune fiche n'est Signée
+					$fichesCL = false;
+					
+					// tous les frais sont Validés
+					$fraisNonVA = false;
+					
+					// pour chaque $lesFiches en tant que $uneFiche
+					foreach ($lesFiches as $uneFiche)
+					{
+						$ficheParams = explode('_', $uneFiche);
+						
+						// s'il y a deux paramètres
+						if (count($ficheParams) == 2)
+						{
+							list($idUtilisateur, $mois) = $ficheParams;
+							$laFiche = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
+							$lesFrais = $this->dataAccess->getLesLignesHorsForfait($idUtilisateur, $mois);
+							
+							// si des fiches sont Signées
+							if ($laFiche['idEtat'] == 'CL')
+							{
+								// il existe des fiches Signées
+								$fichesCL = true;
+								
+								// pour chaque $lesFrais en tant que $unFrais
+								foreach ($lesFrais as $unFrais)
+								{
+									// si des frais ne sont pas Validés
+									if ($unFrais['idEtat'] != 'VA')
+									{
+										// il existe des frais non Validés
+										$fraisNonVA = true;
+									}
+								}
+								
+								// si tous les frais sont Validés
+								if ($fraisNonVA == false)
+								{
+									// on active validFiche du modèle comptable
+									$this->a_comptable->validFiche($idUtilisateur, $mois);
+								}
+							}
+						}
+					}
+					
+					// si aucune fiche n'est Signée
+					if ($fichesCL == false)
+					{
+						// on active validationFiches
+						$this->a_comptable->validationFiches();
+					}
+					else
+					{
+						// si tous les frais sont Validés
+						if ($fraisNonVA == false)
+						{
+							// on active validationFiches
+							$this->a_comptable->validationFiches('%', 'Les fiches sélectionnées ont été validées.');
+						}
+						else
+						{
+							// sinon on active validationFiches
+							$this->a_comptable->validationFiches('%', null, 'Les fiches sélectionnées comportent des frais non validés.');
+						}
 					}
 				}
 				else
@@ -332,17 +451,26 @@ class C_comptable extends CI_Controller {
 					$infosUtil = $this->dataAccess->getLesInfosUtilisateur($idUtilisateur);
 					$laFiche = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
 					
-					// si la fiche est Signée
-					if ($laFiche['idEtat'] == 'CL')
+					// si $leMotifRefus n'est pas vide
+					if ($leMotifRefus != '')
 					{
-						// on active refuFiche puis validationFiches du modèle comptable
-						$this->a_comptable->refuFiche($idUtilisateur, $mois, $leMotifRefus);
-						$this->a_comptable->validationFiches('La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' a été refusée.');
+						// si la fiche est Signée
+						if ($laFiche['idEtat'] == 'CL')
+						{
+							// on active refuFiche puis validationFiches du modèle comptable
+							$this->a_comptable->refuFiche($idUtilisateur, $mois, $leMotifRefus);
+							$this->a_comptable->validationFiches('%', 'La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' a été refusée.');
+						}
+						else
+						{
+							// sinon on active validationFiches
+							$this->a_comptable->validationFiches();
+						}
 					}
 					else
 					{
 						// sinon on active validationFiches
-						$this->a_comptable->validationFiches();
+						$this->a_comptable->validationFiches('%', null, 'Nouveau motif est un champ vide.');
 					}
 				}
 				else
@@ -370,12 +498,68 @@ class C_comptable extends CI_Controller {
 					{
 						// on active rembourseFiche puis suiviPaiement du modèle comptable
 						$this->a_comptable->rembourseFiche($idUtilisateur, $mois);
-						$this->a_comptable->suiviPaiement('La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' a été remboursée.');
+						$this->a_comptable->suiviPaiement('%', 'La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' a été remboursée.');
 					}
 					else
 					{
 						// sinon on active suiviPaiement
 						$this->a_comptable->suiviPaiement();
+					}
+				}
+				else
+				{
+					// sinon on active suiviPaiement
+					$this->a_comptable->suiviPaiement();
+				}
+			}
+			/* rembourseSelect */
+			elseif ($action == 'rembourseSelect')
+			{
+				// charge le modèle comptable
+				$this->load->model('a_comptable');
+				
+				// obtention des données postées : $lesFiches
+				$lesFiches = $this->input->post('lesFiches');
+				
+				// si $lesFiches est initialisé
+				if (isset($lesFiches))
+				{
+					// aucune fiche n'est Validée
+					$fichesVA = false;
+					
+					// pour chaque $lesFiches en tant que $uneFiche
+					foreach ($lesFiches as $uneFiche)
+					{
+						$ficheParams = explode('_', $uneFiche);
+						
+						// s'il y a deux paramètres
+						if (count($ficheParams) == 2)
+						{
+							list($idUtilisateur, $mois) = $ficheParams;
+							$laFiche = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
+							
+							// si des fiches sont Validées
+							if ($laFiche['idEtat'] == 'VA')
+							{
+								// il existe des fiches Validées
+								$fichesVA = true;
+								
+								// on active rembourseFiche du modèle comptable
+								$this->a_comptable->rembourseFiche($idUtilisateur, $mois);
+							}
+						}
+					}
+					
+					// si aucune fiche n'est Validée
+					if ($fichesVA == false)
+					{
+						// on active suiviPaiement
+						$this->a_comptable->suiviPaiement();
+					}
+					else
+					{
+						// sinon on active suiviPaiement
+						$this->a_comptable->suiviPaiement('%', 'Les fiches sélectionnées ont été remboursées.');
 					}
 				}
 				else
@@ -400,17 +584,26 @@ class C_comptable extends CI_Controller {
 					$mois = $params[1];
 					$laFiche = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
 					
-					// si la fiche est Signée
-					if ($laFiche['idEtat'] == 'CL')
+					// si $lesMontants ne contient pas de champs vides
+					if ( ! in_array('', $lesMontants))
 					{
-						// on active majForfait puis modFiche du modèle comptable
-						$this->a_comptable->majForfait($idUtilisateur, $mois, $lesMontants);
-						$this->a_comptable->modFiche($idUtilisateur, $mois, 'Modification(s) des éléments forfaitisés enregistrée(s) ...');
+						// si la fiche est Signée
+						if ($laFiche['idEtat'] == 'CL')
+						{
+							// on active majForfait puis modFiche du modèle comptable
+							$this->a_comptable->majForfait($idUtilisateur, $mois, $lesMontants);
+							$this->a_comptable->modFiche($idUtilisateur, $mois, 'Modification(s) des éléments forfaitisés enregistrée(s) ...');
+						}
+						else
+						{
+							// sinon on active validationFiches
+							$this->a_comptable->validationFiches();
+						}
 					}
 					else
 					{
-						// sinon on active validationFiches
-						$this->a_comptable->validationFiches();
+						// sinon on active modFiche
+						$this->a_comptable->modFiche($idUtilisateur, $mois, null, 'Un ou plusieurs champs sont vides.');
 					}
 				}
 				else
@@ -523,21 +716,30 @@ class C_comptable extends CI_Controller {
 					if (isset($leFrais['id']))
 					{
 						// on recherche l'emplacement du fichier
-						$data = file_get_contents('application/views/uploads/'.$idUtilisateur.'/'.$mois.'/'.$name);
+						$path = 'application/views/uploads/'.$idUtilisateur.'/'.$mois.'/'.$name;
 						
-						// on lance le téléchargement
-						force_download($leFrais['justificatifNom'], $data);
+						// si l'emplacement existe on lance le téléchargement
+						if (file_exists($path))
+						{
+							$data = file_get_contents($path);
+							force_download($leFrais['justificatifNom'], $data);
+						}
+						else
+						{
+							// sinon on active accueil
+							$this->a_comptable->accueil();
+						}
 					}
 					else
 					{
-						// sinon on active validationFiches
-						$this->a_comptable->validationFiches();
+						// sinon on active accueil
+						$this->a_comptable->accueil();
 					}
 				}
 				else
 				{
-					// sinon on active validationFiches
-					$this->a_comptable->validationFiches();
+					// sinon on active accueil
+					$this->a_comptable->accueil();
 				}
 			}
 			else // dans tous les autres cas, on envoie la vue par défaut pour l'erreur 404

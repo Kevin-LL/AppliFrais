@@ -1,7 +1,7 @@
 /**
  * Gère l'affichage du menu lorsque la page est en mode responsive
  */
-function display() {
+function displayMenu() {
 	if (document.getElementById("menu").style.display == 'none' || document.getElementById("menu").style.display == '') {
 		document.getElementById("menu").style.display = 'block';
 		document.getElementById("contenu").style.display = 'none';
@@ -19,10 +19,84 @@ function closeNotify(notify) {
 }
 
 /**
- * Gère les caractères saisis pour le code postal, si un des caractères n'est pas numérique
- * la couleur de fond de l'élément "input" change
+ * Sélectionne toutes les fiches de frais.
+ * Si toutes les fiches de frais sont cochées elles seront décochées et inversement
  */
-function modCodePostal() {
+function selectFiches() {
+	var selectController = document.getElementById("selectController");
+	selectController.checked = !selectController.checked;
+	var checkboxes = document.getElementsByTagName("input");
+	for (i = 0; i < checkboxes.length; i++) {
+		name = checkboxes[i].getAttribute("name");
+		if (name.indexOf("lesFiches") == 0) {
+			if (selectController.checked == true) {
+				checkboxes[i].checked = true;
+			} else {
+				checkboxes[i].checked = false;
+			}
+		}
+	}
+}
+
+/**
+ * Valide la sélection des fiches de frais. 
+ * Si aucune fiche de frais n'est cochée affiche une notification et retourne "false",
+ * sinon envoie une demande de confirmation
+ */
+function validSelect() {
+	var checkboxes = document.getElementsByTagName("input");
+	var rienEstCoche = true;
+	for (i = 0; i < checkboxes.length; i++) {
+		name = checkboxes[i].getAttribute("name");
+		if (name.indexOf("lesFiches") == 0) {
+			if (checkboxes[i].checked == true) {
+				rienEstCoche = false;
+			}
+		}
+	}
+	if (rienEstCoche == true) {
+		alert("Aucune fiche n'a été sélectionnée !");
+		return false;
+	} else {
+		var confirmer = confirm("Voulez-vous vraiment confirmer la sélection ?");
+		if (confirmer == true) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+}
+
+/**
+ * Contrôle la sélection des fiches de frais.
+ * Si toutes les fiches de frais sont cochées l'élément "selectController" sera lui aussi coché,
+ * sinon il sera décoché
+ */
+function checkSelect() {
+	var selectController = document.getElementById("selectController");
+	var checkboxes = document.getElementsByTagName("input");
+	var toutEstCoche = true;
+	for (i = 0; i < checkboxes.length; i++) {
+		name = checkboxes[i].getAttribute("name");
+		if (name.indexOf("lesFiches") == 0) {
+			if (checkboxes[i].checked == false) {
+				toutEstCoche = false;
+			}
+		}
+	}
+	if (toutEstCoche == true) {
+		selectController.checked = true;
+	} else {
+		selectController.checked = false;
+	}
+}
+
+/**
+ * Contrôle si le code postal est un nombre.
+ * Si le code postal n'est pas un nombre change la couleur de l'élément "txtCP",
+ * sinon ne change rien
+ */
+function checkCodePostal() {
 	var CP = document.getElementById("txtCP").value;
 	if (isNaN(CP)) {
 		document.getElementById("txtCP").style.backgroundColor = '#FF7C66';
@@ -32,9 +106,11 @@ function modCodePostal() {
 }
 
 /**
- * Contrôle si le code postal est un nombre
+ * Valide le code postal.
+ * Si le code postal n'est pas un nombre affiche une notification et retourne "false",
+ * sinon retourne "true"
  */
-function checkCodePostal() {
+function validCodePostal() {
 	var CP = document.getElementById("txtCP").value;
 	if (isNaN(CP)) {
 		alert("Caractère(s) non valide(s) !");
@@ -49,7 +125,7 @@ function checkCodePostal() {
  */
 function resetResidence() {
 	document.getElementById("residence").reset();
-	modCodePostal();
+	checkCodePostal();
 }
 
 /**
@@ -87,7 +163,7 @@ function modFicheCalcul() {
 	for ( var i in array) {
 		totalArray += array[i];
 	}
-
+	
 	// Lignes hors horfait
 	var arrayHF = [];
 	var labels = document.getElementsByTagName("label");
@@ -95,9 +171,8 @@ function modFicheCalcul() {
 		name = labels[i].getAttribute("name");
 		if (name.indexOf("lesMontantsHF") == 0) {
 			var idHF = labels[i].getAttribute("id");
-			var montantHF = document.getElementById(idHF).innerHTML;
-			var parsedMontantHF = parseFloat(montantHF);
-			arrayHF.push(parsedMontantHF);
+			var montantHF = parseFloat(document.getElementById(idHF).innerHTML);
+			arrayHF.push(montantHF);
 		}
 	}
 	var totalArrayHF = 0;
@@ -105,7 +180,7 @@ function modFicheCalcul() {
 		totalArrayHF += arrayHF[i];
 	}
 	var txtMontantHF = document.getElementById("txtMontantHF");
-	if (typeof txtMontantHF !== 'undefined' && txtMontantHF !== null) {
+	if (typeof txtMontantHF != 'undefined' && txtMontantHF != null) {
 		txtMontantHF = txtMontantHF.value;
 		if (isNaN(txtMontantHF)) {
 			document.getElementById("txtMontantHF").style.backgroundColor = '#FF7C66';
@@ -113,7 +188,7 @@ function modFicheCalcul() {
 			document.getElementById("txtMontantHF").style.backgroundColor = '';
 		}
 	}
-
+	
 	// Total fiche frais
 	var totalFinal = Number(totalArray) + Number(totalArrayHF) + Number(txtMontantHF);
 	document.getElementById("totalFinal").innerHTML = totalFinal.toFixed(2) + "€";
@@ -123,12 +198,13 @@ function modFicheCalcul() {
 }
 
 /**
- * Contrôle si le total de la fiche de frais est un nombre
+ * Valide le total de la fiche de frais.
+ * Si le total de la fiche de frais n'est pas un nombre affiche une notification et retourne "false",
+ * sinon retourne "true"
  */
-function checkTotalFicheFrais() {
-	var totalFinal = document.getElementById("totalFinal").innerHTML;
-	var parsedTotalFinal = parseFloat(totalFinal);
-	if (isNaN(parsedTotalFinal)) {
+function validTotalFicheFrais() {
+	var totalFinal = parseFloat(document.getElementById("totalFinal").innerHTML);
+	if (isNaN(totalFinal)) {
 		alert("Caractère(s) non valide(s) !");
 		return false;
 	} else {
@@ -137,30 +213,33 @@ function checkTotalFicheFrais() {
 }
 
 /**
- * Contrôle le nombre de frais hors forfait saisis (limités à 10)
+ * Valide le nombre de caractères dans le nom du fichier donné comme justificatif.
+ * Si le nombre de caractères est inférieur à 35 retourne "true",
+ * sinon affiche une notification et retourne "false"
  */
-function checkLignesHorsForfait() {
-	var table = document.getElementById("horsForfaitListe").getElementsByTagName("tbody")[0];
-	var rowCount = table.rows.length;
-	if (rowCount <= 9) {
-		return true;
-	} else {
-		alert("Maximum de lignes hors forfait atteint !");
-		return false;
-	}
-}
-
-/**
- * Contrôle le nombre de caractères dans le nom du fichier donné comme justificatif
- * (limités à 35 caractères)
- */
-function checkJustificatif() {
+function validJustificatif() {
 	var filename = document.getElementById("buttonJustificatifHF").value;
 	filename = filename.replace(/^.*[\\\/]/, '');
 	if (filename.length <= 35) {
 		return true;
 	} else {
 		alert("Le nom des fichiers est limité à 35 caractères (avec extension).");
+		return false;
+	}
+}
+
+/**
+ * Valide le nombre de frais hors forfait saisis.
+ * Si le nombre de frais hors forfait est inférieur à 9 (soit 10 en partant de 0) retourne "true",
+ * sinon affiche une notification et retourne "false"
+ */
+function validLignesHorsForfait() {
+	var table = document.getElementById("horsForfaitListe").getElementsByTagName("tbody")[0];
+	var rowCount = table.rows.length;
+	if (rowCount <= 9) {
+		return true;
+	} else {
+		alert("Maximum de lignes hors forfait atteint !");
 		return false;
 	}
 }

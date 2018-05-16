@@ -21,15 +21,15 @@
 			<div class="formList">
 				<p>
 					<label for="login" class="formLabel">Login*</label>
-					<input id="login" class="input" type="text" name="login" maxlength="31"/>
+					<input id="login" class="input" name="login" required="required" maxlength="31" type="text"/>
 				</p>
 				<p>
 					<label for="mdp" class="formLabel">Mot de passe*</label>
-					<input id="mdp" class="input" type="password" name="mdp" maxlength="60"/>
+					<input id="mdp" class="input" name="mdp" required="required" maxlength="60" type="password"/>
 				</p>
 				<p class="formButtonsArea">
-					<input class="button" type="submit" value="Valider" name="valider"/>
-					<input class="button" type="reset" value="Annuler" name="annuler"/> 
+					<input class="button" name="valider" value="Valider" type="submit"/>
+					<input class="button" name="annuler" value="Annuler" type="reset"/> 
 				</p>
 			</div>
 		</form>

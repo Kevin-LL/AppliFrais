@@ -1,6 +1,6 @@
 /* Styles des divisions principales de la page */
 
-/* ~~~~~~~~~~~~~~AFFICHAGE NORMAL*~~~~~~~~~~~~~~ */
+/* ~~~~~~~~~~~~~~AFFICHAGE NORMAL~~~~~~~~~~~~~~ */
 /* GLOBAL */
 body {
 	display: flex;
@@ -118,11 +118,11 @@ legend {
 	flex-direction: column;
 }
 
-#menuList>* {
+#menuList > * {
 	margin-bottom: 1.5625rem;
 }
 
-#menuList>:last-child {
+#menuList > :last-child {
 	margin-bottom: 0;
 }
 
@@ -211,12 +211,12 @@ legend {
 	border-radius: 0 0 0.3125rem 0.3125rem;
 }
 
-#contenuList>* {
+#contenuList > * {
 	margin-bottom: 1.25rem;
 	overflow: auto;
 }
 
-#contenuList>:last-child {
+#contenuList > :last-child {
 	margin-bottom: 0;
 }
 
@@ -257,7 +257,7 @@ legend {
 	width: 12.5rem;
 }
 
-#elementsHorsForfait .formLabel {
+#elementsHorsForfait .formLabel, #rechercherVisiteur .formLabel {
 	width: 6.25rem;
 }
 
@@ -284,11 +284,18 @@ table.listeLegere td {
 	border: 0.125rem solid #32333D;
 }
 
-table.listeLegere .textData {
+table.listeLegere .transparent {
+	width: 1.25rem;
+	padding: 0;
+	background-color: transparent;
+	border: none;
+}
+
+table.listeLegere .text {
 	padding: 0.25rem;
 }
 
-table.listeLegere .inputData, .anchorData {
+table.listeLegere .action {
 	padding: 0;
 	background-image: repeating-linear-gradient(45deg, #32333D, #32333D 0.3125rem, #BABCDD 0.3125rem, #BABCDD 0.625rem);
 }
@@ -305,12 +312,48 @@ table.listeLegere .alignRight {
 	text-align: right;
 }
 
+table.listeLegere .invalid {
+	background-color: #FF7C66;
+}
+
+table.listeLegere .valid {
+	background-color: #67CD5D;
+}
+
+table.listeLegere .customCheckbox {
+	display: flex;
+	cursor: pointer;
+	height: 1.25rem;
+	width: 1.25rem;
+	box-sizing: border-box;
+	margin-right: 0.25rem;
+	border: 0.125rem solid #32333D;
+	background-color: #FFFFFF;
+}
+
+table.listeLegere .customCheckbox:hover {
+	background-color: #FAFAE6;
+}
+
+table.listeLegere .checkbox:checked + .customCheckbox:after {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	content: '✓';
+	font-size: 1rem;
+}
+
 table.listeLegere .inputCell {
 	width: 100%;
 	box-sizing: border-box;
 	padding: 0.25rem;
 	border: none;
 	font-size: 0.9375rem;
+}
+
+table.listeLegere .inputCell:enabled:hover {
+	background-color: #FAFAE6;
 }
 
 table.listeLegere .anchorCell {
@@ -340,12 +383,8 @@ table.listeLegere .anchorText:hover {
 	text-decoration: underline;
 }
 
-table.listeLegere .invalid {
-	background-color: #FF7C66;
-}
-
-table.listeLegere .valid {
-	background-color: #67CD5D;
+.checkbox {
+	display: none;
 }
 
 .monnaie {
@@ -384,7 +423,7 @@ table.listeLegere .valid {
 	margin: 0;
 }
 
-.formButtonsArea .button+.button {
+.formButtonsArea .button + .button {
 	margin-left: 0.625rem;
 }
 
@@ -443,7 +482,7 @@ footer {
 	text-align: center;
 }
 
-/* ~~~~~~~~~~~~~~AFFICHAGE RESPONSIVE*~~~~~~~~~~~~~~ */
+/* ~~~~~~~~~~~~~~AFFICHAGE RESPONSIVE~~~~~~~~~~~~~~ */
 @media screen and (min-width: 961px) {
 	/* MAIN */
 	#menu {
@@ -460,17 +499,17 @@ footer {
 	html {
 		font-size: 85%;
 	}
-
+	
 	/* HEADER */
 	#logo {
 		width: auto;
 	}
-
+	
 	/* ASIDE */
 	#toggleMenuArea {
 		display: block;
 	}
-
+	
 	/* MAIN */
 	main {
 		flex-direction: column;
@@ -501,10 +540,6 @@ footer {
 		display: flex;
 	}
 	
-	table.listeLegere {
-		font-size: 1rem;
-	}
-	
 	table.listeLegere tr {
 		display: block;
 		margin-bottom: 0.9558823529rem;
@@ -521,14 +556,14 @@ footer {
 	table.listeLegere td {
 		display: flex;
 		border: 0.1470588235rem solid #32333D;
-		border-bottom: 0;
+		border-bottom: none;
 	}
 	
 	table.listeLegere td:last-child {
 		border-bottom: 0.1470588235rem solid #32333D;
 	}
 	
-	table.listeLegere td:before {
+	table.listeLegere td:not(.transparent):before {
 		width: 7.352941176rem;
 		box-sizing: border-box;
 		content: attr(data-th);
@@ -538,14 +573,18 @@ footer {
 		font-weight: bold;
 	}
 	
-	table.listeLegere .textData {
+	table.listeLegere .text {
 		padding: 0;
+	}
+	
+	table.listeLegere .customCheckbox {
+		margin-right: 0;
+		border: 0.1470588235rem solid #32333D;
 	}
 	
 	table.listeLegere .inputCell {
 		width: calc(100% - 7.352941176rem);
 		padding: 0;
-		font-size: 1rem;
 	}
 	
 	table.listeLegere .anchorCell {
@@ -556,7 +595,11 @@ footer {
 	.formList p {
 		display: block;
 	}
-
+	
+	.input {
+		border: 0.1470588235rem solid #32333D;
+	}
+	
 	/* FOOTER */
 	#block {
 		display: none;
@@ -567,5 +610,36 @@ footer {
 	/* GLOBAL */
 	html {
 		font-size: 70%;
+	}
+	
+	/* MAIN */
+	table.listeLegere td {
+		border: 0.08928571429rem solid #32333D;
+		border-bottom: none;
+	}
+	
+	table.listeLegere td:last-child {
+		border-bottom: 0.08928571429rem solid #32333D;
+	}
+	
+	table.listeLegere td:not(.transparent):before {
+		width: 7.321428571rem;
+		border-right: 0.08928571429rem solid #32333D;
+	}
+	
+	table.listeLegere .customCheckbox {
+		border: 0.08928571429rem solid #32333D;
+	}
+	
+	table.listeLegere .inputCell {
+		width: calc(100% - 7.321428571rem);
+	}
+	
+	table.listeLegere .anchorCell {
+		width: calc(100% - 7.321428571rem);
+	}
+	
+	.input {
+		border: 0.08928571429rem solid #32333D;
 	}
 }

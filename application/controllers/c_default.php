@@ -49,14 +49,11 @@ class C_default extends CI_Controller {
 		$login = $this->input->post('login');
 		$mdp = $this->input->post('mdp');
 		$currentMdp = $this->dataAccess->getMdpUtilisateur($login);
+		$authUser = null;
 		
 		if (password_verify($mdp, $currentMdp['mdp']))
 		{
 			$authUser = $this->authentif->authentifier($login);
-		}
-		else
-		{
-			$authUser = null;
 		}
 		
 		if (isset($authUser))

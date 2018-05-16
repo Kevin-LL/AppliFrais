@@ -31,7 +31,7 @@
 		</header>
 		<aside>
 			<div id="toggleMenuArea">
-				<input class="toggleMenu" type="button" value="Menu &#9776;" onclick="display();">
+				<input class="toggleMenu" value="Menu &#9776;" onclick="displayMenu();" type="button"/>
 			</div>
 		</aside>
 		<main>

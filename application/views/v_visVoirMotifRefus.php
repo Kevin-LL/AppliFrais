@@ -1,19 +1,19 @@
 <div id="contenuTitre">
-	<h3>Refus de ma fiche de frais du mois <?php echo $numAnnee."-".$numMois;?></h3>
+	<h3>Refus de ma fiche de frais du mois <?php echo substr_replace($moisFiche, '-', 4, 0);?></h3>
 </div>
 <div id="contenuList">
 	<div id="motifRefus">
 		<p>	
 			<?php
-				if (isset($leMotifRefus['motifRefus']))
+				if (isset($leMotifRefus))
 				{
-					if ($leMotifRefus['motifRefus'] != NULL)
+					if ($leMotifRefus != null)
 					{
-						echo '<span class="refus">'.$leMotifRefus['motifRefus'].'</span>';
+						echo '<span class="refus">'.$leMotifRefus.'</span>';
 					}
 					else
 					{
-						echo 'Erreur : aucun motif de refus disponible.';
+						echo 'Aucun motif de refus disponible.';
 					}
 				}
 			?>

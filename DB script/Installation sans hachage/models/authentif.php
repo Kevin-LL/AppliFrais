@@ -5,11 +5,11 @@ class Authentif extends CI_Model {
 
     function __construct()
     {
-        // Call the Model constructor
-        parent::__construct();
+		// Call the Model constructor
+		parent::__construct();
     }
-
-	 /**
+	
+	/**
 	 * Teste si un quelconque utilisateur est connecté
 	 * 
 	 * @return vrai ou faux
@@ -35,10 +35,10 @@ class Authentif extends CI_Model {
                    'nom' => $nom,
                    'prenom' => $prenom
 				);
-
+		
 		$this->session->set_userdata($authUser);
 	}
-
+	
 	/**
 	 * Détruit la session active et redirige vers le contrôleur par défaut
 	 */
@@ -50,14 +50,14 @@ class Authentif extends CI_Model {
                    'nom' => '',
                    'prenom' => ''
 				);
-	
+		
 		$this->session->unset_userdata($authUser);
 		$this->session->sess_destroy();
-
+		
 		$this->load->helper('url');
 		redirect('/c_default/');
 	}
-
+	
 	/**
 	 * Vérifie en base de données si les informations de connexions sont correctes
 	 * 
@@ -66,9 +66,9 @@ class Authentif extends CI_Model {
 	public function authentifier($login, $mdp)
 	{
 		$this->load->model('dataAccess');
-
+		
 		$authUser = $this->dataAccess->authentifierUtilisateur($login, $mdp);
-
+		
 		return $authUser;
 	}
 }

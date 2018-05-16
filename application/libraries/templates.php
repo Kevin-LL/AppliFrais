@@ -34,7 +34,7 @@ class Templates {
 				show_error('Unable to load the requested file: ' . $tpl_view.'/'.$body_view.'.php');
 			}
 
-			$body = $this->ci->load->view($body_view_path, $data, TRUE);
+			$body = $this->ci->load->view($body_view_path, $data, true);
 
 			if (is_null($data))
 			{

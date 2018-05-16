@@ -28,7 +28,7 @@ class C_visiteur extends CI_Controller {
 			$this->templates->load('t_connexion', 'v_connexion', $data);
 		}
 		// contrôle si l'utilisateur est un visiteur
-		elseif ($this->session->userdata('idProfil') !== 'VIS')
+		elseif ($this->session->userdata('idProfil') != 'VIS')
 		{
 			// l'utilisateur n'est pas visiteur, on envoie la vue de connexion
 			$data = array();
@@ -86,15 +86,17 @@ class C_visiteur extends CI_Controller {
 				// si les clés currentMdp et newMdp de $leMdp sont initialisées
 				if (isset($leMdp['currentMdp'], $leMdp['newMdp']))
 				{
-					// si la clé newMdp n'est pas vide
-					if ($leMdp['newMdp'] !== '')
+					// si les clés currentMdp et newMdp de $leMdp ne sont pas vides
+					if ($leMdp['currentMdp'] != '' && $leMdp['newMdp'] != '')
 					{
-						$leMdp['newMdp'] = password_hash($leMdp['newMdp'], PASSWORD_BCRYPT);
 						$infosUtil = $this->dataAccess->getLesInfosUtilisateur($idUtilisateur);
 						
-						// si la clé currentMdp est égal au mdp de l'utilisateur
+						// si la clé currentMdp est égale au mdp de l'utilisateur
 						if (password_verify($leMdp['currentMdp'], $infosUtil['mdp']))
 						{
+							// hachage de la clé newMdp
+							$leMdp['newMdp'] = password_hash($leMdp['newMdp'], PASSWORD_BCRYPT);
+							
 							// on active majSecurite puis monCompte du modèle visiteur
 							$this->a_visiteur->majSecurite($idUtilisateur, $leMdp['newMdp']);
 							$this->a_visiteur->monCompte($idUtilisateur, 'Modification(s) du mot de passe enregistrée(s) ...');
@@ -108,7 +110,7 @@ class C_visiteur extends CI_Controller {
 					else
 					{
 						// sinon on active monCompte
-						$this->a_visiteur->monCompte($idUtilisateur, null, 'Nouveau mot de passe est un champ vide.');
+						$this->a_visiteur->monCompte($idUtilisateur, null, 'Un ou plusieurs champs sont vides.');
 					}
 				}
 				else
@@ -134,9 +136,18 @@ class C_visiteur extends CI_Controller {
 				// si les clés ville, cp et adresse de $uneResidence sont initialisées
 				if (isset($uneResidence['ville'], $uneResidence['cp'], $uneResidence['adresse']))
 				{
-					// on active majResidence puis monCompte du modèle visiteur
-					$this->a_visiteur->majResidence($idUtilisateur, $uneResidence);
-					$this->a_visiteur->monCompte($idUtilisateur, 'Modification(s) du lieu de résidence enregistrée(s) ...');
+					// si les clés ville, cp et adresse de $uneResidence ne sont pas vides
+					if ($uneResidence['ville'] != '' && $uneResidence['cp'] != '' && $uneResidence['adresse'] != '')
+					{
+						// on active majResidence puis monCompte du modèle visiteur
+						$this->a_visiteur->majResidence($idUtilisateur, $uneResidence);
+						$this->a_visiteur->monCompte($idUtilisateur, 'Modification(s) du lieu de résidence enregistrée(s) ...');
+					}
+					else
+					{
+						// sinon on active monCompte
+						$this->a_visiteur->monCompte($idUtilisateur, null, 'Un ou plusieurs champs sont vides.');
+					}
 				}
 				else
 				{
@@ -285,12 +296,62 @@ class C_visiteur extends CI_Controller {
 					$this->a_visiteur->mesFiches($idUtilisateur);
 				}
 			}
+			/* signeSelect */
+			elseif ($action == 'signeSelect')
+			{
+				// charge le modèle visiteur et recherche l'id de l'utilisateur
+				$this->load->model('a_visiteur');
+				$idUtilisateur = $this->session->userdata('idUser');
+				
+				// obtention des données postées : $lesFiches
+				$lesFiches = $this->input->post('lesFiches');
+				
+				// si $lesFiches est initialisé
+				if (isset($lesFiches))
+				{
+					// aucune fiche n'est Créée ou Refusée
+					$fichesCRRE = false;
+					
+					// pour chaque $lesFiches en tant que $mois
+					foreach ($lesFiches as $mois)
+					{
+						$laFiche = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
+						
+						// si des fiches sont Créées ou Refusées
+						if ($laFiche['idEtat'] == 'CR' || $laFiche['idEtat'] == 'RE')
+						{
+							// il existe des fiches Créées ou Refusées
+							$fichesCRRE = true;
+							
+							// on active signeFiche du modèle visiteur
+							$this->a_visiteur->signeFiche($idUtilisateur, $mois);
+						}
+					}
+					
+					// si aucune fiche n'est Créée ou Refusée
+					if ($fichesCRRE == false)
+					{
+						// on active mesFiches
+						$this->a_visiteur->mesFiches($idUtilisateur);
+					}
+					else
+					{
+						// sinon on active mesFiches
+						$this->a_visiteur->mesFiches($idUtilisateur, 'Les fiches sélectionnées ont été signées.');
+					}
+				}
+				else
+				{
+					// sinon on active mesFiches
+					$this->a_visiteur->mesFiches($idUtilisateur);
+				}
+			}
 			/* impFiche */
 			elseif ($action == 'impFiche')
 			{
 				// charge la bibliothèque pdf
 				// charge le modèle visiteur et recherche l'id de l'utilisateur
-				$this->load->library('pdf');
+				$this->load->library('Pdf');
 				$this->load->model('a_visiteur');
 				$idUtilisateur = $this->session->userdata('idUser');
 				
@@ -365,9 +426,18 @@ class C_visiteur extends CI_Controller {
 				// si $lesFrais est initialisé
 				if (isset($lesFrais))
 				{
-					// on active majForfait puis modFiche du modèle visiteur
-					$this->a_visiteur->majForfait($idUtilisateur, $mois, $lesFrais);
-					$this->a_visiteur->modFiche($idUtilisateur, $mois, 'Modification(s) des éléments forfaitisés enregistrée(s) ...');
+					// si $lesFrais ne contient pas de champs vides
+					if ( ! in_array('', $lesFrais))
+					{
+						// on active majForfait puis modFiche du modèle visiteur
+						$this->a_visiteur->majForfait($idUtilisateur, $mois, $lesFrais);
+						$this->a_visiteur->modFiche($idUtilisateur, $mois, 'Modification(s) des éléments forfaitisés enregistrée(s) ...');
+					}
+					else
+					{
+						// sinon on active modFiche
+						$this->a_visiteur->modFiche($idUtilisateur, $mois, null, 'Un ou plusieurs champs sont vides.');
+					}
 				}
 				else
 				{
@@ -384,7 +454,7 @@ class C_visiteur extends CI_Controller {
 				$this->load->model('a_visiteur');
 				$idUtilisateur = $this->session->userdata('idUser');
 				$mois = $this->session->userdata('mois');	
-
+				
 				// création d'un tableau : $uneLigne et obtention des données postées
 				$uneLigne = array( 
 					'dateFrais' => $this->input->post('dateFrais'),
@@ -397,57 +467,78 @@ class C_visiteur extends CI_Controller {
 				// si les clés dateFrais, libelle et montant de $uneLigne sont initialisées
 				if (isset($uneLigne['dateFrais'], $uneLigne['libelle'], $uneLigne['montant']))
 				{
-					// création d'un dépôt pour les justificatifs des frais hors forfait
-					if ( ! file_exists('application/views/uploads/'.$idUtilisateur.'/'.$mois))
+					// si les clés dateFrais, libelle et montant de $uneLigne ne sont pas vides
+					if ($uneLigne['dateFrais'] != '' && $uneLigne['libelle'] != '' && $uneLigne['montant'] != '')
 					{
-						mkdir('application/views/uploads/'.$idUtilisateur.'/'.$mois, 0777, true);
-					}
-					
-					// configuration du justificatif à mettre en ligne
-					$config = array(
-						'upload_path' => 'application/views/uploads/'.$idUtilisateur.'/'.$mois,
-						'allowed_types' => 'pdf',
-						'max_size' => 2000,
-						'max_width' => 1366,
-						'max_height' => 768,
-						'file_name' => uniqid()
-					);
-					$this->load->library('upload', $config);
-					
-					// si le justificatif est initialisé on stocke son nom dans $uneLigne
-					if (isset($_FILES['justificatif']['name']))
-					{
-						$uneLigne['justificatifNom'] = $_FILES['justificatif']['name'];
-					}
-					
-					// si le justificatif est mis en ligne
-					if ($this->upload->do_upload('justificatif'))
-					{
-						$data = $this->upload->data();
-						
-						// on stocke le fichier associé au justificatif dans $uneLigne
-						$uneLigne['justificatifFichier'] = $data['file_name'];
-						
-						// on active ajouteFrais puis modFiche du modèle visiteur
-						$this->a_visiteur->ajouteFrais($idUtilisateur, $mois, $uneLigne);
-						$this->a_visiteur->modFiche($idUtilisateur, $mois, 'Ligne "Hors forfait" ajoutée ... <br>Justificatif : '.$uneLigne['justificatifNom']);
+						// si le justificatif n'est pas vide
+						if ($_FILES['justificatif']['name'] != '')
+						{
+							// on stocke le nom du justificatif dans $uneLigne
+							$uneLigne['justificatifNom'] = $_FILES['justificatif']['name'];
+							
+							// création d'un dépôt pour les justificatifs
+							if ( ! file_exists('application/views/uploads/'.$idUtilisateur.'/'.$mois))
+							{
+								mkdir('application/views/uploads/'.$idUtilisateur.'/'.$mois, 0777, true);
+							}
+							
+							// configuration du justificatif à mettre en ligne
+							$config = array(
+								'upload_path' => 'application/views/uploads/'.$idUtilisateur.'/'.$mois,
+								'allowed_types' => 'pdf',
+								'max_size' => 2000,
+								'max_width' => 1366,
+								'max_height' => 768,
+								'file_name' => uniqid()
+							);
+							$this->load->library('upload', $config);
+							
+							// si le justificatif est mis en ligne
+							if ($this->upload->do_upload('justificatif'))
+							{
+								$data = $this->upload->data();
+								
+								// on stocke le fichier associé au justificatif dans $uneLigne
+								$uneLigne['justificatifFichier'] = $data['file_name'];
+								
+								// on active ajouteFrais puis modFiche du modèle visiteur
+								$this->a_visiteur->ajouteFrais($idUtilisateur, $mois, $uneLigne);
+								$this->a_visiteur->modFiche($idUtilisateur, $mois, 'Ligne "Hors forfait" ajoutée ... <br>Justificatif : '.$uneLigne['justificatifNom']);
+							}
+							else
+							{
+								// si le dépôt des justificatifs est vide on le supprime
+								$dossierMois = count(scandir('application/views/uploads/'.$idUtilisateur.'/'.$mois));
+								if ($dossierMois <= 2)
+								{
+									rmdir('application/views/uploads/'.$idUtilisateur.'/'.$mois);
+									$dossierUtilisateur = count(scandir('application/views/uploads/'.$idUtilisateur));
+									if ($dossierUtilisateur <= 2)
+									{
+										rmdir('application/views/uploads/'.$idUtilisateur);
+										$dossierUploads = count(scandir('application/views/uploads'));
+										if ($dossierUploads <= 2)
+										{
+											rmdir('application/views/uploads/');
+										}
+									}
+								}
+								
+								// on récupère l'erreur et on active modFiche
+								$error = array('error' => $this->upload->display_errors('', ''));
+								$this->a_visiteur->modFiche($idUtilisateur, $mois, null, 'Justificatif : '.$error['error']);
+							}
+						}
+						else
+						{
+							// sinon on active modFiche
+							$this->a_visiteur->modFiche($idUtilisateur, $mois, null, 'Vous devez fournir un justificatif pour ajouter un élément hors forfait.');
+						}
 					}
 					else
 					{
-						// si le dépôt des justificatifs est vide on le supprime
-						$directory = scandir('application/views/uploads/'.$idUtilisateur.'/'.$mois);
-						$items_count = count($directory);
-						if ($items_count <= 2)
-						{
-							rmdir('application/views/uploads/'.$idUtilisateur.'/'.$mois);
-						}
-						
-						// on récupère l'erreur
-						$error = array('error' => $this->upload->display_errors('', ''));
-						
-						// on active ajouteFrais puis modFiche du modèle visiteur
-						$this->a_visiteur->ajouteFrais($idUtilisateur, $mois, $uneLigne);
-						$this->a_visiteur->modFiche($idUtilisateur, $mois, 'Ligne "Hors forfait" ajoutée ... <br>Justificatif : '.$error['error']);
+						// sinon on active modFiche
+						$this->a_visiteur->modFiche($idUtilisateur, $mois, null, 'Un ou plusieurs champs sont vides.');
 					}
 				}
 				else
@@ -482,14 +573,23 @@ class C_visiteur extends CI_Controller {
 							unlink('application/views/uploads/'.$idUtilisateur.'/'.$mois.'/'.$leFrais['justificatifFichier']);
 							
 							// si le dépôt des justificatifs est vide on le supprime
-							$directory = scandir('application/views/uploads/'.$idUtilisateur.'/'.$mois);
-							$items_count = count($directory);
-							if ($items_count <= 2)
+							$dossierMois = count(scandir('application/views/uploads/'.$idUtilisateur.'/'.$mois));
+							if ($dossierMois <= 2)
 							{
 								rmdir('application/views/uploads/'.$idUtilisateur.'/'.$mois);
+								$dossierUtilisateur = count(scandir('application/views/uploads/'.$idUtilisateur));
+								if ($dossierUtilisateur <= 2)
+								{
+									rmdir('application/views/uploads/'.$idUtilisateur);
+									$dossierUploads = count(scandir('application/views/uploads'));
+									if ($dossierUploads <= 2)
+									{
+										rmdir('application/views/uploads/');
+									}
+								}
 							}
 						}
-
+						
 						// on active supprLigneFrais puis modFiche du modèle visiteur
 						$this->a_visiteur->supprLigneFrais($idUtilisateur, $mois, $idLigneFrais);
 						$this->a_visiteur->modFiche($idUtilisateur, $mois, 'Ligne "Hors forfait" supprimée ...');				
@@ -529,10 +629,20 @@ class C_visiteur extends CI_Controller {
 					if (isset($leFrais['id']))
 					{
 						// on recherche l'emplacement du fichier
-						$data = file_get_contents('application/views/uploads/'.$idUtilisateur.'/'.$mois.'/'.$name);
+						$path = 'application/views/uploads/'.$idUtilisateur.'/'.$mois.'/'.$name;
 						
-						// on lance le téléchargement
-						force_download($leFrais['justificatifNom'], $data);
+						// si l'emplacement existe on lance le téléchargement
+						if (file_exists($path))
+						{
+							$data = file_get_contents($path);
+							force_download($leFrais['justificatifNom'], $data);
+						}
+						else
+						{
+							// sinon on désactive mois et on active mesFiches
+							$this->session->unset_userdata('mois');
+							$this->a_visiteur->mesFiches($idUtilisateur);
+						}
 					}
 					else
 					{

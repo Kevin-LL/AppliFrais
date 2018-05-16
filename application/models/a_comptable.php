@@ -7,11 +7,11 @@ class A_comptable extends CI_Model {
     {
         // Call the Model constructor
         parent::__construct();
-
+		
 		// chargement du modèle d'accès aux données qui est utile à toutes les méthodes
 		$this->load->model('dataAccess');
     }
-
+	
 	/**
 	 * Accueil du comptable
 	*/
@@ -66,12 +66,14 @@ class A_comptable extends CI_Model {
 	 * Liste les fiches signées à valider pour le comptable connecté et 
 	 * donne accès aux fonctionnalités associées
 	 *
-	 * @param $message : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
 	 * @param $laRecherche : chaîne de caractères permettant au comptable de trier les fiches de frais
+	 * @param $message : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
+	 * @param $erreur : message facultatif destiné à notifier l'utilisateur d'une erreur
 	*/
-	public function validationFiches($message = null, $laRecherche = '%')
+	public function validationFiches($laRecherche = '%', $message = null, $erreur = null)
 	{
 		$data['notifyInfo'] = $message;
+		$data['notifyError'] = $erreur;
 		$data['validationFiches'] = $this->dataAccess->comGetFiches('CL', $laRecherche);		
 		
 		$this->templates->load('t_comptable', 'v_comValidationFiches', $data);	
@@ -81,10 +83,10 @@ class A_comptable extends CI_Model {
 	 * Liste les fiches mises en paiement à rembourser pour le comptable connecté et 
 	 * donne accès aux fonctionnalités associées
 	 *
-	 * @param $message : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
 	 * @param $laRecherche : chaîne de caractères permettant au comptable de trier les fiches de frais
+	 * @param $message : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
 	*/
-	public function suiviPaiement($message = null, $laRecherche = '%')
+	public function suiviPaiement($laRecherche = '%', $message = null)
 	{
 		$data['notifyInfo'] = $message;
 		$data['suiviPaiement'] = $this->dataAccess->comGetFiches('VA', $laRecherche);		
@@ -100,14 +102,13 @@ class A_comptable extends CI_Model {
 	*/
 	public function voirFiche($idUtilisateur, $mois)
 	{
-		$data['numAnnee'] = substr($mois, 0, 4);
-		$data['numMois'] = substr($mois, 4, 2);
+		$data['moisFiche'] = $mois;
 		$data['infosUtil'] = $this->dataAccess->getLesInfosUtilisateur($idUtilisateur);
 		$data['infosFiche'] = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
 		$data['lesFraisForfait'] = $this->dataAccess->getLesLignesForfait($idUtilisateur, $mois);
 		$data['lesFraisHorsForfait'] = $this->dataAccess->getLesLignesHorsForfait($idUtilisateur, $mois);
 		$data['nbJustificatifs'] = $this->dataAccess->getNbjustificatifs($idUtilisateur, $mois)['nb'];
-
+		
 		$this->templates->load('t_comptable', 'v_comVoirListeFrais', $data);
 	}
 	
@@ -124,13 +125,12 @@ class A_comptable extends CI_Model {
 	{
 		$data['notifyInfo'] = $message;
 		$data['notifyError'] = $erreur;
-		$data['numAnnee'] = substr($mois, 0, 4);
-		$data['numMois'] = substr($mois, 4, 2);
+		$data['moisFiche'] = $mois;
 		$data['infosUtil'] = $this->dataAccess->getLesInfosUtilisateur($idUtilisateur);
 		$data['lesFraisForfait'] = $this->dataAccess->getLesLignesForfait($idUtilisateur, $mois);
 		$data['lesFraisHorsForfait'] = $this->dataAccess->getLesLignesHorsForfait($idUtilisateur, $mois);
 		$data['nbJustificatifs'] = $this->dataAccess->getNbjustificatifs($idUtilisateur, $mois)['nb'];
-
+		
 		$this->templates->load('t_comptable', 'v_comModListeFrais', $data);
 	}
 	
@@ -153,11 +153,10 @@ class A_comptable extends CI_Model {
 	*/
 	public function ajouterMotifRefus($idUtilisateur, $mois)
 	{
-		$data['numAnnee'] = substr($mois, 0, 4);
-		$data['numMois'] = substr($mois, 4, 2);
+		$data['moisFiche'] = $mois;
 		$data['infosUtil'] = $this->dataAccess->getLesInfosUtilisateur($idUtilisateur);
-		$data['leMotifRefus'] = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
-			
+		$data['leMotifRefus'] = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois)['motifRefus'];
+		
 		$this->templates->load('t_comptable', 'v_comAjouterMotifRefus', $data);
 	}
 	

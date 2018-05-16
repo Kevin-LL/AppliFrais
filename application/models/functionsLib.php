@@ -5,10 +5,10 @@ class FunctionsLib extends CI_Model {
 
     function __construct()
     {
-        // Call the Model constructor
-        parent::__construct();
+		// Call the Model constructor
+		parent::__construct();
     }
-
+	
 	/**
 	 * Transforme une date au format français jj/mm/aaaa vers le format anglais aaaa-mm-jj
 	 
@@ -20,11 +20,11 @@ class FunctionsLib extends CI_Model {
         @list ($jour, $mois, $annee) = explode('/', $maDate);
         if ($this->estDateValide($maDate))
         {
-            return date('Y-m-d', mktime(0, 0, 0, $mois, $jour, $annee));
+			return date('Y-m-d', mktime(0, 0, 0, $mois, $jour, $annee));
         }
         else
         {
-            return date('Y-m-d');
+			return date('Y-m-d');
         }
 	}
 	
@@ -52,11 +52,11 @@ class FunctionsLib extends CI_Model {
         @list ($jour, $mois, $annee) = explode('/', $date);
         if (strlen($mois) == 1)
         {
-            $mois = '0' . $mois;
+			$mois = '0' . $mois;
         }
         return $annee . $mois;
 	}
-
+	
 	/**
 	 * retourne, sous la forme d'un tableau, les 6 derniers mois 
 	 * à partir d'aujourd'hui au format aaaamm, y compris le mois courant
@@ -78,14 +78,14 @@ class FunctionsLib extends CI_Model {
             @list ($jour, $mois, $annee) = explode('/', $date->format('d/m/Y'));
             if (strlen($mois) == 1)
             {
-                $mois = '0' . $mois;
+				$mois = '0' . $mois;
             }
             $lesMois[] = $annee . $mois;
             $date->sub($interval);
         }
         return $lesMois;
 	}
-
+	
 	/**
 	 * Indique si une valeur est un entier positif ou nul
 	 
@@ -96,7 +96,7 @@ class FunctionsLib extends CI_Model {
 	{
 		return preg_match('/[^0-9]/', $valeur) == 0;
 	}
-
+	
 	/**
 	 * Indique si un tableau de valeurs est constitué d'entiers positifs ou nuls
 	 
@@ -110,7 +110,7 @@ class FunctionsLib extends CI_Model {
         {
             if ( ! $this->estEntierPositif($unEntier))
             {
-                $ok = false;
+				$ok = false;
             }
         }
         return $ok;
@@ -144,25 +144,25 @@ class FunctionsLib extends CI_Model {
         $dateOK = true;
         if (count($tabDate) != 3)
         {
-            $dateOK = false;
+			$dateOK = false;
         }
         else
         {
             if ( ! $this->estTableauEntiers($tabDate))
             {
-                $dateOK = false;
+				$dateOK = false;
             }
             else
             {
                 if ( ! checkdate($tabDate[1], $tabDate[0], $tabDate[2]))
                 {
-                    $dateOK = false;
+					$dateOK = false;
                 }
             }
         }
         return $dateOK;
 	}
-
+	
 	/**
 	 * Vérifie que le tableau de frais ne contient que des valeurs numériques 
 	 

@@ -7,16 +7,14 @@ class A_visiteur extends CI_Model {
     {
         // Call the Model constructor
         parent::__construct();
-
+		
 		// chargement du modèle d'accès aux données qui est utile à toutes les méthodes
 		$this->load->model('dataAccess');
     }
-
+	
 	/**
 	 * Accueil du visiteur
-	 * La fonction crée un dépôt dédié au visiteur pour le stockage
-	 * éventuel de pièces jointes liées aux frais hors forfait.
-	 * De plus elle intègre un mécanisme de contrôle d'existence des 
+	 * La fonction intègre un mécanisme de contrôle d'existence des 
 	 * fiches de frais sur les 6 derniers mois. 
 	 * Si l'une d'elle est absente, elle est créée.
 	 * Enfin elle contrôle les fiches non signées de plus de 12 mois.
@@ -25,15 +23,9 @@ class A_visiteur extends CI_Model {
 	{
 		// chargement du modèle contenant les fonctions génériques
 		$this->load->model('functionsLib');
-
+		
 		// obtention de l'id de l'utilisateur mémorisé en session
 		$idUtilisateur = $this->session->userdata('idUser');
-		
-		// crée un dossier dédié au visiteur
-		if ( ! file_exists('application/views/uploads/'.$idUtilisateur))
-		{
-			mkdir('application/views/uploads/'.$idUtilisateur, 0777, true);
-		}
 		
 		// obtention de la liste des 6 derniers mois (y compris celui ci)
 		$lesMois = $this->functionsLib->getSixDerniersMois();
@@ -120,7 +112,7 @@ class A_visiteur extends CI_Model {
 		
 		$this->templates->load('t_visiteur', 'v_visMesFiches', $data);	
 	}
-
+	
 	/**
 	 * Présente le détail de la fiche sélectionnée 
 	 * 
@@ -129,13 +121,12 @@ class A_visiteur extends CI_Model {
 	*/
 	public function voirFiche($idUtilisateur, $mois)
 	{
-		$data['numAnnee'] = substr($mois, 0, 4);
-		$data['numMois'] = substr($mois, 4, 2);
+		$data['moisFiche'] = $mois;
 		$data['infosFiche'] = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
 		$data['lesFraisForfait'] = $this->dataAccess->getLesLignesForfait($idUtilisateur, $mois);
 		$data['lesFraisHorsForfait'] = $this->dataAccess->getLesLignesHorsForfait($idUtilisateur, $mois);
 		$data['nbJustificatifs'] = $this->dataAccess->getNbjustificatifs($idUtilisateur, $mois)['nb'];
-
+		
 		$this->templates->load('t_visiteur', 'v_visVoirListeFrais', $data);
 	}
 	
@@ -147,13 +138,12 @@ class A_visiteur extends CI_Model {
 	*/
 	public function voirMotifRefus($idUtilisateur, $mois)
 	{
-		$data['numAnnee'] = substr($mois, 0, 4);
-		$data['numMois'] = substr($mois, 4, 2);
-		$data['leMotifRefus'] = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
+		$data['moisFiche'] = $mois;
+		$data['leMotifRefus'] = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois)['motifRefus'];
 			
 		$this->templates->load('t_visiteur', 'v_visVoirMotifRefus', $data);
 	}
-
+	
 	/**
 	 * Présente le détail de la fiche sélectionnée et donne 
 	 * accés à la modification du contenu de cette fiche.
@@ -161,19 +151,20 @@ class A_visiteur extends CI_Model {
 	 * @param $idUtilisateur : l'id du visiteur 
 	 * @param $mois : le mois de la fiche à modifier 
 	 * @param $message : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
+	 * @param $erreur : message facultatif destiné à notifier l'utilisateur d'une erreur
 	*/
-	public function modFiche($idUtilisateur, $mois, $message = null)
+	public function modFiche($idUtilisateur, $mois, $message = null, $erreur = null)
 	{
 		$data['notifyInfo'] = $message;
-		$data['numAnnee'] = substr($mois, 0, 4);
-		$data['numMois'] = substr($mois, 4, 2);
+		$data['notifyError'] = $erreur;
+		$data['moisFiche'] = $mois;
 		$data['lesFraisForfait'] = $this->dataAccess->getLesLignesForfait($idUtilisateur, $mois);
 		$data['lesFraisHorsForfait'] = $this->dataAccess->getLesLignesHorsForfait($idUtilisateur, $mois);
 		$data['nbJustificatifs'] = $this->dataAccess->getNbjustificatifs($idUtilisateur, $mois)['nb'];
-
+		
 		$this->templates->load('t_visiteur', 'v_visModListeFrais', $data);
 	}
-
+	
 	/**
 	 * Signe une fiche de frais en changeant son état
 	 * 
@@ -193,13 +184,12 @@ class A_visiteur extends CI_Model {
 	*/
 	public function impFiche($idUtilisateur, $mois)
 	{
-		$data['numAnnee'] = substr($mois, 0, 4);
-		$data['numMois'] = substr($mois, 4, 2);
+		$data['moisFiche'] = $mois;
 		$data['infosFiche'] = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
 		$data['lesFraisForfait'] = $this->dataAccess->getLesLignesForfait($idUtilisateur, $mois);
 		$data['lesFraisHorsForfait'] = $this->dataAccess->getLesLignesHorsForfait($idUtilisateur, $mois);
 		$data['nbJustificatifs'] = $this->dataAccess->getNbjustificatifs($idUtilisateur, $mois)['nb'];
-
+		
 		$this->templates->load('t_visiteur', 'v_visImpListeFrais', $data);
 	}
 	
@@ -213,7 +203,7 @@ class A_visiteur extends CI_Model {
 	{
 		$this->dataAccess->supprimeFiche($idUtilisateur, $mois);
 	}
-
+	
 	/**
 	 * Modifie les quantités associées aux frais forfaitisés dans une fiche donnée
 	 * 
@@ -226,13 +216,13 @@ class A_visiteur extends CI_Model {
 		$this->dataAccess->visMajLignesForfait($idUtilisateur, $mois, $lesFrais);
 		$this->dataAccess->recalculeMontantFiche($idUtilisateur, $mois);
 	}
-
+	
 	/**
 	 * Ajoute une ligne de frais hors forfait dans une fiche donnée
 	 * 
 	 * @param $idUtilisateur : l'id du visiteur 
 	 * @param $mois : le mois de la fiche concernée
-	 * @param $lesFrais : les quantités liées à chaque type de frais, sous la forme d'un tableau
+	 * @param $uneLigne : les informations du frais à ajouter, sous la forme d'un tableau
 	*/
 	public function ajouteFrais($idUtilisateur, $mois, $uneLigne)
 	{
@@ -241,12 +231,12 @@ class A_visiteur extends CI_Model {
 		$montant = $uneLigne['montant'];
 		$justificatifNom = $uneLigne['justificatifNom'];
 		$justificatifFichier = $uneLigne['justificatifFichier'];
-
+		
 		$this->dataAccess->creeLigneHorsForfait($idUtilisateur, $mois, $libelle, $dateFrais, $montant, $justificatifNom, $justificatifFichier);
 		$this->dataAccess->majNbJustificatifs($idUtilisateur, $mois);
 		$this->dataAccess->recalculeMontantFiche($idUtilisateur, $mois);
 	}
-
+	
 	/**
 	 * Supprime une ligne de frais hors forfait dans une fiche donnée
 	 * 

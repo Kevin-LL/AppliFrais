@@ -2,18 +2,18 @@
 $this->load->helper('url');
 
 // Extend the TCPDF class to create custom Header
-class MYPDF extends TCPDF {
+class Imprimer extends TCPDF {
 
-    //Page header
+    // Page header
     public function Header()
     {
-        // Logo
-        $image_file = file_get_contents(img_url('logo.png'));
-        $this->Image('@'.$image_file, 15, 10, 32, '', 'PNG', '', 'B', false, 300, '', false, false, 0, false, false, false);
-        // Set font
-        $this->SetFont('helvetica', 'BI', 20);
-        // Title
-        $this->Cell(0, 21, 'Gestion des frais de déplacements', 0, 0, 'C', 0, '', 0, false, 'B', 'M');
+		// Logo
+		$image_file = file_get_contents(img_url('logo.png'));
+		$this->Image('@'.$image_file, 15, 10, 32, '', 'PNG', base_url('c_visiteur/'), 'B', false, 300, '', false, false, 0, false, false, false);
+		// Set font
+		$this->SetFont('helvetica', 'BI', 20);
+		// Title
+		$this->Cell(0, 21, 'Gestion des frais de déplacements', 0, 0, 'C', 0, '', 0, false, 'B', 'M');
 		// Separation
 		$this->Ln(1);
 		$style = array('width' => 0.5);
@@ -23,17 +23,17 @@ class MYPDF extends TCPDF {
 	// Page footer
     public function Footer()
     {
-        // Position at 15 mm from bottom
-        $this->SetY(-15);
-        // Set font
-        $this->SetFont('helvetica', '', 8);
-        // Copyright
-        $this->Cell(0, 10, 'Copyright © 2009-'.date("Y").' Laboratoire Galaxy-Swiss Bourdin', 0, 0, 'C', 0, '', 0, false, 'T', 'M');
+		// Position at 15 mm from bottom
+		$this->SetY(-15);
+		// Set font
+		$this->SetFont('helvetica', '', 8);
+		// Copyright
+		$this->Cell(0, 10, 'Copyright © 2009-'.date("Y").' Laboratoire Galaxy-Swiss Bourdin', 0, 0, 'C', 0, '', 0, false, 'T', 'M');
     }
 }
 
 // create new PDF document
-$pdf = new MYPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+$pdf = new Imprimer('P', 'mm', 'A4', true, 'UTF-8', false);
 
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
@@ -72,8 +72,8 @@ $pdf->SetFont('helvetica', '', 9.75);
 $pdf->AddPage();
 
 // set some text to print
-$html = '
-<html>
+$html =
+'<html>
 	<head>
 		<style>
 			.title1 {
@@ -104,11 +104,11 @@ $html = '
 			.alignCenter {
 				text-align: center;
 			}
-
+			
 			.alignLeft {
 				text-align: left;
 			}
-
+			
 			.alignRight {
 				text-align: right;
 			}
@@ -116,26 +116,37 @@ $html = '
 	</head>
 	<body>
 		<p>
-			<span class="title1">Fiche de frais du mois '.$numAnnee.'-'.$numMois.'</span>
+			<span class="title1">Fiche de frais du mois '.substr_replace($moisFiche, '-', 4, 0).'</span>
 		</p>
 		<p>
-			<span class="bold">Identifiant :</span> '.$this->session->userdata('idUser').'<br>
-			<span class="bold">Visiteur :</span> '.$this->session->userdata('prenom').' '.$this->session->userdata('nom').'<br>
-			<span class="bold">Etat de la fiche :</span> '.$infosFiche['libEtat'].'';
+			<span class="bold">Visiteur :</span> '.$this->session->userdata('idUser').' '.$this->session->userdata('nom').'<br>
+			<span class="bold">Etat :</span> '.$infosFiche['libEtat'];
 			if (isset($infosFiche['motifRefus']))
 			{
-				if ($infosFiche['motifRefus'] != NULL)
+				if ($infosFiche['motifRefus'] != null)
 				{
-					$html = $html.'
-					<br><br><span class="italic">Note : cette fiche a été précédemment refusée.</span>';
+					$html.=
+					'<br><br><span class="italic">Note : cette fiche a été précédemment refusée.</span>';
 				}
 			}
-			$html.= '
-		</p>
+		$html.=
+		'</p>
 		<p>
 			<span class="title2">Eléments forfaitisés :</span>
-		</p>
-		<table border="1" cellpadding="2">
+		</p>';
+		
+		$aucunFraisForfaitDispo = true;
+		
+		foreach ($lesFraisForfait as $unFraisForfait)
+		{
+			if (isset($unFraisForfait['idfrais']))
+			{
+				$aucunFraisForfaitDispo = false;
+			}
+		}
+		
+		$fraisForfait =
+		'<table border="1" cellpadding="2">
 			<thead>
 				<tr>
 					<th class="alignCenter">Libellé</th>
@@ -145,28 +156,53 @@ $html = '
 				</tr>
 			</thead>
 			<tbody>';
-				foreach ($lesFraisForfait as $unFrais)
-				{
-					$idFrais = $unFrais['idfrais'];
-					$libelle = $unFrais['libelle'];
-					$quantite = $unFrais['quantite'];
-					$montant = $unFrais['montant'];
+			foreach ($lesFraisForfait as $unFraisForfait)
+			{
+				$idFrais = $unFraisForfait['idfrais'];
+				$libelle = $unFraisForfait['libelle'];
+				$quantite = $unFraisForfait['quantite'];
+				$montant = $unFraisForfait['montant'];
 
-					$html = $html.'
-					<tr>
-						<td class="alignLeft"><label for="'.$idFrais.'">'.$libelle.'</label></td>
-						<td class="alignLeft"><label id="'.$idFrais.'" name="lesFrais['.$idFrais.']">'.$quantite.'</label></td>
-						<td class="alignRight"><label id="montant'.$idFrais.'" name="lesMontants['.$idFrais.']">'.$montant.'€</label></td>
-						<td class="alignRight"><label id="total'.$idFrais.'">'.number_format($quantite * $montant, 2).'€</label></td>
-					</tr>';
-				}
-				$html.= '	
-			</tbody>
-		</table>
-		<p>
+				$fraisForfait.=
+				'<tr>
+					<td class="alignLeft"><label for="'.$idFrais.'">'.$libelle.'</label></td>
+					<td class="alignLeft"><label id="'.$idFrais.'" name="lesFrais['.$idFrais.']">'.$quantite.'</label></td>
+					<td class="alignRight"><label id="montant'.$idFrais.'" name="lesMontants['.$idFrais.']">'.$montant.'€</label></td>
+					<td class="alignRight"><label id="total'.$idFrais.'">'.number_format($quantite * $montant, 2).'€</label></td>
+				</tr>';
+			}
+			$fraisForfait.=
+			'</tbody>
+		</table>';
+		
+		if ($aucunFraisForfaitDispo == true)
+		{
+			$fraisForfait =
+			'<p>
+				Aucun frais au forfait disponible.
+			</p>';
+		}
+		
+		$html.=
+		$fraisForfait;
+		
+		$html.=
+		'<p>
 			<span class="title2">Elément(s) hors forfait :</span>
-		</p>
-		<table border="1" cellpadding="2">
+		</p>';
+		
+		$aucunFraisHorsForfaitDispo = true;
+		
+		foreach ($lesFraisHorsForfait as $unFraisHorsForfait)
+		{
+			if (isset($unFraisHorsForfait['id']))
+			{
+				$aucunFraisHorsForfaitDispo = false;
+			}
+		}
+		
+		$fraisHorsForfait =
+		'<table border="1" cellpadding="2">
 			<thead>
 				<tr>
 					<th class="alignCenter">Date</th>
@@ -176,41 +212,54 @@ $html = '
 				</tr>
 			</thead>
 			<tbody>';
-				foreach ($lesFraisHorsForfait as $unFraisHorsForfait)
+			foreach ($lesFraisHorsForfait as $unFraisHorsForfait)
+			{
+				$id = $unFraisHorsForfait['id'];
+				$mois = $unFraisHorsForfait['mois'];
+				$date = $unFraisHorsForfait['date'];
+				$libelle = $unFraisHorsForfait['libelle'];
+				$montant = $unFraisHorsForfait['montant'];
+				$justificatifNom = $unFraisHorsForfait['justificatifNom'];
+				$justificatifFichier = $unFraisHorsForfait['justificatifFichier'];
+				$libEtat = ' ['.$unFraisHorsForfait['libEtat'].']';
+				
+				if (isset($justificatifFichier))
 				{
-						$id = $unFraisHorsForfait['id'];
-						$mois = $unFraisHorsForfait['mois'];
-						$date = $unFraisHorsForfait['date'];
-						$libelle = $unFraisHorsForfait['libelle'];
-						$montant = $unFraisHorsForfait['montant'];
-						$justificatifNom = $unFraisHorsForfait['justificatifNom'];
-						$justificatifFichier = $unFraisHorsForfait['justificatifFichier'];
-						$libEtat = ' ['.$unFraisHorsForfait['libEtat'].']';
-								
-						if (isset($justificatifFichier))
-						{
-							if ($justificatifFichier != NULL)
-							{
-								$justificatifNom = anchor('c_visiteur/telJustificatif/'.$mois.'/'.$id.'/'.$justificatifFichier, $justificatifNom, 'class="anchorText" title="Télécharger le justificatif" download');
-							}
-							else
-							{
-								$justificatifNom = 'Aucun';
-							}
-						}
-
-						$html = $html.'
-						<tr>
-							<td class="alignCenter">'.$date.'</td>
-							<td class="alignLeft">'.$libelle.$libEtat.'</td>
-							<td class="alignRight">'.$montant.'€</td>
-							<td class="textData alignCenter" data-th="Justificatif">'.$justificatifNom.'</td>
-						</tr>';
+					if ($justificatifFichier != null)
+					{
+						$justificatifNom = anchor('c_visiteur/telJustificatif/'.$mois.'/'.$id.'/'.$justificatifFichier, $justificatifNom);
+					}
+					else
+					{
+						$justificatifNom = 'Aucun';
+					}
 				}
-				$html.= '
-			</tbody>
-		</table>
-		<p>
+				
+				$fraisHorsForfait.=
+				'<tr>
+					<td class="alignCenter">'.$date.'</td>
+					<td class="alignLeft">'.$libelle.$libEtat.'</td>
+					<td class="alignRight">'.$montant.'€</td>
+					<td class="alignCenter" data-th="Justificatif">'.$justificatifNom.'</td>
+				</tr>';
+			}
+			$fraisHorsForfait.=
+			'</tbody>
+		</table>';
+		
+		if ($aucunFraisHorsForfaitDispo == true)
+		{
+			$fraisHorsForfait =
+			'<p>
+				Aucun frais hors forfait disponible.
+			</p>';
+		}
+		
+		$html.=
+		$fraisHorsForfait;
+		
+		$html.=
+		'<p>
 			<span class="bold">TOTAL : '.$infosFiche['montantValide'].'€</span>
 		</p>
 	</body>
@@ -221,7 +270,7 @@ $pdf->writeHTML($html, true, false, true, false, '');
 
 // ---------------------------------------------------------
 
-//Close and output PDF document
-$pdf->Output($numAnnee.$numMois.'.pdf', 'I');
+// Close and output PDF document
+$pdf->Output($moisFiche.'.pdf', 'I');
 ob_end_flush();
 ?>
