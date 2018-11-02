@@ -1,5 +1,6 @@
 <?php
 	$this->load->helper('url');
+	$this->load->helper('security');
 ?>
 <div id="contenuTitre">
 	<h3>Consulter la fiche de frais du mois <?php echo substr_replace($moisFiche, '-', 4, 0).' | Visiteur : '.$infosUtil['id'].' '.$infosUtil['nom'];?></h3>
@@ -33,17 +34,16 @@
 					<tbody>';
 					foreach ($lesFraisForfait as $unFraisForfait)
 					{
-						$idFrais = $unFraisForfait['idfrais'];
 						$libelle = $unFraisForfait['libelle'];
 						$quantite = $unFraisForfait['quantite'];
 						$montant = $unFraisForfait['montant'];
 						
 						$fraisForfait.=
 						'<tr>
-							<td class="text alignLeft" data-th="Libellé">'.$libelle.'</td>
-							<td class="text alignLeft" data-th="Quantité">'.$quantite.'</td>
-							<td class="text alignRight" data-th="Montant">'.$montant.'€</td>
-							<td class="text alignRight" data-th="Total"><span id="total'.$idFrais.'">'.number_format($quantite * $montant, 2).'€</span></td>
+							<td class="text alignLeft" data-th="Libellé"><span class="textCell">'.$libelle.'</span></td>
+							<td class="text alignLeft" data-th="Quantité"><span class="textCell">'.xss_clean($quantite).'</span></td>
+							<td class="text alignRight" data-th="Montant"><span class="textCell">'.xss_clean($montant).'€</span></td>
+							<td class="text alignRight" data-th="Total"><span class="textCell">'.number_format($quantite * $montant, 2).'€</span></td>
 						</tr>';
 					}
 					$fraisForfait.=
@@ -102,16 +102,13 @@
 						$libEtat = ' ['.$unFraisHorsForfait['libEtat'].']';
 						$status = '';
 						
-						if (isset($justificatifFichier))
+						if ($justificatifFichier != null)
 						{
-							if ($justificatifFichier != null)
-							{
-								$justificatifNom = anchor('c_comptable/telJustificatif/'.$idUtilisateur.'/'.$mois.'/'.$id.'/'.$justificatifFichier, $justificatifNom, 'class="anchorText" title="Télécharger le justificatif"');
-							}
-							else
-							{
-								$justificatifNom = 'Aucun';
-							}
+							$justificatifNom = anchor('c_comptable/telJustificatif/'.$idUtilisateur.'/'.$mois.'/'.$id.'/'.$justificatifFichier, $justificatifNom, 'class="anchorText" title="Télécharger le justificatif"');
+						}
+						else
+						{
+							$justificatifNom = 'Aucun';
 						}
 						
 						if ($idEtat == 'VA')
@@ -125,10 +122,10 @@
 						
 						$fraisHorsForfait.=
 						'<tr>
-							<td class="text alignCenter'.$status .'" data-th="Date">'.$date.'</td>
-							<td class="text alignLeft'.$status .'" data-th="Libellé">'.$libelle.$libEtat.'</td>
-							<td class="text alignRight'.$status .'" data-th="Montant">'.$montant.'€</td>
-							<td class="text alignCenter'.$status .'" data-th="Justificatif">'.$justificatifNom.'</td>
+							<td class="text alignCenter'.$status .'" data-th="Date"><span class="textCell">'.xss_clean($date).'</span></td>
+							<td class="text alignLeft'.$status .'" data-th="Libellé"><span class="textCell">'.xss_clean($libelle).$libEtat.'</span></td>
+							<td class="text alignRight'.$status .'" data-th="Montant"><span class="textCell">'.xss_clean($montant).'€</span></td>
+							<td class="text alignCenter'.$status .'" data-th="Justificatif"><span class="textCell">'.xss_clean($justificatifNom).'</span></td>
 						</tr>';
 					}
 					$fraisHorsForfait.=

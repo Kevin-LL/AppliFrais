@@ -1,6 +1,5 @@
 <?php
 	$this->load->helper('url');
-	$v_path = base_url('application/views');
 ?>
 <!DOCTYPE HTML>
 <html lang="fr">
@@ -14,6 +13,7 @@
 		<script src="<?php echo jquery_url('jquery-1.12.4.min.js');?>"></script>
 		<script src="<?php echo jquery_url('jquery-ui-1.12.1/jquery-ui.min.js');?>"></script>
 		<script src="<?php echo jquery_url('jquery-ui-1.12.1/datepicker-fr.js');?>"></script>
+		<script src="<?php echo jquery_url('plugins/jquery-mask-plugin/src/jquery.mask.min.js');?>"></script>
 		<script src="<?php echo js_url('functions.js');?>"></script>
 	</head>
 	<body>
@@ -21,7 +21,7 @@
 			<div id="logo">
 				<?php
 					$img = '<img src="'.img_url('logo.png').'" alt="Laboratoire Galaxy-Swiss Bourdin" title="Laboratoire Galaxy-Swiss Bourdin">';
-					$path = 'c_visiteur/';
+					$path = 'c_visiteur';
 					echo anchor($path, $img);
 				?>
 			</div>
@@ -43,7 +43,7 @@
 						<?php echo anchor('c_visiteur/monCompte', 'Mon compte', 'class="smenuUtil" title="Consulter mon compte"');?>
 						<?php echo anchor('c_visiteur/deconnecter', 'Se déconnecter', 'class="smenuUtil deconnexion" title="Déconnexion"');?>
 					</div>
-					<?php echo anchor('c_visiteur/', 'Accueil', 'class="smenu" title="Page d\'accueil"');?>
+					<?php echo anchor('c_visiteur', 'Accueil', 'class="smenu" title="Page d\'accueil"');?>
 					<?php echo anchor('c_visiteur/mesFiches', 'Mes fiches de frais', 'class="smenu" title="Consultation de mes fiches de frais"');?>
 				</div>
 			</div>

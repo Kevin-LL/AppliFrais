@@ -6,12 +6,26 @@
 </div>
 <div id="contenuList">
 	<?php
-		if (isset($notifyInfo))
+		if (isset($notifySuccess))
 		{
 			echo
-			'<div class="notify info">
-				'.$notifyInfo.'
-				<span onclick="closeNotify(this);">&#10006;</span>
+			'<div class="notify success">
+				<div>
+					<h4>Action(s) validée(s) :</h4>
+					<ul>'.$notifySuccess.'</ul>
+				</div>
+				<span class="close" onclick="closeNotify(this);">&#10006;</span>
+			</div>';
+		}
+		if (isset($notifyError))
+		{
+			echo
+			'<div class="notify error">
+				<div>
+					<h4>Une erreur est survenue !</h4>
+					<ul>'.$notifyError.'</ul>
+				</div>
+				<span class="close" onclick="closeNotify(this);">&#10006;</span>
 			</div>';
 		}
 	?>
@@ -60,7 +74,7 @@
 						<th>Etat</th>
 						<th>Montant</th>
 						<th>Date modif.</th>
-						<th colspan="1">Action</th>
+						<th>Action</th>
 					</tr>
 				</thead>';
 			}
@@ -85,7 +99,7 @@
 							$action2 = anchor('c_visiteur/signeFiche/'.$uneFiche['mois'], 'Signer', 'class="anchorCell" title="Signer la fiche" onclick="return confirm(\'Voulez-vous vraiment signer cette fiche ?\');"');
 							if ($uneFiche['id'] == 'RE')
 							{
-								$motifRefus = ',&nbsp;'.anchor('c_visiteur/voirMotifRefus/'.$uneFiche['mois'], 'voir le motif', 'class="anchorText" title="Consulter le motif de refus"');
+								$motifRefus = ', '.anchor('c_visiteur/voirMotifRefus/'.$uneFiche['mois'], 'voir le motif', 'class="anchorText" title="Consulter le motif de refus"');
 								$status = ' invalid';
 							}
 						}
@@ -120,9 +134,9 @@
 						'<tr>
 							'.$checkboxesColumn.'
 							<td class="action alignCenter" data-th="Mois">'.anchor('c_visiteur/voirFiche/'.$uneFiche['mois'], substr_replace($uneFiche['mois'], '-', 4, 0), 'class="anchorCell" title="Consulter la fiche"').'</td>
-							<td class="text alignLeft'.$status.'" data-th="Etat">'.$uneFiche['libelle'].$motifRefus.'</td>
-							<td class="text alignRight'.$status.'" data-th="Montant">'.$uneFiche['montantValide'].'€</td>
-							<td class="text alignCenter'.$status.'" data-th="Date modif.">'.$uneFiche['dateModif'].'</td>
+							<td class="text alignLeft'.$status.'" data-th="Etat"><span class="textCell">'.$uneFiche['libelle'].$motifRefus.'</span></td>
+							<td class="text alignRight'.$status.'" data-th="Montant"><span class="textCell">'.$uneFiche['montantValide'].'€</span></td>
+							<td class="text alignCenter'.$status.'" data-th="Date modif."><span class="textCell">'.$uneFiche['dateModif'].'</span></td>
 							<td class="action alignCenter" data-th="Action">'.$action1.'</td>
 							'.$action2Column.'
 						</tr>';

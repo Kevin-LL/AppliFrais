@@ -3,12 +3,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  
 class Templates {
 	var $ci;
-
+	
 	function __construct() 
 	{
 		$this->ci =& get_instance();
 	}
-
+	
 	function load($tpl_view, $body_view = null, $data = null) 
 	{
 		if ( ! is_null($body_view))
@@ -33,9 +33,9 @@ class Templates {
 			{
 				show_error('Unable to load the requested file: ' . $tpl_view.'/'.$body_view.'.php');
 			}
-
+			
 			$body = $this->ci->load->view($body_view_path, $data, true);
-
+			
 			if (is_null($data))
 			{
 				$data = array('body' => $body);
@@ -48,8 +48,8 @@ class Templates {
 			{
 				$data->body = $body;
 			}
-	   }
-
-	   $this->ci->load->view('templates/'.$tpl_view, $data);
+		}
+		
+		$this->ci->load->view('templates/'.$tpl_view, $data);
 	}
 }

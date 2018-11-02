@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class A_comptable extends CI_Model {
-
+	
     function __construct()
     {
         // Call the Model constructor
@@ -22,15 +22,15 @@ class A_comptable extends CI_Model {
 	
 	/**
 	 * Présente les informations d'un compte comptable
-	 *
+	 * 
 	 * @param $idUtilisateur : l'id du comptable
-	 * @param $message : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
-	 * @param $erreur : message facultatif destiné à notifier l'utilisateur d'une erreur
+	 * @param $messageAction : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
+	 * @param $messageErreur : message facultatif destiné à notifier l'utilisateur d'une erreur
 	*/
-	public function monCompte($idUtilisateur, $message = null, $erreur = null)
+	public function monCompte($idUtilisateur, $messageAction = null, $messageErreur = null)
 	{
-		$data['notifyInfo'] = $message;
-		$data['notifyError'] = $erreur;
+		$data['notifySuccess'] = $messageAction;
+		$data['notifyError'] = $messageErreur;
 		$data['infosUtil'] = $this->dataAccess->getLesInfosUtilisateur($idUtilisateur);
 		
 		$this->templates->load('t_comptable', 'v_comMonCompte', $data);	
@@ -50,7 +50,7 @@ class A_comptable extends CI_Model {
 	/**
 	 * Modifie les informations du lieu de résidence associées à un comptable donné
 	 * 
-	 * @param $idUtilisateur : l'id du comptable 
+	 * @param $idUtilisateur : l'id du comptable
 	 * @param $uneResidence : les informations concernant le lieu de résidence
 	*/
 	public function majResidence($idUtilisateur, $uneResidence)
@@ -63,42 +63,46 @@ class A_comptable extends CI_Model {
 	}
 	
 	/**
-	 * Liste les fiches signées à valider pour le comptable connecté et 
+	 * Liste les fiches signées à valider pour le comptable connecté et
 	 * donne accès aux fonctionnalités associées
-	 *
-	 * @param $laRecherche : chaîne de caractères permettant au comptable de trier les fiches de frais
-	 * @param $message : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
-	 * @param $erreur : message facultatif destiné à notifier l'utilisateur d'une erreur
-	*/
-	public function validationFiches($laRecherche = '%', $message = null, $erreur = null)
-	{
-		$data['notifyInfo'] = $message;
-		$data['notifyError'] = $erreur;
-		$data['validationFiches'] = $this->dataAccess->comGetFiches('CL', $laRecherche);		
-		
-		$this->templates->load('t_comptable', 'v_comValidationFiches', $data);	
-	}
-	
-	/**
-	 * Liste les fiches mises en paiement à rembourser pour le comptable connecté et 
-	 * donne accès aux fonctionnalités associées
-	 *
-	 * @param $laRecherche : chaîne de caractères permettant au comptable de trier les fiches de frais
-	 * @param $message : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
-	*/
-	public function suiviPaiement($laRecherche = '%', $message = null)
-	{
-		$data['notifyInfo'] = $message;
-		$data['suiviPaiement'] = $this->dataAccess->comGetFiches('VA', $laRecherche);		
-		
-		$this->templates->load('t_comptable', 'v_comSuiviPaiement', $data);	
-	}
-	
-	/**
-	 * Présente le détail de la fiche sélectionnée 
 	 * 
-	 * @param $idUtilisateur : l'id du visiteur 
-	 * @param $mois : le mois de la fiche à consulter 
+	 * @param $laRecherche : chaîne de caractères permettant au comptable de trier les fiches de frais
+	 * @param $messageAction : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
+	 * @param $messageErreur : message facultatif destiné à notifier l'utilisateur d'une erreur
+	*/
+	public function validationFiches($laRecherche = '%', $messageAction = null, $messageErreur = null)
+	{
+		$data['notifySuccess'] = $messageAction;
+		$data['notifyError'] = $messageErreur;
+		$data['lesVisiteurs'] = $this->dataAccess->getVisiteurs();
+		$data['validationFiches'] = $this->dataAccess->comGetFiches('CL', $laRecherche);
+		
+		$this->templates->load('t_comptable', 'v_comValidationFiches', $data);
+	}
+	
+	/**
+	 * Liste les fiches mises en paiement à rembourser pour le comptable connecté et
+	 * donne accès aux fonctionnalités associées
+	 * 
+	 * @param $laRecherche : chaîne de caractères permettant au comptable de trier les fiches de frais
+	 * @param $messageAction : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
+	 * @param $messageErreur : message facultatif destiné à notifier l'utilisateur d'une erreur
+	*/
+	public function suiviPaiement($laRecherche = '%', $messageAction = null, $messageErreur = null)
+	{
+		$data['notifySuccess'] = $messageAction;
+		$data['notifyError'] = $messageErreur;
+		$data['lesVisiteurs'] = $this->dataAccess->getVisiteurs();
+		$data['suiviPaiement'] = $this->dataAccess->comGetFiches('VA', $laRecherche);
+		
+		$this->templates->load('t_comptable', 'v_comSuiviPaiement', $data);
+	}
+	
+	/**
+	 * Présente le détail de la fiche sélectionnée
+	 * 
+	 * @param $idUtilisateur : l'id du visiteur
+	 * @param $mois : le mois de la fiche à consulter
 	*/
 	public function voirFiche($idUtilisateur, $mois)
 	{
@@ -113,20 +117,21 @@ class A_comptable extends CI_Model {
 	}
 	
 	/**
-	 * Présente le détail de la fiche sélectionnée et donne 
+	 * Présente le détail de la fiche sélectionnée et donne
 	 * accés à la modification du contenu de cette fiche.
 	 * 
-	 * @param $idUtilisateur : l'id du visiteur 
-	 * @param $mois : le mois de la fiche à modifier 
-	 * @param $message : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
-	 * @param $erreur : message facultatif destiné à notifier l'utilisateur d'une erreur
+	 * @param $idUtilisateur : l'id du visiteur
+	 * @param $mois : le mois de la fiche à modifier
+	 * @param $messageAction : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
+	 * @param $messageErreur : message facultatif destiné à notifier l'utilisateur d'une erreur
 	*/
-	public function modFiche($idUtilisateur, $mois, $message = null, $erreur = null)
+	public function modFiche($idUtilisateur, $mois, $messageAction = null, $messageErreur = null)
 	{
-		$data['notifyInfo'] = $message;
-		$data['notifyError'] = $erreur;
+		$data['notifySuccess'] = $messageAction;
+		$data['notifyError'] = $messageErreur;
 		$data['moisFiche'] = $mois;
 		$data['infosUtil'] = $this->dataAccess->getLesInfosUtilisateur($idUtilisateur);
+		$data['infosFiche'] = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
 		$data['lesFraisForfait'] = $this->dataAccess->getLesLignesForfait($idUtilisateur, $mois);
 		$data['lesFraisHorsForfait'] = $this->dataAccess->getLesLignesHorsForfait($idUtilisateur, $mois);
 		$data['nbJustificatifs'] = $this->dataAccess->getNbjustificatifs($idUtilisateur, $mois)['nb'];
@@ -137,7 +142,7 @@ class A_comptable extends CI_Model {
 	/**
 	 * Valide une fiche de frais en changeant son état
 	 * 
-	 * @param $idUtilisateur : l'id du visiteur 
+	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $mois : le mois de la fiche à valider
 	*/
 	public function validFiche($idUtilisateur, $mois)
@@ -148,11 +153,13 @@ class A_comptable extends CI_Model {
 	/**
 	 * Permet au comptable d'ajouter un motif de refus à la fiche sélectionnée
 	 * 
-	 * @param $idUtilisateur : l'id du visiteur 
-	 * @param $mois : le mois de la fiche dont on souhaite ajouter un motif de refus 
+	 * @param $idUtilisateur : l'id du visiteur
+	 * @param $mois : le mois de la fiche dont on souhaite ajouter un motif de refus
+	 * @param $messageErreur : message facultatif destiné à notifier l'utilisateur d'une erreur
 	*/
-	public function ajouterMotifRefus($idUtilisateur, $mois)
+	public function ajouterMotifRefus($idUtilisateur, $mois, $messageErreur = null)
 	{
+		$data['notifyError'] = $messageErreur;
 		$data['moisFiche'] = $mois;
 		$data['infosUtil'] = $this->dataAccess->getLesInfosUtilisateur($idUtilisateur);
 		$data['leMotifRefus'] = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois)['motifRefus'];
@@ -163,8 +170,8 @@ class A_comptable extends CI_Model {
 	/**
 	 * Refuse une fiche de frais en changeant son état et met à jour
 	 * le motif de refus
-	 *
-	 * @param $idUtilisateur : l'id du visiteur 
+	 * 
+	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $mois : le mois de la fiche à refuser
 	 * @param $leMotifRefus : le motif de refus de la fiche
 	*/
@@ -176,7 +183,7 @@ class A_comptable extends CI_Model {
 	/**
 	 * Rembourse une fiche de frais en changeant son état
 	 * 
-	 * @param $idUtilisateur : l'id du visiteur 
+	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $mois : le mois de la fiche à rembourser
 	*/
 	public function rembourseFiche($idUtilisateur, $mois)
@@ -187,7 +194,7 @@ class A_comptable extends CI_Model {
 	/**
 	 * Modifie les montants associés aux frais forfaitisés dans une fiche donnée
 	 * 
-	 * @param $idUtilisateur : l'id du visiteur 
+	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $mois : le mois de la fiche concernée
 	 * @param $lesMontants : les montants liés à chaque type de frais, sous la forme d'un tableau
 	*/
@@ -200,6 +207,8 @@ class A_comptable extends CI_Model {
 	/**
 	 * Valide un frais hors forfait en changeant son état
 	 * 
+	 * @param $idUtilisateur : l'id du visiteur
+	 * @param $mois : le mois de la fiche concernée
 	 * @param $idLigneFrais : l'id de la ligne à valider
 	*/
 	public function validFrais($idUtilisateur, $mois, $idLigneFrais)
@@ -210,6 +219,8 @@ class A_comptable extends CI_Model {
 	/**
 	 * Refuse un frais hors forfait en changeant son état
 	 * 
+	 * @param $idUtilisateur : l'id du visiteur
+	 * @param $mois : le mois de la fiche concernée
 	 * @param $idLigneFrais : l'id de la ligne à refuser
 	*/
 	public function refuFrais($idUtilisateur, $mois, $idLigneFrais)

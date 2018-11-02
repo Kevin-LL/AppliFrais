@@ -1,23 +1,28 @@
 <?php
 $this->load->helper('url');
+$this->load->helper('security');
 
 // Extend the TCPDF class to create custom Header
 class Imprimer extends TCPDF {
-
+	
     // Page header
     public function Header()
     {
-		// Logo
-		$image_file = file_get_contents(img_url('logo.png'));
-		$this->Image('@'.$image_file, 15, 10, 32, '', 'PNG', base_url('c_visiteur/'), 'B', false, 300, '', false, false, 0, false, false, false);
-		// Set font
-		$this->SetFont('helvetica', 'BI', 20);
-		// Title
-		$this->Cell(0, 21, 'Gestion des frais de déplacements', 0, 0, 'C', 0, '', 0, false, 'B', 'M');
-		// Separation
-		$this->Ln(1);
-		$style = array('width' => 0.5);
-		$this->Line(15, $this->y, 195, $this->y, $style);
+		// First page detection
+		if ($this->page == 1)
+		{
+			// Logo
+			$image_file = file_get_contents(img_url('logo.png'));
+			$this->Image('@'.$image_file, 15, 10, 32, '', 'PNG', base_url('c_visiteur'), 'B', false, 300, '', false, false, 0, false, false, false);
+			// Set font
+			$this->SetFont('helvetica', 'BI', 20);
+			// Title
+			$this->Cell(0, 21, 'Gestion des frais de déplacements', 0, 0, 'C', 0, '', 0, false, 'B', 'M');
+			// Separation
+			$this->Ln(1);
+			$style = array('width' => 0.5);
+			$this->Line(15, $this->y, 195, $this->y, $style);
+		}
 	}
 	
 	// Page footer
@@ -29,7 +34,7 @@ class Imprimer extends TCPDF {
 		$this->SetFont('helvetica', '', 8);
 		// Copyright
 		$this->Cell(0, 10, 'Copyright © 2009-'.date("Y").' Laboratoire Galaxy-Swiss Bourdin', 0, 0, 'C', 0, '', 0, false, 'T', 'M');
-    }
+	}
 }
 
 // create new PDF document
@@ -66,7 +71,7 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // ---------------------------------------------------------
 
 // set font
-$pdf->SetFont('helvetica', '', 9.75);
+$pdf->SetFont('helvetica', '', 9.5);
 
 // add a page
 $pdf->AddPage();
@@ -76,28 +81,35 @@ $html =
 '<html>
 	<head>
 		<style>
-			.title1 {
-				font-size: 18px; 
-				font-weight: bold; 
-				text-align: center; 
+			.fiche {
+				text-align: center;
 				text-decoration: underline;
+				font-size: 16px;
+				font-weight: bold;
 			}
 			
-			.title2 {
-				font-weight: bold; 
+			.frais {
 				text-decoration: underline;
+				font-size: 12px;
+				font-weight: bold;
 			}
 			
-			.bold {
-				font-weight: bold; 
+			.info {
+				font-size: 12px;
+				font-weight: bold;
 			}
 			
-			.italic {
-				font-style: italic; 
+			.note {
+				font-style: italic;
 			}
 			
-			th {
+			table.listeLegere {
+				font-size: 11px;
+			}
+			
+			table.listeLegere th {
 				background-color: #7A7B91;
+				text-align: center;
 				font-weight: bold;
 			}
 			
@@ -116,23 +128,20 @@ $html =
 	</head>
 	<body>
 		<p>
-			<span class="title1">Fiche de frais du mois '.substr_replace($moisFiche, '-', 4, 0).'</span>
+			<span class="fiche">Fiche de frais du mois '.substr_replace($moisFiche, '-', 4, 0).'</span>
 		</p>
 		<p>
-			<span class="bold">Visiteur :</span> '.$this->session->userdata('idUser').' '.$this->session->userdata('nom').'<br>
-			<span class="bold">Etat :</span> '.$infosFiche['libEtat'];
-			if (isset($infosFiche['motifRefus']))
+			<span class="info">Visiteur :</span> '.$this->session->userdata('idUser').' '.$this->session->userdata('nom').'<br>
+			<span class="info">Etat :</span> '.$infosFiche['libEtat'];
+			if ($infosFiche['motifRefus'] != null)
 			{
-				if ($infosFiche['motifRefus'] != null)
-				{
-					$html.=
-					'<br><br><span class="italic">Note : cette fiche a été précédemment refusée.</span>';
-				}
+				$html.=
+				'<br><br><span class="note">Note : cette fiche a été précédemment refusée.</span>';
 			}
 		$html.=
 		'</p>
 		<p>
-			<span class="title2">Eléments forfaitisés :</span>
+			<span class="frais">Eléments forfaitisés :</span>
 		</p>';
 		
 		$aucunFraisForfaitDispo = true;
@@ -146,29 +155,28 @@ $html =
 		}
 		
 		$fraisForfait =
-		'<table border="1" cellpadding="2">
+		'<table class="listeLegere" border="1" cellpadding="3.5">
 			<thead>
 				<tr>
-					<th class="alignCenter">Libellé</th>
-					<th class="alignCenter">Quantité</th>
-					<th class="alignCenter">Montant</th>
-					<th class="alignCenter">Total</th>
+					<th>Libellé</th>
+					<th>Quantité</th>
+					<th>Montant</th>
+					<th>Total</th>
 				</tr>
 			</thead>
 			<tbody>';
 			foreach ($lesFraisForfait as $unFraisForfait)
 			{
-				$idFrais = $unFraisForfait['idfrais'];
 				$libelle = $unFraisForfait['libelle'];
 				$quantite = $unFraisForfait['quantite'];
 				$montant = $unFraisForfait['montant'];
 
 				$fraisForfait.=
 				'<tr>
-					<td class="alignLeft"><label for="'.$idFrais.'">'.$libelle.'</label></td>
-					<td class="alignLeft"><label id="'.$idFrais.'" name="lesFrais['.$idFrais.']">'.$quantite.'</label></td>
-					<td class="alignRight"><label id="montant'.$idFrais.'" name="lesMontants['.$idFrais.']">'.$montant.'€</label></td>
-					<td class="alignRight"><label id="total'.$idFrais.'">'.number_format($quantite * $montant, 2).'€</label></td>
+					<td class="alignLeft">'.$libelle.'</td>
+					<td class="alignLeft">'.xss_clean($quantite).'</td>
+					<td class="alignRight">'.xss_clean($montant).'€</td>
+					<td class="alignRight">'.number_format($quantite * $montant, 2).'€</td>
 				</tr>';
 			}
 			$fraisForfait.=
@@ -188,7 +196,7 @@ $html =
 		
 		$html.=
 		'<p>
-			<span class="title2">Elément(s) hors forfait :</span>
+			<span class="frais">Elément(s) hors forfait :</span>
 		</p>';
 		
 		$aucunFraisHorsForfaitDispo = true;
@@ -202,13 +210,13 @@ $html =
 		}
 		
 		$fraisHorsForfait =
-		'<table border="1" cellpadding="2">
+		'<table class="listeLegere" border="1" cellpadding="3.5">
 			<thead>
 				<tr>
-					<th class="alignCenter">Date</th>
-					<th class="alignCenter">Libellé</th>
-					<th class="alignCenter">Montant</th>
-					<th class="alignCenter">Justificatif ['.$nbJustificatifs.']</th>
+					<th>Date</th>
+					<th>Libellé</th>
+					<th>Montant</th>
+					<th>Justificatif ['.$nbJustificatifs.']</th>
 				</tr>
 			</thead>
 			<tbody>';
@@ -237,10 +245,10 @@ $html =
 				
 				$fraisHorsForfait.=
 				'<tr>
-					<td class="alignCenter">'.$date.'</td>
-					<td class="alignLeft">'.$libelle.$libEtat.'</td>
-					<td class="alignRight">'.$montant.'€</td>
-					<td class="alignCenter" data-th="Justificatif">'.$justificatifNom.'</td>
+					<td class="alignCenter">'.xss_clean($date).'</td>
+					<td class="alignLeft">'.xss_clean($libelle).$libEtat.'</td>
+					<td class="alignRight">'.xss_clean($montant).'€</td>
+					<td class="alignCenter">'.xss_clean($justificatifNom).'</td>
 				</tr>';
 			}
 			$fraisHorsForfait.=
@@ -260,7 +268,7 @@ $html =
 		
 		$html.=
 		'<p>
-			<span class="bold">TOTAL : '.$infosFiche['montantValide'].'€</span>
+			<span class="info">TOTAL : '.$infosFiche['montantValide'].'€</span>
 		</p>
 	</body>
 </html>';

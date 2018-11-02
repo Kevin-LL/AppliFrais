@@ -1,6 +1,5 @@
 <?php
 	$this->load->helper('url');
-	$v_path = base_url('application/views');
 ?>
 <!DOCTYPE HTML>
 <html lang="fr">
@@ -17,7 +16,7 @@
 			<div id="logo">
 				<?php
 					$img = '<img src="'.img_url('logo.png').'" alt="Laboratoire Galaxy-Swiss Bourdin" title="Laboratoire Galaxy-Swiss Bourdin">';
-					$path = 'c_default/';
+					$path = 'c_default';
 					echo anchor($path, $img);
 				?>
 			</div>

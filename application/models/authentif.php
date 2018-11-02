@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Authentif extends CI_Model {
-
+	
     function __construct()
     {
 		// Call the Model constructor
@@ -30,11 +30,11 @@ class Authentif extends CI_Model {
 	public function connecter($idUser, $idProfil, $nom, $prenom)
 	{
 		$authUser = array(
-                   'idUser'  => $idUser,
-				   'idProfil' => $idProfil,
-                   'nom' => $nom,
-                   'prenom' => $prenom
-				);
+			'idUser'  => $idUser,
+			'idProfil' => $idProfil,
+			'nom' => $nom,
+			'prenom' => $prenom
+		);
 		
 		$this->session->set_userdata($authUser);
 	}
@@ -45,17 +45,17 @@ class Authentif extends CI_Model {
 	public function deconnecter()
 	{
 		$authUser = array(
-                   'idUser'  => '',
-				   'idProfil' => '',
-                   'nom' => '',
-                   'prenom' => ''
-				);
+			'idUser'  => '',
+			'idProfil' => '',
+			'nom' => '',
+			'prenom' => ''
+		);
 		
 		$this->session->unset_userdata($authUser);
 		$this->session->sess_destroy();
 		
 		$this->load->helper('url');
-		redirect('/c_default/');
+		redirect('/c_default');
 	}
 	
 	/**

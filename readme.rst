@@ -46,6 +46,8 @@ Une authentification préalable sera nécessaire pour l'accès au contenu.
 Credits
 *******
 
--  `CodeIgniter <https://github.com/bcit-ci/CodeIgniter>`_
--  `TCPDF <https://github.com/tecnickcom/TCPDF>`_
+-  `CodeIgniter <https://codeigniter.com/>`_
+-  `TCPDF <https://tcpdf.org/>`_
 -  `jQuery <https://jquery.com/>`_
+-  `jQuery UI <https://jqueryui.com/>`_
+-  `jQuery Mask Plugin <https://igorescobar.github.io/jQuery-Mask-Plugin/>`_

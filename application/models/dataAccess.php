@@ -5,9 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * Modèle qui implémente les fonctions d'accès aux données 
 */
 class DataAccess extends CI_Model {
-// Codeigniter ne supportant pas les requêtes paramétrées
-// on se contentera du binding de paramètres anonymes
-
+	
     function __construct()
     {
 		// Call the Model constructor
@@ -26,8 +24,8 @@ class DataAccess extends CI_Model {
 				FROM utilisateur
 				WHERE login = ?";
 		$rs = $this->db->query($req, array($login));
-		$ligne = $rs->row_array();
-		return $ligne;
+		$laLigne = $rs->row_array();
+		return $laLigne;
 	}
 	
 	/**
@@ -42,8 +40,8 @@ class DataAccess extends CI_Model {
 				FROM utilisateur
 				WHERE login = ?";
 		$rs = $this->db->query($req, array($login));
-		$ligne = $rs->row_array();
-		return $ligne;
+		$laLigne = $rs->row_array();
+		return $laLigne;
 	}
 	
 	/**
@@ -89,7 +87,7 @@ class DataAccess extends CI_Model {
 			$req = "INSERT INTO lignefraisforfait (idUtilisateur, mois, idFraisForfait, quantite, montantApplique) 
 					VALUES (?, ?, ?, 0, ?)";
 			$this->db->query($req, array($idUtilisateur, $mois, $unIdFrais, $montantU));
-		 }
+		}
 	}
 	
 	/**
@@ -173,7 +171,9 @@ class DataAccess extends CI_Model {
 	 * Met à jour les informations du lieu de résidence pour un utilisateur donné
 	 * 
 	 * @param $idUtilisateur : l'identifiant de l'utilisateur
-	 * @param $laResidence : les informations concernant le lieu de résidence
+	 * @param $ville : la ville de l'utilisateur
+	 * @param $cp : le code postal de l'utilisateur
+	 * @param $adresse : l'adresse de l'utilisateur
 	*/
 	public function majResidence($idUtilisateur, $ville, $cp, $adresse)
 	{
@@ -197,7 +197,7 @@ class DataAccess extends CI_Model {
 				FROM fichefrais
 				INNER JOIN etatfichefrais ON fichefrais.idEtat = etatfichefrais.id
 				WHERE fichefrais.idUtilisateur = ?
-				ORDER BY mois DESC";
+				ORDER BY fichefrais.mois DESC";
 		$rs = $this->db->query($req, array($idUtilisateur));
 		$lesFiches = $rs->result_array();
 		$nbLignes = $rs->num_rows();
@@ -210,8 +210,24 @@ class DataAccess extends CI_Model {
 	}
 	
 	/**
+	 * Retourne l'identifiant et le nom de tous les visiteurs
+	 * 
+	 * @return : un tableau associatif contenant l'identifiant et le nom de tous les visiteurs
+	*/
+	public function getVisiteurs()
+	{
+		$req = "SELECT id, nom
+				FROM utilisateur
+				WHERE idProfil = 'VIS'
+				ORDER BY id";
+		$rs = $this->db->query($req);
+		$lesLignes = $rs->result_array();
+		return $lesLignes;
+	}
+	
+	/**
 	 * Obtient toutes les fiches (sans détail) selon un état et une recherche définie
-	 *
+	 * 
 	 * @param $etat : etat de la fiche
 	 * @param $recherche : recherche saisie par le comptable
 	 * @return : les fiches d'un comptable
@@ -226,12 +242,9 @@ class DataAccess extends CI_Model {
 				INNER JOIN etatfichefrais ON fichefrais.idEtat = etatfichefrais.id
 				INNER JOIN utilisateur ON fichefrais.idUtilisateur = utilisateur.id
 				WHERE fichefrais.idEtat = ?
-					AND (fichefrais.idUtilisateur LIKE ?
-					OR utilisateur.nom LIKE ?
-					OR utilisateur.prenom LIKE ?
-					OR utilisateur.login LIKE ?)
-				ORDER BY mois DESC";
-		$rs = $this->db->query($req, array($etat, $recherche, $recherche, $recherche, $recherche));
+					AND fichefrais.idUtilisateur LIKE ?
+				ORDER BY fichefrais.idUtilisateur, fichefrais.mois DESC";
+		$rs = $this->db->query($req, array($etat, $recherche));
 		$lesFiches = $rs->result_array();
 		$nbLignes = $rs->num_rows();
 		for ($i = 0; $i < $nbLignes; $i++)
@@ -248,7 +261,7 @@ class DataAccess extends CI_Model {
 	 * @param $idUtilisateur : l'identifiant de l'utilisateur
 	 * @param $mois : le mois sous la forme aaaamm
 	 * @return : un tableau avec des champs de jointure entre une fiche de frais et la ligne d'état 
-	*/	
+	*/
 	public function getLesInfosFicheFrais($idUtilisateur, $mois)
 	{
 		$req = "SELECT fichefrais.nbJustificatifs, fichefrais.montantValide, fichefrais.dateModif, fichefrais.motifRefus, fichefrais.idEtat, etatfichefrais.libelle AS libEtat
@@ -293,7 +306,7 @@ class DataAccess extends CI_Model {
 	public function getLesLignesHorsForfait($idUtilisateur, $mois)
 	{
 		$this->load->model('functionsLib');
-
+		
 		$req = "SELECT lignefraishorsforfait.id, lignefraishorsforfait.idUtilisateur, lignefraishorsforfait.mois, lignefraishorsforfait.libelle, lignefraishorsforfait.date, 
 				lignefraishorsforfait.montant, lignefraishorsforfait.justificatifNom, lignefraishorsforfait.justificatifFichier, lignefraishorsforfait.idEtat, etatfraishorsforfait.libelle AS libEtat
 				FROM lignefraishorsforfait
@@ -311,11 +324,11 @@ class DataAccess extends CI_Model {
 	}
 	
 	/**
-	 * Retourne le nombre de justificatifs d'un visiteur pour un mois donné
+	 * Retourne le nombre de justificatifs pour un visiteur et un mois donné
 	 * 
 	 * @param $idUtilisateur : l'identifiant de l'utilisateur
 	 * @param $mois : le mois sous la forme aaaamm
-	 * @return : le nombre entier de justificatifs 
+	 * @return : le nombre entier de justificatifs
 	*/
 	public function getNbjustificatifs($idUtilisateur, $mois)
 	{
@@ -399,7 +412,7 @@ class DataAccess extends CI_Model {
 	/**
 	 * Supprime une fiche de frais, les lignes de frais au forfait et hors forfait pour un visiteur et un mois donné
 	 * Ne fait rien si l'état initial n'est pas "IN" (voir le contrôleur visiteur)
-	 *
+	 * 
 	 * @param $idUtilisateur : l'identifiant de l'utilisateur
 	 * @param $mois : le mois sous la forme aaaamm
 	*/	
@@ -458,20 +471,20 @@ class DataAccess extends CI_Model {
 	 * 
 	 * @param $idUtilisateur : l'identifiant de l'utilisateur
 	 * @param $mois : le mois sous la forme aaaamm
-	 * @param $lesFrais : tableau associatif de clé idFrais et de valeur la quantité pour ce frais
+	 * @param $lesQuantites : tableau associatif de clé idFrais et de valeur la quantité pour ce frais
 	*/
-	public function visMajLignesForfait($idUtilisateur, $mois, $lesFrais)
+	public function visMajLignesForfait($idUtilisateur, $mois, $lesQuantites)
 	{
-		$lesCles = array_keys($lesFrais);
+		$lesCles = array_keys($lesQuantites);
 		foreach ($lesCles as $unIdFrais)
 		{
-			$qte = $lesFrais[$unIdFrais];
+			$quantite = $lesQuantites[$unIdFrais];
 			$req = "UPDATE lignefraisforfait
 					SET quantite = ?
 					WHERE idUtilisateur = ?
 						AND mois = ?
 						AND idfraisforfait = ?";
-			$this->db->query($req, array($qte, $idUtilisateur, $mois, $unIdFrais));
+			$this->db->query($req, array($quantite, $idUtilisateur, $mois, $unIdFrais));
 		}
 	}
 	
@@ -483,12 +496,12 @@ class DataAccess extends CI_Model {
 	 * @param $mois : le mois sous la forme aaaamm
 	 * @param $lesMontants : tableau associatif de clé idFrais et de valeur le montant pour ce frais
 	*/
-	public function comMajLignesForfait($idUtilisateur, $mois, $lesFrais)
+	public function comMajLignesForfait($idUtilisateur, $mois, $lesMontants)
 	{
-		$lesCles = array_keys($lesFrais);
+		$lesCles = array_keys($lesMontants);
 		foreach ($lesCles as $unIdFrais)
 		{
-			$montant = $lesFrais[$unIdFrais];
+			$montant = $lesMontants[$unIdFrais];
 			$req = "UPDATE lignefraisforfait
 					SET montantApplique = ?
 					WHERE idUtilisateur = ?
@@ -558,30 +571,44 @@ class DataAccess extends CI_Model {
 	*/
 	public function supprimerLigneHorsForfait($idFrais)
 	{
-		$req = "DELETE 
-				FROM lignefraishorsforfait 
+		$req = "DELETE
+				FROM lignefraishorsforfait
 				WHERE id = ?";
 		$this->db->query($req, array($idFrais));
 	}
 	
 	/**
-	 * Retourne les informations d'un frais hors forfait pour un visiteur, un mois et un identifiant donné
+	 * Retourne les informations du frais hors forfait dont l'id est passé en argument
 	 * 
-	 * @param $idUtilisateur : l'identifiant de l'utilisateur
-	 * @param $mois : le mois sous la forme aaaamm
 	 * @param $idFrais : l'identifiant du frais hors forfait
 	 * @return : les informations d'un frais hors forfait
-	*/	
-	public function getLesInfosHorsForfait($idUtilisateur, $mois, $idFrais)
+	*/
+	public function getLesInfosHorsForfait($idFrais)
 	{
 		$req = "SELECT *
 				FROM lignefraishorsforfait
-				WHERE id = ?
-					AND idUtilisateur = ?
-					AND mois = ?";
-		$rs = $this->db->query($req, array($idFrais, $idUtilisateur, $mois));
+				WHERE id = ?";
+		$rs = $this->db->query($req, array($idFrais));
 		$leFrais = $rs->row_array();
 		return $leFrais;
+	}
+	
+	/**
+	 * Retourne le nombre de lignes de frais hors forfait pour un visiteur et un mois donné
+	 * 
+	 * @param $idUtilisateur : l'identifiant de l'utilisateur
+	 * @param $mois : le mois sous la forme aaaamm
+	 * @return : le nombre entier de lignes de frais hors forfait
+	*/
+	public function getNbLignesHorsForfait($idUtilisateur, $mois)
+	{
+		$req = "SELECT COUNT(lignefraishorsforfait.id) AS nb
+				FROM lignefraishorsforfait
+				WHERE idUtilisateur = ?
+					AND mois = ?";
+		$rs = $this->db->query($req, array($idUtilisateur, $mois));
+		$laLigne = $rs->row_array();
+		return $laLigne;
 	}
 	
 	/**
@@ -633,10 +660,8 @@ class DataAccess extends CI_Model {
 		// modifie l'état du frais
 		$req = "UPDATE lignefraishorsforfait
 				SET idEtat = ?
-				WHERE id = ?
-					AND idUtilisateur = ?
-					AND mois = ?";
-		$this->db->query($req, array($etat, $idFrais, $idUtilisateur, $mois));
+				WHERE id = ?";
+		$this->db->query($req, array($etat, $idFrais));
 	}
 	
 	/**

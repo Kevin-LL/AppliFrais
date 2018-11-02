@@ -6,37 +6,51 @@
 </div>
 <div id="contenuList">
 	<?php
-		if (isset($notifyInfo))
+		if (isset($notifySuccess))
 		{
 			echo
-			'<div class="notify info">
-				'.$notifyInfo.'
-				<span onclick="closeNotify(this);">&#10006;</span>
+			'<div class="notify success">
+				<div>
+					<h4>Action(s) validée(s) :</h4>
+					<ul>'.$notifySuccess.'</ul>
+				</div>
+				<span class="close" onclick="closeNotify(this);">&#10006;</span>
 			</div>';
 		}
 		if (isset($notifyError))
 		{
 			echo
 			'<div class="notify error">
-				'.$notifyError.'
-				<span onclick="closeNotify(this);">&#10006;</span>
+				<div>
+					<h4>Une erreur est survenue !</h4>
+					<ul>'.$notifyError.'</ul>
+				</div>
+				<span class="close" onclick="closeNotify(this);">&#10006;</span>
 			</div>';
 		}
 	?>
 	<div id="rechercherVisiteur">
-		<form method="post" action="<?php echo base_url('c_comptable/rechercheVis/validationFiches');?>">
+		<form method="post" action="<?php echo base_url('c_comptable/rechercheVis');?>">
 			<fieldset>
 				<legend>Rechercher un visiteur</legend>
 				<div class="formList">
 					<p>
 						<label class="formLabel" for="txtRecherche">Visiteur :</label>
-						<input id="txtRecherche" class="input" name="recherche" size="20" maxlength="31" value="" type="text"/>
+						<select id="txtRecherche" class="input" name="recherche">
+							<option value="">Tous les visiteurs</option>
+							<?php
+								foreach ($lesVisiteurs as $unVisiteur)
+								{
+									echo
+									'<option value="'.$unVisiteur['id'].'">'.$unVisiteur['id'].' '.$unVisiteur['nom'].'</option>';
+								}
+							?>
+						</select>
 					</p>
 					<p class="formButtonsArea">
 						<input id="okRechercher" class="button" value="Rechercher" type="submit"/><input id="annulerRechercher" class="button" value="Annuler" type="reset"/>
 					</p>
 				</div>
-				<span class="note">Note : la recherche s'effectue via un seul mot clé (identifiant, nom, prénom ou login).</span>
 			</fieldset>
 		</form>
 	</div>
@@ -79,9 +93,9 @@
 						'<tr>
 							<td class="transparent"><input id="'.$uneFiche['idUtilisateur'].'_'.$uneFiche['mois'].'" class="checkbox" name="lesFiches[]" value="'.$uneFiche['idUtilisateur'].'_'.$uneFiche['mois'].'" onchange="checkSelect();" type="checkbox"/><label class="customCheckbox" for="'.$uneFiche['idUtilisateur'].'_'.$uneFiche['mois'].'"></label></td>
 							<td class="action alignCenter" data-th="Mois">'.anchor('c_comptable/voirFiche/'.$uneFiche['idUtilisateur'].'/'.$uneFiche['mois'], substr_replace($uneFiche['mois'], '-', 4, 0), 'class="anchorCell" title="Consulter la fiche"').'</td>
-							<td class="text alignLeft" data-th="Visiteur">'.$uneFiche['idUtilisateur'].' '.$uneFiche['nom'].'</td>
-							<td class="text alignRight" data-th="Montant">'.$uneFiche['montantValide'].'€</td>
-							<td class="text alignCenter" data-th="Date modif.">'.$uneFiche['dateModif'].'</td>
+							<td class="text alignLeft" data-th="Visiteur"><span class="textCell">'.$uneFiche['idUtilisateur'].' '.$uneFiche['nom'].'</span></td>
+							<td class="text alignRight" data-th="Montant"><span class="textCell">'.$uneFiche['montantValide'].'€</span></td>
+							<td class="text alignCenter" data-th="Date modif."><span class="textCell">'.$uneFiche['dateModif'].'</span></td>
 							<td class="action alignCenter" data-th="Action">'.$action1.'</td>
 							<td class="action alignCenter" data-th="Action">'.$action2.'</td>
 							<td class="action alignCenter" data-th="Action">'.$action3.'</td>

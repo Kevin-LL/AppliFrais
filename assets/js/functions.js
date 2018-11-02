@@ -2,12 +2,14 @@
  * Gère l'affichage du menu lorsque la page est en mode responsive
  */
 function displayMenu() {
-	if (document.getElementById("menu").style.display == 'none' || document.getElementById("menu").style.display == '') {
-		document.getElementById("menu").style.display = 'block';
-		document.getElementById("contenu").style.display = 'none';
+	var menu = document.getElementById("menu");
+	var contenu = document.getElementById("contenu");
+	if (menu.style.display == 'none' || menu.style.display == '') {
+		menu.style.display = 'block';
+		contenu.style.display = 'none';
 	} else {
-		document.getElementById("menu").style.display = 'none';
-		document.getElementById("contenu").style.display = 'flex';
+		menu.style.display = 'none';
+		contenu.style.display = 'flex';
 	}
 }
 
@@ -26,7 +28,7 @@ function selectFiches() {
 	var selectController = document.getElementById("selectController");
 	selectController.checked = !selectController.checked;
 	var checkboxes = document.getElementsByTagName("input");
-	for (i = 0; i < checkboxes.length; i++) {
+	for (var i = 0; i < checkboxes.length; i++) {
 		name = checkboxes[i].getAttribute("name");
 		if (name.indexOf("lesFiches") == 0) {
 			if (selectController.checked == true) {
@@ -40,13 +42,12 @@ function selectFiches() {
 
 /**
  * Valide la sélection des fiches de frais. 
- * Si aucune fiche de frais n'est cochée affiche une notification et retourne "false",
- * sinon envoie une demande de confirmation
+ * Si au moins une fiche de frais est cochée envoie une demande confirmation
  */
 function validSelect() {
 	var checkboxes = document.getElementsByTagName("input");
 	var rienEstCoche = true;
-	for (i = 0; i < checkboxes.length; i++) {
+	for (var i = 0; i < checkboxes.length; i++) {
 		name = checkboxes[i].getAttribute("name");
 		if (name.indexOf("lesFiches") == 0) {
 			if (checkboxes[i].checked == true) {
@@ -54,11 +55,8 @@ function validSelect() {
 			}
 		}
 	}
-	if (rienEstCoche == true) {
-		alert("Aucune fiche n'a été sélectionnée !");
-		return false;
-	} else {
-		var confirmer = confirm("Voulez-vous vraiment confirmer la sélection ?");
+	if (rienEstCoche == false) {
+		var confirmer = confirm("Voulez-vous vraiment confirmer cette action ?");
 		if (confirmer == true) {
 			return true;
 		} else {
@@ -76,7 +74,7 @@ function checkSelect() {
 	var selectController = document.getElementById("selectController");
 	var checkboxes = document.getElementsByTagName("input");
 	var toutEstCoche = true;
-	for (i = 0; i < checkboxes.length; i++) {
+	for (var i = 0; i < checkboxes.length; i++) {
 		name = checkboxes[i].getAttribute("name");
 		if (name.indexOf("lesFiches") == 0) {
 			if (checkboxes[i].checked == false) {
@@ -97,26 +95,12 @@ function checkSelect() {
  * sinon ne change rien
  */
 function checkCodePostal() {
-	var CP = document.getElementById("txtCP").value;
+	var CP = document.getElementById("txtCP");
+	CP = Number(CP.value);
 	if (isNaN(CP)) {
 		document.getElementById("txtCP").style.backgroundColor = '#FF7C66';
 	} else {
 		document.getElementById("txtCP").style.backgroundColor = '';
-	}
-}
-
-/**
- * Valide le code postal.
- * Si le code postal n'est pas un nombre affiche une notification et retourne "false",
- * sinon retourne "true"
- */
-function validCodePostal() {
-	var CP = document.getElementById("txtCP").value;
-	if (isNaN(CP)) {
-		alert("Caractère(s) non valide(s) !");
-		return false;
-	} else {
-		return true;
 	}
 }
 
@@ -134,54 +118,65 @@ function resetResidence() {
 function modFicheCalcul() {
 	// Lignes forfait
 	var array = [];
-	var inputs = document.getElementsByTagName("input");
-	for (i = 0; i < inputs.length; i++) {
-		name = inputs[i].getAttribute("name");
-		if (name.indexOf("lesFrais") == 0) {
-			var id = inputs[i].getAttribute("id");
-			var quantite = document.getElementById(id).value;
-			var montant = document.getElementById("montant" + id).value;
+	var spans = document.getElementsByTagName("span");
+	for (var i = 0; i < spans.length; i++) {
+		name = spans[i].getAttribute("name");
+		if (name.indexOf("lesTotaux") == 0) {
+			var id = spans[i].getAttribute("id");
+			var quantite = document.getElementById("quantite" + id);
+			if (quantite.tagName.toLowerCase() == 'input') {
+				quantite = Number(quantite.value);
+				if (isNaN(quantite)) {
+					document.getElementById("quantite" + id).style.backgroundColor = '#FF7C66';
+				} else {
+					document.getElementById("quantite" + id).style.backgroundColor = '';
+				}
+			} else {
+				quantite = parseFloat(quantite.innerHTML);
+			}
+			var montant = document.getElementById("montant" + id);
+			if (montant.tagName.toLowerCase() == 'input') {
+				montant = Number(montant.value);
+				if (isNaN(montant)) {
+					document.getElementById("montant" + id).style.backgroundColor = '#FF7C66';
+				} else {
+					document.getElementById("montant" + id).style.backgroundColor = '';
+				}
+			} else {
+				montant = parseFloat(montant.innerHTML);
+			}
 			var total = quantite * montant;
-			document.getElementById("total" + id).innerHTML = total.toFixed(2) + "€";
-			array.push(total);
-			if (isNaN(quantite)) {
-				document.getElementById(id).style.backgroundColor = '#FF7C66';
-			} else {
-				document.getElementById(id).style.backgroundColor = '';
-			}
-			if (isNaN(montant)) {
-				document.getElementById("montant" + id).style.backgroundColor = '#FF7C66';
-			} else {
-				document.getElementById("montant" + id).style.backgroundColor = '';
-			}
+			document.getElementById(id).innerHTML = total.toFixed(2) + '€';
 			if (isNaN(total)) {
-				document.getElementById("total" + id).innerHTML = "Erreur";
+				document.getElementById(id).innerHTML = 'Erreur';
 			}
+			array.push(total);
 		}
 	}
 	var totalArray = 0;
-	for ( var i in array) {
+	for (var i = 0; i < array.length; i++) {
 		totalArray += array[i];
 	}
 	
 	// Lignes hors horfait
 	var arrayHF = [];
-	var labels = document.getElementsByTagName("label");
-	for (i = 0; i < labels.length; i++) {
-		name = labels[i].getAttribute("name");
+	var spans = document.getElementsByTagName("span");
+	for (var i = 0; i < spans.length; i++) {
+		name = spans[i].getAttribute("name");
 		if (name.indexOf("lesMontantsHF") == 0) {
-			var idHF = labels[i].getAttribute("id");
-			var montantHF = parseFloat(document.getElementById(idHF).innerHTML);
+			var idHF = spans[i].getAttribute("id");
+			var montantHF = document.getElementById(idHF);
+			montantHF = parseFloat(montantHF.innerHTML);
 			arrayHF.push(montantHF);
 		}
 	}
 	var totalArrayHF = 0;
-	for ( var i in arrayHF) {
+	for (var i = 0; i < arrayHF.length; i++) {
 		totalArrayHF += arrayHF[i];
 	}
 	var txtMontantHF = document.getElementById("txtMontantHF");
 	if (typeof txtMontantHF != 'undefined' && txtMontantHF != null) {
-		txtMontantHF = txtMontantHF.value;
+		txtMontantHF = Number(txtMontantHF.value);
 		if (isNaN(txtMontantHF)) {
 			document.getElementById("txtMontantHF").style.backgroundColor = '#FF7C66';
 		} else {
@@ -190,57 +185,10 @@ function modFicheCalcul() {
 	}
 	
 	// Total fiche frais
-	var totalFinal = Number(totalArray) + Number(totalArrayHF) + Number(txtMontantHF);
-	document.getElementById("totalFinal").innerHTML = totalFinal.toFixed(2) + "€";
+	var totalFinal = totalArray + totalArrayHF + txtMontantHF;
+	document.getElementById("totalFinal").innerHTML = totalFinal.toFixed(2) + '€';
 	if (isNaN(totalFinal)) {
-		document.getElementById("totalFinal").innerHTML = "Erreur";
-	}
-}
-
-/**
- * Valide le total de la fiche de frais.
- * Si le total de la fiche de frais n'est pas un nombre affiche une notification et retourne "false",
- * sinon retourne "true"
- */
-function validTotalFicheFrais() {
-	var totalFinal = parseFloat(document.getElementById("totalFinal").innerHTML);
-	if (isNaN(totalFinal)) {
-		alert("Caractère(s) non valide(s) !");
-		return false;
-	} else {
-		return true;
-	}
-}
-
-/**
- * Valide le nombre de caractères dans le nom du fichier donné comme justificatif.
- * Si le nombre de caractères est inférieur à 35 retourne "true",
- * sinon affiche une notification et retourne "false"
- */
-function validJustificatif() {
-	var filename = document.getElementById("buttonJustificatifHF").value;
-	filename = filename.replace(/^.*[\\\/]/, '');
-	if (filename.length <= 35) {
-		return true;
-	} else {
-		alert("Le nom des fichiers est limité à 35 caractères (avec extension).");
-		return false;
-	}
-}
-
-/**
- * Valide le nombre de frais hors forfait saisis.
- * Si le nombre de frais hors forfait est inférieur à 9 (soit 10 en partant de 0) retourne "true",
- * sinon affiche une notification et retourne "false"
- */
-function validLignesHorsForfait() {
-	var table = document.getElementById("horsForfaitListe").getElementsByTagName("tbody")[0];
-	var rowCount = table.rows.length;
-	if (rowCount <= 9) {
-		return true;
-	} else {
-		alert("Maximum de lignes hors forfait atteint !");
-		return false;
+		document.getElementById("totalFinal").innerHTML = 'Erreur';
 	}
 }
 
@@ -253,10 +201,19 @@ function resetForfait() {
 }
 
 /**
+ * Gère le champ date du formulaire des frais hors forfait
+ */
+function dateHorsForfait() {
+	$(".datepicker").mask('00/00/0000');
+	$(".datepicker").datepicker();
+	$(".datepicker").datepicker('setDate', new Date());
+}
+
+/**
  * Réinitialise le formulaire des frais hors forfait
  */
 function resetHorsForfait() {
 	document.getElementById("horsforfait").reset();
-	$(".datepicker").datepicker('setDate', new Date()); // Jquery
+	$(".datepicker").datepicker('setDate', new Date());
 	modFicheCalcul();
 }

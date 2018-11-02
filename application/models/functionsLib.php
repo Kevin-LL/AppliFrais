@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class FunctionsLib extends CI_Model {
-
+	
     function __construct()
     {
 		// Call the Model constructor
@@ -11,26 +11,19 @@ class FunctionsLib extends CI_Model {
 	
 	/**
 	 * Transforme une date au format français jj/mm/aaaa vers le format anglais aaaa-mm-jj
-	 
+	 * 
 	 * @param $madate : la date au format français jj/mm/aaaa
 	 * @return : la date au format anglais aaaa-mm-jj
 	*/
 	function dateFrancaisVersAnglais($maDate)
 	{
         @list ($jour, $mois, $annee) = explode('/', $maDate);
-        if ($this->estDateValide($maDate))
-        {
-			return date('Y-m-d', mktime(0, 0, 0, $mois, $jour, $annee));
-        }
-        else
-        {
-			return date('Y-m-d');
-        }
+		return date('Y-m-d', mktime(0, 0, 0, $mois, $jour, $annee));
 	}
 	
 	/**
 	 * Transforme une date au format format anglais aaaa-mm-jj vers le format français jj/mm/aaaa 
-	 
+	 * 
 	 * @param $madate : la date au format anglais aaaa-mm-jj
 	 * @return : la date au format format français jj/mm/aaaa
 	*/
@@ -43,7 +36,7 @@ class FunctionsLib extends CI_Model {
 	
 	/**
 	 * retourne le mois d'une date au format aaaamm 
-	 
+	 * 
 	 * @param $date : la date au format format français jj/mm/aaaa
 	 * @return : le mois au format aaaamm
 	*/
@@ -63,7 +56,7 @@ class FunctionsLib extends CI_Model {
 	 * A noter: compte-tenu du fonctionnement de la méthode DateTime::sub,
 	 * il peut arriver que l'on retrouve 2 fois le même mois parmi
 	 * les 6 mois résultants. On aura, dans ce cas, que 5 mois distincts.
-	 
+	 * 
 	 * @return : un tableau contenant les 6 mois au format aaaamm
 	*/
 	function getSixDerniersMois()
@@ -88,7 +81,7 @@ class FunctionsLib extends CI_Model {
 	
 	/**
 	 * Indique si une valeur est un entier positif ou nul
-	 
+	 * 
 	 * @param $valeur : la valeur saisie en paramètre
 	 * @return : vrai ou faux
 	*/
@@ -99,7 +92,7 @@ class FunctionsLib extends CI_Model {
 	
 	/**
 	 * Indique si un tableau de valeurs est constitué d'entiers positifs ou nuls
-	 
+	 * 
 	 * @param $tabEntiers : le tableau saisie en paramètre
 	 * @return : vrai ou faux
 	*/
@@ -118,7 +111,7 @@ class FunctionsLib extends CI_Model {
 	
 	/**
 	 * Vérifie si une date est inférieure d'un an à la date actuelle
-	 
+	 * 
 	 * @param $dateTestee : la date testée
 	 * @return : vrai ou faux
 	*/
@@ -134,7 +127,7 @@ class FunctionsLib extends CI_Model {
 	
 	/**
 	 * Vérifie la validité du format d'une date française jj/mm/aaaa 
-	 
+	 * 
 	 * @param $date : la date saisie en paramètre
 	 * @return : vrai ou faux
 	*/
@@ -165,7 +158,7 @@ class FunctionsLib extends CI_Model {
 	
 	/**
 	 * Vérifie que le tableau de frais ne contient que des valeurs numériques 
-	 
+	 * 
 	 * @param $lesFrais : le tableau de frais
 	 * @return : vrai ou faux
 	*/

@@ -20,7 +20,7 @@ label {
 }
 
 input {
-	font-family: 'Arial', sans-serif;
+	font-family: 'Helvetica', 'Arial', sans-serif;
 }
 
 /* HEADER */
@@ -222,25 +222,28 @@ legend {
 
 .notify {
 	display: flex;
-	align-items: center;
 	justify-content: space-between;
 	padding: 0.9375rem;
 	border-radius: 0.3125rem;
-	font-weight: bold;
 }
 
-.notify span {
+.notify .close {
+	align-self: flex-start;
 	cursor: pointer;
 	margin-left: 0.9375rem;
-	font-size: 0.875rem;
 }
 
-.info {
+.success {
 	background-color: #67CD5D;
 }
 
 .error {
 	background-color: #FF7C66;
+}
+
+#erreur_404 {
+	text-align: center;
+	font-size: 1.5rem;
 }
 
 #connexion {
@@ -284,20 +287,20 @@ table.listeLegere td {
 	border: 0.125rem solid #32333D;
 }
 
-table.listeLegere .transparent {
-	width: 1.25rem;
-	padding: 0;
-	background-color: transparent;
-	border: none;
-}
-
 table.listeLegere .text {
-	padding: 0.25rem;
+	padding: 0;
 }
 
 table.listeLegere .action {
 	padding: 0;
 	background-image: repeating-linear-gradient(45deg, #32333D, #32333D 0.3125rem, #BABCDD 0.3125rem, #BABCDD 0.625rem);
+}
+
+table.listeLegere .transparent {
+	width: 1.25rem;
+	padding: 0;
+	background-color: transparent;
+	border: none;
 }
 
 table.listeLegere .alignCenter {
@@ -320,6 +323,41 @@ table.listeLegere .valid {
 	background-color: #67CD5D;
 }
 
+table.listeLegere .textCell {
+	display: block;
+	padding: 0.25rem;
+}
+
+table.listeLegere .inputCell {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 0.25rem;
+	border: none;
+	font-size: 0.9375rem;
+}
+
+table.listeLegere .inputCell:hover {
+	background-color: #FAFAE6;
+}
+
+table.listeLegere .anchorCell {
+	display: block;
+	box-sizing: border-box;
+	padding: 0.25rem;
+	background-color: #4750CB;
+	color: #EEEEEE;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+table.listeLegere .anchorCell:hover {
+	background-color: #343C96;
+}
+
+table.listeLegere .anchorCell:active {
+	background-color: #5964FF;
+}
+
 table.listeLegere .customCheckbox {
 	display: flex;
 	cursor: pointer;
@@ -327,8 +365,8 @@ table.listeLegere .customCheckbox {
 	width: 1.25rem;
 	box-sizing: border-box;
 	margin-right: 0.25rem;
-	border: 0.125rem solid #32333D;
 	background-color: #FFFFFF;
+	border: 0.125rem solid #32333D;
 }
 
 table.listeLegere .customCheckbox:hover {
@@ -341,36 +379,6 @@ table.listeLegere .checkbox:checked + .customCheckbox:after {
 	justify-content: center;
 	width: 100%;
 	content: '✓';
-	font-size: 1rem;
-}
-
-table.listeLegere .inputCell {
-	width: 100%;
-	box-sizing: border-box;
-	padding: 0.25rem;
-	border: none;
-	font-size: 0.9375rem;
-}
-
-table.listeLegere .inputCell:enabled:hover {
-	background-color: #FAFAE6;
-}
-
-table.listeLegere .anchorCell {
-	display: block;
-	padding: 0.25rem;
-	background-color: #4750CB;
-	font-weight: bold;
-	color: #EEEEEE;
-	text-decoration: none;
-}
-
-table.listeLegere .anchorCell:hover {
-	background-color: #343C96;
-}
-
-table.listeLegere .anchorCell:active {
-	background-color: #5964FF;
 }
 
 table.listeLegere .anchorText {
@@ -394,8 +402,9 @@ table.listeLegere .anchorText:hover {
 .monnaie:after {
 	position: absolute;
 	content: "€";
-	top: 0;
-	right: 0;
+	transform: translateY(-50%);
+	top: 50%;
+	right: 0.25rem;
 }
 
 .refus {
@@ -416,6 +425,7 @@ table.listeLegere .anchorText:hover {
 .formLabel {
 	display: flex;
 	width: 8.125rem;
+	padding: 0.25rem 0 0.25rem 0;
 	font-weight: bold;
 }
 
@@ -428,6 +438,7 @@ table.listeLegere .anchorText:hover {
 }
 
 .input {
+	padding: 0.25rem;
 	border: 0.125rem solid #32333D;
 	font-size: 0.9375rem;
 }
@@ -542,7 +553,7 @@ footer {
 	
 	table.listeLegere tr {
 		display: block;
-		margin-bottom: 0.9558823529rem;
+		margin-bottom: 1rem;
 	}
 	
 	table.listeLegere tr:last-child {
@@ -566,6 +577,7 @@ footer {
 	table.listeLegere td:not(.transparent):before {
 		width: 7.352941176rem;
 		box-sizing: border-box;
+		padding: 0.25rem;
 		content: attr(data-th);
 		background-color: #707187;
 		border-right: 0.1470588235rem solid #32333D;
@@ -573,23 +585,17 @@ footer {
 		font-weight: bold;
 	}
 	
-	table.listeLegere .text {
-		padding: 0;
+	table.listeLegere .inputCell {
+		width: calc(100% - 7.352941176rem);
+	}
+	
+	table.listeLegere .anchorCell {
+		width: calc(100% - 7.352941176rem);
 	}
 	
 	table.listeLegere .customCheckbox {
 		margin-right: 0;
 		border: 0.1470588235rem solid #32333D;
-	}
-	
-	table.listeLegere .inputCell {
-		width: calc(100% - 7.352941176rem);
-		padding: 0;
-	}
-	
-	table.listeLegere .anchorCell {
-		width: calc(100% - 7.352941176rem);
-		padding: 0;
 	}
 	
 	.formList p {
@@ -627,16 +633,16 @@ footer {
 		border-right: 0.08928571429rem solid #32333D;
 	}
 	
-	table.listeLegere .customCheckbox {
-		border: 0.08928571429rem solid #32333D;
-	}
-	
 	table.listeLegere .inputCell {
 		width: calc(100% - 7.321428571rem);
 	}
 	
 	table.listeLegere .anchorCell {
 		width: calc(100% - 7.321428571rem);
+	}
+	
+	table.listeLegere .customCheckbox {
+		border: 0.08928571429rem solid #32333D;
 	}
 	
 	.input {

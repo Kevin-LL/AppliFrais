@@ -1,6 +1,5 @@
 <?php
 	$this->load->helper('url');
-	$v_path = base_url('application/views');
 ?>
 <!DOCTYPE HTML>
 <html lang="fr">
@@ -14,6 +13,7 @@
 		<script src="<?php echo jquery_url('jquery-1.12.4.min.js');?>"></script>
 		<script src="<?php echo jquery_url('jquery-ui-1.12.1/jquery-ui.min.js');?>"></script>
 		<script src="<?php echo jquery_url('jquery-ui-1.12.1/datepicker-fr.js');?>"></script>
+		<script src="<?php echo jquery_url('plugins/jquery-mask-plugin/src/jquery.mask.min.js');?>"></script>
 		<script src="<?php echo js_url('functions.js');?>"></script>
 	</head>
 	<body>
@@ -21,7 +21,7 @@
 			<div id="logo">
 				<?php
 					$img = '<img src="'.img_url('logo.png').'" alt="Laboratoire Galaxy-Swiss Bourdin" title="Laboratoire Galaxy-Swiss Bourdin">';
-					$path = 'c_comptable/';
+					$path = 'c_comptable';
 					echo anchor($path, $img);
 				?>
 			</div>
@@ -43,7 +43,7 @@
 						<?php echo anchor('c_comptable/monCompte', 'Mon compte', 'class="smenuUtil" title="Consulter mon compte"');?>
 						<?php echo anchor('c_comptable/deconnecter', 'Se déconnecter', 'class="smenuUtil deconnexion" title="Déconnexion"');?>
 					</div>
-					<?php echo anchor('c_comptable/', 'Accueil', 'class="smenu" title="Page d\'accueil"');?>
+					<?php echo anchor('c_comptable', 'Accueil', 'class="smenu" title="Page d\'accueil"');?>
 					<?php echo anchor('c_comptable/validationFiches', 'Validation des fiches', 'class="smenu" title="Valider les fiches de frais"');?>
 					<?php echo anchor('c_comptable/suiviPaiement', 'Suivi du paiement', 'class="smenu" title="Suivre le paiement des fiches de frais"');?>
 				</div>

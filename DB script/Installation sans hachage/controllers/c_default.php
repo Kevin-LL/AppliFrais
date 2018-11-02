@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * 		+ de traiter le retour du formulaire de connexion 
 */
 class C_default extends CI_Controller {
-
+	
 	/**
 	 * Fonctionnalité par défaut du contrôleur. 
 	 * Vérifie l'existence d'une connexion :
@@ -18,22 +18,23 @@ class C_default extends CI_Controller {
 	*/
 	public function index()
 	{
+		// charge le modèle authentif
 		$this->load->model('authentif');
 		
 		if ( ! $this->authentif->estConnecte())
 		{
 			$data = array();
-			$this->templates->load('t_connexion', 'v_connexion', $data);
-		}
-		elseif ($this->session->userdata('idProfil') == 'COM')
-		{
-			$this->load->helper('url');
-			redirect('/c_comptable/');
+			$this->templates->load('t_default', 'v_connexion', $data);
 		}
 		elseif ($this->session->userdata('idProfil') == 'VIS')
 		{
 			$this->load->helper('url');
-			redirect('/c_visiteur/');
+			redirect('/c_visiteur');
+		}
+		elseif ($this->session->userdata('idProfil') == 'COM')
+		{
+			$this->load->helper('url');
+			redirect('/c_comptable');
 		}
 	}
 	
@@ -43,21 +44,54 @@ class C_default extends CI_Controller {
 	*/
 	public function connecter()
 	{
-		$this->load->model('authentif');
-		
-		$login = $this->input->post('login');
-		$mdp = $this->input->post('mdp');
-		$authUser = $this->authentif->authentifier($login, $mdp);
-		
-		if (isset($authUser))
+		// si une requête "post" est lancée
+		if ($this->input->method() == 'post')
 		{
-			$this->authentif->connecter($authUser['id'], $authUser['idProfil'], $authUser['nom'], $authUser['prenom']);
-			$this->index();
+			// charge la bibliothèque Form_validation
+			// charge le modèle dataAccess et authentif
+			$this->load->library('form_validation');
+			$this->load->model('dataAccess');
+			$this->load->model('authentif');
+			
+			// configuration des champs du formulaire
+			$this->form_validation->set_rules('login', 'Login', 'required|max_length[31]');
+			$this->form_validation->set_rules('mdp', 'Mot de passe', 'required|max_length[60]');
+			
+			// si validation des champs du formulaire
+			if ($this->form_validation->run())
+			{
+				// obtention des données postées : $login, $mdp
+				$login = $this->input->post('login');
+				$mdp = $this->input->post('mdp');
+				
+				$currentMdp = $this->dataAccess->getMdpUtilisateur($login);
+				
+				// si $mdp est égal au mdp de l'utilisateur
+				if ($mdp == $currentMdp['mdp'])
+				{
+					// initialisation de la session utilisateur et on active index
+					$authUser = $this->authentif->authentifier($login);
+					$this->authentif->connecter($authUser['id'], $authUser['idProfil'], $authUser['nom'], $authUser['prenom']);
+					$this->index();
+				}
+				else
+				{
+					// sinon on active connexion
+					$data = array('erreur' => '<li>Login ou mot de passe incorrect.</li>');
+					$this->templates->load('t_default', 'v_connexion', $data);
+				}
+			}
+			else
+			{
+				// sinon on active connexion
+				$data = array('erreur' => validation_errors('<li>', '</li>'));
+				$this->templates->load('t_default', 'v_connexion', $data);
+			}
 		}
 		else
 		{
-			$data = array('erreur' => 'Login ou mot de passe incorrect.');
-			$this->templates->load('t_connexion', 'v_connexion', $data);
+			// sinon on envoie l'erreur 404
+			show_404();
 		}
 	}
 }
