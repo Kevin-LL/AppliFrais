@@ -3,14 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class A_visiteur extends CI_Model {
 	
-    function __construct()
-    {
-        // Call the Model constructor
-        parent::__construct();
+	function __construct()
+	{
+		// Call the Model constructor
+		parent::__construct();
 		
 		// chargement du modèle d'accès aux données qui est utile à toutes les méthodes
 		$this->load->model('dataAccess');
-    }
+	}
 	
 	/**
 	 * Accueil du visiteur
@@ -249,7 +249,7 @@ class A_visiteur extends CI_Model {
 	*/
 	public function supprLigneFrais($idUtilisateur, $mois, $idLigneFrais)
 	{
-	    $this->dataAccess->supprimerLigneHorsForfait($idLigneFrais);
+		$this->dataAccess->supprimerLigneHorsForfait($idLigneFrais);
 		$this->dataAccess->majNbJustificatifs($idUtilisateur, $mois);
 		$this->dataAccess->recalculeMontantFiche($idUtilisateur, $mois);
 	}

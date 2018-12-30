@@ -21,7 +21,7 @@ class C_comptable extends CI_Controller {
 		$this->load->model('authentif');
 		
 		// contrôle de la bonne authentification de l'utilisateur
-		if ( ! $this->authentif->estConnecte()) 
+		if ( ! $this->authentif->estConnecte())
 		{
 			// l'utilisateur n'est pas authentifié, on envoie la vue de connexion
 			$data = array();
@@ -143,7 +143,7 @@ class C_comptable extends CI_Controller {
 					// configuration des champs du formulaire
 					$this->form_validation->set_rules('ville', 'Ville', 'trim|required|max_length[30]');
 					$this->form_validation->set_rules('cp', 'Code postal', 'required|exact_length[5]|integer',
-						array('integer' => 'Le code postal est invalide.')
+						array('integer' => 'Le code postal doit être valide.')
 					);
 					$this->form_validation->set_rules('adresse', 'Adresse', 'trim|required|max_length[30]');
 					
@@ -189,8 +189,8 @@ class C_comptable extends CI_Controller {
 				// active la fonction validationFiches du modèle comptable
 				$this->a_comptable->validationFiches();
 			}
-			/* suiviPaiement */
-			elseif ($action == 'suiviPaiement')
+			/* paiementFiches */
+			elseif ($action == 'paiementFiches')
 			{
 				// charge le modèle comptable
 				$this->load->model('a_comptable');
@@ -200,13 +200,29 @@ class C_comptable extends CI_Controller {
 				$this->session->unset_userdata('moisFiche');
 				
 				// initialisation de la liste des fiches
-				$this->session->set_userdata('listeFiches', 'suiviPaiement');
+				$this->session->set_userdata('listeFiches', 'paiementFiches');
 				
-				// active la fonction suiviPaiement du modèle comptable
-				$this->a_comptable->suiviPaiement();
+				// active la fonction paiementFiches du modèle comptable
+				$this->a_comptable->paiementFiches();
 			}
-			/* rechercheVis */
-			elseif ($action == 'rechercheVis')
+			/* syntheseFiches */
+			elseif ($action == 'syntheseFiches')
+			{
+				// charge le modèle comptable
+				$this->load->model('a_comptable');
+				
+				// suppression des informations additionnelles conservées en session
+				$this->session->unset_userdata('userFiche');
+				$this->session->unset_userdata('moisFiche');
+				
+				// initialisation de la liste des fiches
+				$this->session->set_userdata('listeFiches', 'syntheseFiches');
+				
+				// active la fonction syntheseFiches du modèle comptable
+				$this->a_comptable->syntheseFiches();
+			}
+			/* rechercheFiches */
+			elseif ($action == 'rechercheFiches')
 			{
 				// si une requête "post" est lancée
 				if ($this->input->method() == 'post')
@@ -223,16 +239,22 @@ class C_comptable extends CI_Controller {
 					if (isset($liste))
 					{
 						// configuration des champs du formulaire
-						$this->form_validation->set_rules('recherche', 'Visiteur', 'required|min_length[2]|max_length[4]|alpha_numeric');
+						$this->form_validation->set_rules('visiteur', 'Visiteur',
+							array('min_length[2]', 'max_length[4]', 'alpha_numeric', 'regex_match[/^[a-z]([0-9]{1,3})$/]')
+						);
+						$this->form_validation->set_rules('mois', 'Mois',
+							array('exact_length[7]', 'regex_match[/^[0-9]{4}\-(0[1-9]|1[0-2])$/]')
+						);
 						
 						// si validation des champs du formulaire
 						if ($this->form_validation->run())
 						{
-							// obtention des données postées : $laRecherche
-							$laRecherche = $this->input->post('recherche');
+							// obtention des données postées : $visiteur, $mois
+							$visiteur = $this->input->post('visiteur') ?: '%';
+							$mois = str_replace('-', '', $this->input->post('mois')) ?: '%';
 							
 							// on active la liste du modèle comptable
-							$this->a_comptable->$liste($laRecherche);
+							$this->a_comptable->$liste($visiteur, $mois);
 						}
 						else
 						{
@@ -265,8 +287,8 @@ class C_comptable extends CI_Controller {
 					$mois = $params[1];
 					$laFiche = $this->dataAccess->getLesInfosFicheFrais($idUtilisateur, $mois);
 					
-					// si la fiche est Signée ou Validée
-					if ($laFiche['idEtat'] == 'CL' || $laFiche['idEtat'] == 'VA')
+					// si la fiche est Signée, Validée ou Remboursée
+					if ($laFiche['idEtat'] == 'CL' || $laFiche['idEtat'] == 'VA' || $laFiche['idEtat'] == 'RB')
 					{
 						// suppression des informations additionnelles conservées en session
 						$this->session->unset_userdata('userFiche');
@@ -370,7 +392,7 @@ class C_comptable extends CI_Controller {
 							
 							// on active validFiche puis validationFiches du modèle comptable
 							$this->a_comptable->validFiche($idUtilisateur, $mois);
-							$this->a_comptable->validationFiches('%', '<li>La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' a été validée.</li>');
+							$this->a_comptable->validationFiches('%', '%', '<li>La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' a été validée.</li>');
 						}
 						else
 						{
@@ -382,7 +404,7 @@ class C_comptable extends CI_Controller {
 							$this->session->set_userdata('listeFiches', 'validationFiches');
 							
 							// sinon on active validationFiches
-							$this->a_comptable->validationFiches('%', null, '<li>La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' comporte des frais non validés.</li>');
+							$this->a_comptable->validationFiches('%', '%', null, '<li>La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' comporte des frais non validés.</li>');
 						}
 					}
 					else
@@ -469,7 +491,9 @@ class C_comptable extends CI_Controller {
 						}
 						
 						// configuration des champs du formulaire
-						$this->form_validation->set_rules('lesFiches[]', 'Les fiches', 'required|min_length[9]|max_length[11]|alpha_dash');
+						$this->form_validation->set_rules('lesFiches[]', 'Les fiches',
+							array('required', 'min_length[9]', 'max_length[11]', 'alpha_dash', 'regex_match[/^[a-z]([0-9]{1,3})\_[0-9]{4}(0[1-9]|1[0-2])$/]')
+						);
 						
 						// si validation des champs du formulaire
 						if ($this->form_validation->run())
@@ -481,30 +505,30 @@ class C_comptable extends CI_Controller {
 								if ($fraisNonVA == false)
 								{
 									// on active validationFiches
-									$this->a_comptable->validationFiches('%', '<li>Les fiches sélectionnées ont été validées.</li>');
+									$this->a_comptable->validationFiches('%', '%', '<li>Les fiches sélectionnées ont été validées.</li>');
 								}
 								else
 								{
 									// sinon on active validationFiches
-									$this->a_comptable->validationFiches('%', null, '<li>Impossible de valider l\'intégralité de la sélection (présence de frais non validés).</li>');
+									$this->a_comptable->validationFiches('%', '%', null, '<li>Impossible de valider l\'intégralité de la sélection (présence de frais non validés).</li>');
 								}
 							}
 							else
 							{
 								// sinon on active validationFiches
-								$this->a_comptable->validationFiches('%', null, '<li>Impossible de valider l\'intégralité de la sélection (présence de fiches non signées).</li>');
+								$this->a_comptable->validationFiches('%', '%', null, '<li>Impossible de valider l\'intégralité de la sélection (présence de fiches non signées).</li>');
 							}
 						}
 						else
 						{
 							// sinon on active validationFiches
-							$this->a_comptable->validationFiches('%', null, '<li>Impossible de valider l\'intégralité de la sélection (présence de valeurs incorrectes en tant que paramètres).</li>');
+							$this->a_comptable->validationFiches('%', '%', null, '<li>Impossible de valider l\'intégralité de la sélection (présence de valeurs incorrectes en tant que paramètres).</li>');
 						}
 					}
 					else
 					{
 						// sinon on active validationFiches
-						$this->a_comptable->validationFiches('%', null, '<li>Aucune fiche n\'a été sélectionnée.</li>');
+						$this->a_comptable->validationFiches('%', '%', null, '<li>Aucune fiche n\'a été sélectionnée.</li>');
 					}
 				}
 				else
@@ -589,7 +613,7 @@ class C_comptable extends CI_Controller {
 							
 							// on active refuFiche puis validationFiches du modèle comptable
 							$this->a_comptable->refuFiche($idUtilisateur, $mois, $leMotifRefus);
-							$this->a_comptable->validationFiches('%', '<li>La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' a été refusée.</li>');
+							$this->a_comptable->validationFiches('%', '%', '<li>La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' a été refusée.</li>');
 						}
 						else
 						{
@@ -631,11 +655,11 @@ class C_comptable extends CI_Controller {
 						$this->session->unset_userdata('moisFiche');
 						
 						// initialisation de la liste des fiches
-						$this->session->set_userdata('listeFiches', 'suiviPaiement');
+						$this->session->set_userdata('listeFiches', 'paiementFiches');
 						
-						// on active rembourseFiche puis suiviPaiement du modèle comptable
+						// on active rembourseFiche puis paiementFiches du modèle comptable
 						$this->a_comptable->rembourseFiche($idUtilisateur, $mois);
-						$this->a_comptable->suiviPaiement('%', '<li>La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' a été remboursée.</li>');
+						$this->a_comptable->paiementFiches('%', '%', '<li>La fiche du mois '.substr_replace($mois, '-', 4, 0).' pour le visiteur '.$infosUtil['id'].' '.$infosUtil['nom'].' a été remboursée.</li>');
 					}
 					else
 					{
@@ -702,7 +726,9 @@ class C_comptable extends CI_Controller {
 						}
 						
 						// configuration des champs du formulaire
-						$this->form_validation->set_rules('lesFiches[]', 'Les fiches', 'required|min_length[9]|max_length[11]|alpha_dash');
+						$this->form_validation->set_rules('lesFiches[]', 'Les fiches',
+							array('required', 'min_length[9]', 'max_length[11]', 'alpha_dash', 'regex_match[/^[a-z]([0-9]{1,3})\_[0-9]{4}(0[1-9]|1[0-2])$/]')
+						);
 						
 						// si validation des champs du formulaire
 						if ($this->form_validation->run())
@@ -710,25 +736,25 @@ class C_comptable extends CI_Controller {
 							// si toutes les fiches sont Validées
 							if ($fichesNonVA == false)
 							{
-								// on active suiviPaiement
-								$this->a_comptable->suiviPaiement('%', '<li>Les fiches sélectionnées ont été remboursées.</li>');
+								// on active paiementFiches
+								$this->a_comptable->paiementFiches('%', '%', '<li>Les fiches sélectionnées ont été remboursées.</li>');
 							}
 							else
 							{
-								// sinon on active suiviPaiement
-								$this->a_comptable->suiviPaiement('%', null, '<li>Impossible de rembourser l\'intégralité de la sélection (présence de fiches non validées).</li>');
+								// sinon on active paiementFiches
+								$this->a_comptable->paiementFiches('%', '%', null, '<li>Impossible de rembourser l\'intégralité de la sélection (présence de fiches non validées).</li>');
 							}
 						}
 						else
 						{
-							// sinon on active suiviPaiement
-							$this->a_comptable->suiviPaiement('%', null, '<li>Impossible de rembourser l\'intégralité de la sélection (présence de valeurs incorrectes en tant que paramètres).</li>');
+							// sinon on active paiementFiches
+							$this->a_comptable->paiementFiches('%', '%', null, '<li>Impossible de rembourser l\'intégralité de la sélection (présence de valeurs incorrectes en tant que paramètres).</li>');
 						}
 					}
 					else
 					{
-						// sinon on active suiviPaiement
-						$this->a_comptable->suiviPaiement('%', null, '<li>Aucune fiche n\'a été sélectionnée.</li>');
+						// sinon on active paiementFiches
+						$this->a_comptable->paiementFiches('%', '%', null, '<li>Aucune fiche n\'a été sélectionnée.</li>');
 					}
 				}
 				else
@@ -756,7 +782,9 @@ class C_comptable extends CI_Controller {
 					if (isset($idUtilisateur, $mois))
 					{
 						// configuration des champs du formulaire
-						$this->form_validation->set_rules('lesMontants[]', 'Montant', 'required|max_length[6]|numeric');
+						$this->form_validation->set_rules('lesMontants[]', 'Montant',
+							array('required', 'max_length[6]', 'numeric', 'less_than[999.99]', 'regex_match[/^[0-9]+(\.[0-9]{1,2})?$/]')
+						);
 						
 						// si validation des champs du formulaire
 						if ($this->form_validation->run())

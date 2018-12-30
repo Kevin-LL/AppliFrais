@@ -142,7 +142,7 @@ class C_visiteur extends CI_Controller {
 					// configuration des champs du formulaire
 					$this->form_validation->set_rules('ville', 'Ville', 'trim|required|max_length[30]');
 					$this->form_validation->set_rules('cp', 'Code postal', 'required|exact_length[5]|integer',
-						array('integer' => 'Le code postal est invalide.')
+						array('integer' => 'Le code postal doit être valide.')
 					);
 					$this->form_validation->set_rules('adresse', 'Adresse', 'trim|required|max_length[30]');
 					
@@ -364,7 +364,9 @@ class C_visiteur extends CI_Controller {
 						}
 						
 						// configuration des champs du formulaire
-						$this->form_validation->set_rules('lesFiches[]', 'Les fiches', 'required|exact_length[6]|integer');
+						$this->form_validation->set_rules('lesFiches[]', 'Les fiches',
+							array('required', 'exact_length[6]', 'integer', 'regex_match[/^[0-9]{4}(0[1-9]|1[0-2])$/]')
+						);
 						
 						// si validation des champs du formulaire
 						if ($this->form_validation->run())
@@ -539,9 +541,13 @@ class C_visiteur extends CI_Controller {
 					if (isset($mois))
 					{
 						// configuration des champs du formulaire
-						$this->form_validation->set_rules('dateFrais', 'Date', 'required|exact_length[10]');
+						$this->form_validation->set_rules('dateFrais', 'Date',
+							array('required', 'exact_length[10]', 'regex_match[/^([0-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/[0-9]{4}$/]')
+						);
 						$this->form_validation->set_rules('libelle', 'Libellé', 'trim|required|max_length[35]');
-						$this->form_validation->set_rules('montant', 'Montant', 'required|max_length[6]|numeric');
+						$this->form_validation->set_rules('montant', 'Montant',
+							array('required', 'max_length[6]', 'numeric', 'less_than[999.99]', 'regex_match[/^[0-9]+(\.[0-9]{1,2})?$/]')
+						);
 						if ($_FILES['justificatif']['name'] == null)
 						{
 							$this->form_validation->set_rules('justificatif', 'Justificatif', 'required');

@@ -2,35 +2,35 @@
 	$this->load->helper('url');
 	$this->load->helper('security');
 ?>
-<div id="contenuTitre">
+<div id="contenu-titre">
 	<h3>Modifier ma fiche de frais du mois <?php echo substr_replace($moisFiche, '-', 4, 0);?></h3>
 </div>
-<div id="contenuList">
+<div id="contenu-list">
 	<?php
 		if (isset($notifySuccess))
 		{
 			echo
-			'<div class="notify success">
+			'<div class="notify notify-success">
 				<div>
 					<h4>Action(s) validée(s) :</h4>
 					<ul>'.$notifySuccess.'</ul>
 				</div>
-				<span class="close" onclick="closeNotify(this);">&#10006;</span>
+				<span class="notify-close" onclick="closeNotify(this);">&#10006;</span>
 			</div>';
 		}
 		if (isset($notifyError))
 		{
 			echo
-			'<div class="notify error">
+			'<div class="notify notify-error">
 				<div>
 					<h4>Une erreur est survenue !</h4>
 					<ul>'.$notifyError.'</ul>
 				</div>
-				<span class="close" onclick="closeNotify(this);">&#10006;</span>
+				<span class="notify-close" onclick="closeNotify(this);">&#10006;</span>
 			</div>';
 		}
 	?>
-	<div id="elementsForfaitises">
+	<div id="elements-forfaitises">
 		<?php
 			$aucunFraisForfaitDispo = true;
 			
@@ -47,7 +47,7 @@
 				<fieldset>
 					<legend>Eléments forfaitisés</legend>
 					<h4>Descriptif des éléments forfaitisés :</h4>
-					<table class="listeLegere">
+					<table class="liste-legere">
 						<thead>
 							<tr>
 								<th>Libellé</th>
@@ -66,17 +66,18 @@
 							
 							$fraisForfait.=
 							'<tr>
-								<td class="text alignLeft" data-th="Libellé"><label class="textCell" for="quantite'.$idFrais.'">'.$libelle.'</label></td>
-								<td class="action alignLeft" data-th="Quantité"><input id="quantite'.$idFrais.'" class="inputCell" name="lesQuantites['.$idFrais.']" required="required" size="10" maxlength="3" value="'.xss_clean($quantite).'" oninput="modFicheCalcul();" type="text"/></td>
-								<td class="text alignRight" data-th="Montant"><span id="montant'.$idFrais.'" class="textCell" name="lesMontants['.$idFrais.']">'.xss_clean($montant).'€</span></td>
-								<td class="text alignRight" data-th="Total"><span id="'.$idFrais.'" class="textCell" name="lesTotaux['.$idFrais.']">'.number_format($quantite * $montant, 2).'€</span></td>
+								<td class="text align-left" data-th="Libellé"><label class="cell-text" for="quantite-'.strtolower($idFrais).'">'.$libelle.'</label></td>
+								<td class="action align-left" data-th="Quantité"><input id="quantite-'.strtolower($idFrais).'" class="cell-input" name="lesQuantites['.$idFrais.']" required="required" maxlength="3" value="'.xss_clean($quantite).'" oninput="modFicheCalculs();" type="text"/></td>
+								<td class="text align-right" data-th="Montant"><span id="montant-'.strtolower($idFrais).'" class="cell-text" data-name="lesMontants['.$idFrais.']">'.xss_clean($montant).'€</span></td>
+								<td class="text align-right" data-th="Total"><span id="'.strtolower($idFrais).'" class="cell-text" data-name="lesTotaux['.$idFrais.']">'.number_format($quantite * $montant, 2).'€</span></td>
 							</tr>';
 						}
 						$fraisForfait.=
 						'</tbody>
 					</table>
-					<p class="formButtonsArea">
-						<input id="okForfait" class="button" value="Enregistrer" type="submit"/><input id="annulerForfait" class="button" value="Annuler" onclick="resetForfait();" type="button"/>
+					<p class="form-buttons-container">
+						<input id="forfait-ok" class="button" value="Enregistrer" type="submit"/><input id="forfait-annuler" class="button" value="Annuler" onclick="resetForfait();" type="button"/>
+						<input name="'.$this->security->get_csrf_token_name().'" value="'.$this->security->get_csrf_hash().'" type="hidden"/>
 					</p>
 					<span class="note">Note : montants sous réserve de validation.</span>
 				</fieldset>
@@ -96,8 +97,8 @@
 			echo $fraisForfait;
 		?>
 	</div>
-	<div id="elementsHorsForfait">
-		<form id="horsforfait" method="post" enctype="multipart/form-data" action="<?php echo base_url('c_visiteur/ajouteFrais');?>">
+	<div id="elements-hors-forfait">
+		<form id="hors-forfait" method="post" enctype="multipart/form-data" action="<?php echo base_url('c_visiteur/ajouteFrais');?>">
 			<fieldset>
 				<legend>Nouvel élément hors forfait</legend>
 				<?php
@@ -113,7 +114,7 @@
 					
 					$fraisHorsForfait =
 					'<h4>Descriptif des éléments hors forfait :</h4>
-					<table id="horsForfaitListe" class="listeLegere">
+					<table class="liste-legere">
 						<thead>
 							<tr>
 								<th>Date</th>
@@ -139,7 +140,7 @@
 							
 							if ($justificatifFichier != null)
 							{
-								$justificatifNom = anchor('c_visiteur/telJustificatif/'.$mois.'/'.$id.'/'.$justificatifFichier, $justificatifNom, 'class="anchorText" title="Télécharger le justificatif"');
+								$justificatifNom = anchor('c_visiteur/telJustificatif/'.$mois.'/'.$id.'/'.$justificatifFichier, $justificatifNom, 'class="link" title="Télécharger le justificatif"');
 							}
 							else
 							{
@@ -157,11 +158,11 @@
 							
 							$fraisHorsForfait.=
 							'<tr>
-								<td class="text alignCenter'.$status .'" data-th="Date"><span class="textCell">'.xss_clean($date).'</span></td>
-								<td class="text alignLeft'.$status .'" data-th="Libellé"><span class="textCell">'.xss_clean($libelle).$libEtat.'</span></td>
-								<td class="text alignRight'.$status .'" data-th="Montant"><span id="'.$id.'" class="textCell" name="lesMontantsHF['.$id.']">'.xss_clean($montant).'€</span></td>
-								<td class="text alignCenter'.$status .'" data-th="Justificatif"><span class="textCell">'.xss_clean($justificatifNom).'</span></td>
-								<td class="action alignCenter" data-th="Action">'.anchor('c_visiteur/supprFrais/'.$id, "Supprimer ce frais", 'class="anchorCell" title="Suppression d\'une ligne de frais" onclick="return confirm(\'Voulez-vous vraiment supprimer ce frais ?\')"').'</td>
+								<td class="text align-center'.$status .'" data-th="Date"><span class="cell-text">'.xss_clean($date).'</span></td>
+								<td class="text align-left'.$status .'" data-th="Libellé"><span class="cell-text">'.xss_clean($libelle).$libEtat.'</span></td>
+								<td class="text align-right'.$status .'" data-th="Montant"><span id="'.$id.'" class="cell-text" data-name="lesMontantsHF['.$id.']">'.xss_clean($montant).'€</span></td>
+								<td class="text align-center'.$status .'" data-th="Justificatif"><span class="cell-text">'.xss_clean($justificatifNom).'</span></td>
+								<td class="action align-center" data-th="Action">'.anchor('c_visiteur/supprFrais/'.$id, "Supprimer ce frais", 'class="cell-button" title="Suppression d\'une ligne de frais" onclick="return confirm(\'Voulez-vous vraiment supprimer ce frais ?\')"').'</td>
 							</tr>';
 						}
 						$fraisHorsForfait.=
@@ -176,34 +177,35 @@
 					echo $fraisHorsForfait;
 				?>
 				<h4>Ajouter un élément hors forfait :</h4>
-				<div class="formList">
+				<div class="form-list">
 					<p>
-						<label for="txtDateHF" class="formLabel">Date :</label>
-						<input id="txtDateHF" class="input datepicker" name="dateFrais" required="required" placeholder="JJ/MM/AAAA" size="10" maxlength="10" value="" type="text"/>
+						<label class="form-label label-small" for="txt-date-hf">Date*</label>
+						<input id="txt-date-hf" class="input input-small" name="dateFrais" required="required" maxlength="10" value="" type="text"/>
 						<script>dateHorsForfait();</script>
 					</p>
 					<p>
-						<label for="txtLibelleHF" class="formLabel">Libellé :</label>
-						<input id="txtLibelleHF" class="input" name="libelle" required="required" size="25" maxlength="35" value="" type="text"/>
+						<label class="form-label label-small" for="txt-libelle-hf">Libellé*</label>
+						<input id="txt-libelle-hf" class="input input-medium" name="libelle" required="required" maxlength="35" value="" type="text"/>
 					</p>
 					<p>
-						<label for="txtMontantHF" class="formLabel">Montant :</label>
-						<input id="txtMontantHF" class="input" name="montant" required="required" size="10" maxlength="6" value="" oninput="modFicheCalcul();" type="text"/><span class="monnaie"></span>
+						<label class="form-label label-small" for="txt-montant-hf">Montant*</label>
+						<input id="txt-montant-hf" class="input input-small" name="montant" required="required" maxlength="6" value="" oninput="modFicheCalculs();" type="text"/><span class="input-monnaie"></span>
 					</p>
 					<p>
-						<label for="buttonJustificatifHF" class="formLabel">Justificatif :</label>
-						<input id="buttonJustificatifHF" class="uploadButton" name="justificatif" type="file"/>
+						<label class="form-label label-small" for="button-justificatif-hf">Justificatif*</label>
+						<input id="button-justificatif-hf" class="button-upload" name="justificatif" type="file"/>
 					</p>
-					<p class="formButtonsArea">
-						<input id="okHorsForfait" class="button" value="Ajouter un frais" type="submit"/><input id="annulerHorsForfait" class="button" value="Annuler" onclick="resetHorsForfait();" type="button"/>
+					<p class="form-buttons-container">
+						<input id="hors-forfait-ok" class="button" value="Ajouter un frais" type="submit"/><input id="hors-forfait-annuler" class="button" value="Annuler" onclick="resetHorsForfait();" type="button"/>
+						<input name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>" type="hidden"/>
 					</p>
 				</div>
 				<span class="note">Note : seuls les fichiers PDF sont acceptés.</span>
 			</fieldset>
 		</form>
 	</div>
-	<div id="totalFiche">
+	<div id="fiche-frais-total">
 		TOTAL :
-		<span id="totalFinal"><?php echo $infosFiche['montantValide'];?>€</span>
+		<span id="total-fiche"><?php echo $infosFiche['montantValide'];?>€</span>
 	</div>
 </div>

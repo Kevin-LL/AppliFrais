@@ -21,11 +21,34 @@ function closeNotify(notify) {
 }
 
 /**
+ * Gère le champ mois du formulaire de recherche des fiche de frais
+ */
+function moisRechercher() {
+	$("#txt-mois").MonthPicker({
+		Button: '<button type="button" class="ui-datepicker-trigger">&#x1f4c5;</button>',
+		MonthFormat: 'yy-mm',
+		i18n: {
+			year: 'Année',
+			prevYear: 'Année précédente',
+			nextYear: 'Année suivante',
+			next12Years: 'Avancer de 12 ans',
+			prev12Years: 'Reculer de 12 ans',
+			nextLabel: 'Suivant',
+			prevLabel: 'Précédent',
+			jumpYears: 'Sauter des années',
+			backTo: 'Revenir à',
+			months: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
+		}
+	});
+	$("#txt-mois").mask('0000-00');
+}
+
+/**
  * Sélectionne toutes les fiches de frais.
  * Si toutes les fiches de frais sont cochées elles seront décochées et inversement
  */
 function selectFiches() {
-	var selectController = document.getElementById("selectController");
+	var selectController = document.getElementById("select-controller");
 	selectController.checked = !selectController.checked;
 	var checkboxes = document.getElementsByTagName("input");
 	for (var i = 0; i < checkboxes.length; i++) {
@@ -67,11 +90,11 @@ function validSelect() {
 
 /**
  * Contrôle la sélection des fiches de frais.
- * Si toutes les fiches de frais sont cochées l'élément "selectController" sera lui aussi coché,
+ * Si toutes les fiches de frais sont cochées l'élément "select-controller" sera lui aussi coché,
  * sinon il sera décoché
  */
 function checkSelect() {
-	var selectController = document.getElementById("selectController");
+	var selectController = document.getElementById("select-controller");
 	var checkboxes = document.getElementsByTagName("input");
 	var toutEstCoche = true;
 	for (var i = 0; i < checkboxes.length; i++) {
@@ -90,58 +113,25 @@ function checkSelect() {
 }
 
 /**
- * Contrôle si le code postal est un nombre.
- * Si le code postal n'est pas un nombre change la couleur de l'élément "txtCP",
- * sinon ne change rien
- */
-function checkCodePostal() {
-	var CP = document.getElementById("txtCP");
-	CP = Number(CP.value);
-	if (isNaN(CP)) {
-		document.getElementById("txtCP").style.backgroundColor = '#FF7C66';
-	} else {
-		document.getElementById("txtCP").style.backgroundColor = '';
-	}
-}
-
-/**
- * Réinitialise le formulaire du lieu de résidence
- */
-function resetResidence() {
-	document.getElementById("residence").reset();
-	checkCodePostal();
-}
-
-/**
  * Gère les calculs des vues "modFiche" du visiteur et du comptable
  */
-function modFicheCalcul() {
+function modFicheCalculs() {
 	// Lignes forfait
 	var array = [];
 	var spans = document.getElementsByTagName("span");
 	for (var i = 0; i < spans.length; i++) {
-		name = spans[i].getAttribute("name");
+		name = spans[i].getAttribute("data-name");
 		if (name.indexOf("lesTotaux") == 0) {
 			var id = spans[i].getAttribute("id");
-			var quantite = document.getElementById("quantite" + id);
+			var quantite = document.getElementById("quantite-" + id);
 			if (quantite.tagName.toLowerCase() == 'input') {
 				quantite = Number(quantite.value);
-				if (isNaN(quantite)) {
-					document.getElementById("quantite" + id).style.backgroundColor = '#FF7C66';
-				} else {
-					document.getElementById("quantite" + id).style.backgroundColor = '';
-				}
 			} else {
 				quantite = parseFloat(quantite.innerHTML);
 			}
-			var montant = document.getElementById("montant" + id);
+			var montant = document.getElementById("montant-" + id);
 			if (montant.tagName.toLowerCase() == 'input') {
 				montant = Number(montant.value);
-				if (isNaN(montant)) {
-					document.getElementById("montant" + id).style.backgroundColor = '#FF7C66';
-				} else {
-					document.getElementById("montant" + id).style.backgroundColor = '';
-				}
 			} else {
 				montant = parseFloat(montant.innerHTML);
 			}
@@ -149,6 +139,11 @@ function modFicheCalcul() {
 			document.getElementById(id).innerHTML = total.toFixed(2) + '€';
 			if (isNaN(total)) {
 				document.getElementById(id).innerHTML = 'Erreur';
+				document.getElementById(id).style.color = '#DA3C3B';
+				document.getElementById(id).style.fontWeight = 'bold';
+			} else {
+				document.getElementById(id).style.color = '';
+				document.getElementById(id).style.fontWeight = '';
 			}
 			array.push(total);
 		}
@@ -160,11 +155,11 @@ function modFicheCalcul() {
 	
 	// Lignes hors horfait
 	var arrayHF = [];
-	var spans = document.getElementsByTagName("span");
-	for (var i = 0; i < spans.length; i++) {
-		name = spans[i].getAttribute("name");
+	var spansHF = document.getElementsByTagName("span");
+	for (var i = 0; i < spansHF.length; i++) {
+		name = spansHF[i].getAttribute("data-name");
 		if (name.indexOf("lesMontantsHF") == 0) {
-			var idHF = spans[i].getAttribute("id");
+			var idHF = spansHF[i].getAttribute("id");
 			var montantHF = document.getElementById(idHF);
 			montantHF = parseFloat(montantHF.innerHTML);
 			arrayHF.push(montantHF);
@@ -174,21 +169,19 @@ function modFicheCalcul() {
 	for (var i = 0; i < arrayHF.length; i++) {
 		totalArrayHF += arrayHF[i];
 	}
-	var txtMontantHF = document.getElementById("txtMontantHF");
+	var txtMontantHF = document.getElementById("txt-montant-hf");
 	if (typeof txtMontantHF != 'undefined' && txtMontantHF != null) {
 		txtMontantHF = Number(txtMontantHF.value);
-		if (isNaN(txtMontantHF)) {
-			document.getElementById("txtMontantHF").style.backgroundColor = '#FF7C66';
-		} else {
-			document.getElementById("txtMontantHF").style.backgroundColor = '';
-		}
 	}
 	
 	// Total fiche frais
-	var totalFinal = totalArray + totalArrayHF + txtMontantHF;
-	document.getElementById("totalFinal").innerHTML = totalFinal.toFixed(2) + '€';
-	if (isNaN(totalFinal)) {
-		document.getElementById("totalFinal").innerHTML = 'Erreur';
+	var totalFiche = totalArray + totalArrayHF + txtMontantHF;
+	document.getElementById("total-fiche").innerHTML = totalFiche.toFixed(2) + '€';
+	if (isNaN(totalFiche)) {
+		document.getElementById("total-fiche").innerHTML = 'Erreur';
+		document.getElementById("total-fiche").style.color = '#DA3C3B';
+	} else {
+		document.getElementById("total-fiche").style.color = '';
 	}
 }
 
@@ -197,23 +190,26 @@ function modFicheCalcul() {
  */
 function resetForfait() {
 	document.getElementById("forfait").reset();
-	modFicheCalcul();
+	modFicheCalculs();
 }
 
 /**
  * Gère le champ date du formulaire des frais hors forfait
  */
 function dateHorsForfait() {
-	$(".datepicker").mask('00/00/0000');
-	$(".datepicker").datepicker();
-	$(".datepicker").datepicker('setDate', new Date());
+	$("#txt-date-hf").datepicker({
+		showOn: 'button',
+		buttonText: '&#x1f4c5;'
+	});
+	$("#txt-date-hf").datepicker('setDate', new Date());
+	$("#txt-date-hf").mask('00/00/0000');
 }
 
 /**
  * Réinitialise le formulaire des frais hors forfait
  */
 function resetHorsForfait() {
-	document.getElementById("horsforfait").reset();
-	$(".datepicker").datepicker('setDate', new Date());
-	modFicheCalcul();
+	document.getElementById("hors-forfait").reset();
+	$("#txt-date-hf").datepicker('setDate', new Date());
+	modFicheCalculs();
 }

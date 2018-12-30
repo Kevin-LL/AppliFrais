@@ -3,11 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Authentif extends CI_Model {
 	
-    function __construct()
-    {
+	function __construct()
+	{
 		// Call the Model constructor
 		parent::__construct();
-    }
+	}
 	
 	/**
 	 * Teste si un quelconque utilisateur est connecté
@@ -30,7 +30,7 @@ class Authentif extends CI_Model {
 	public function connecter($idUser, $idProfil, $nom, $prenom)
 	{
 		$authUser = array(
-			'idUser'  => $idUser,
+			'idUser' => $idUser,
 			'idProfil' => $idProfil,
 			'nom' => $nom,
 			'prenom' => $prenom
@@ -45,7 +45,7 @@ class Authentif extends CI_Model {
 	public function deconnecter()
 	{
 		$authUser = array(
-			'idUser'  => '',
+			'idUser' => '',
 			'idProfil' => '',
 			'nom' => '',
 			'prenom' => ''

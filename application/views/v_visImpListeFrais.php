@@ -5,9 +5,9 @@ $this->load->helper('security');
 // Extend the TCPDF class to create custom Header
 class Imprimer extends TCPDF {
 	
-    // Page header
-    public function Header()
-    {
+	// Page header
+	public function Header()
+	{
 		// First page detection
 		if ($this->page == 1)
 		{
@@ -26,8 +26,8 @@ class Imprimer extends TCPDF {
 	}
 	
 	// Page footer
-    public function Footer()
-    {
+	public function Footer()
+	{
 		// Position at 15 mm from bottom
 		$this->SetY(-15);
 		// Set font
@@ -76,7 +76,7 @@ $pdf->SetFont('helvetica', '', 9.5);
 // add a page
 $pdf->AddPage();
 
-// set some text to print
+// create some HTML content
 $html =
 '<html>
 	<head>
@@ -103,25 +103,25 @@ $html =
 				font-style: italic;
 			}
 			
-			table.listeLegere {
+			table.liste-legere {
 				font-size: 11px;
 			}
 			
-			table.listeLegere th {
+			table.liste-legere th {
 				background-color: #7A7B91;
 				text-align: center;
 				font-weight: bold;
 			}
 			
-			.alignCenter {
+			.align-center {
 				text-align: center;
 			}
 			
-			.alignLeft {
+			.align-left {
 				text-align: left;
 			}
 			
-			.alignRight {
+			.align-right {
 				text-align: right;
 			}
 		</style>
@@ -155,7 +155,7 @@ $html =
 		}
 		
 		$fraisForfait =
-		'<table class="listeLegere" border="1" cellpadding="3.5">
+		'<table class="liste-legere" border="1" cellpadding="3.5">
 			<thead>
 				<tr>
 					<th>Libellé</th>
@@ -173,10 +173,10 @@ $html =
 
 				$fraisForfait.=
 				'<tr>
-					<td class="alignLeft">'.$libelle.'</td>
-					<td class="alignLeft">'.xss_clean($quantite).'</td>
-					<td class="alignRight">'.xss_clean($montant).'€</td>
-					<td class="alignRight">'.number_format($quantite * $montant, 2).'€</td>
+					<td class="align-left">'.$libelle.'</td>
+					<td class="align-left">'.xss_clean($quantite).'</td>
+					<td class="align-right">'.xss_clean($montant).'€</td>
+					<td class="align-right">'.number_format($quantite * $montant, 2).'€</td>
 				</tr>';
 			}
 			$fraisForfait.=
@@ -210,7 +210,7 @@ $html =
 		}
 		
 		$fraisHorsForfait =
-		'<table class="listeLegere" border="1" cellpadding="3.5">
+		'<table class="liste-legere" border="1" cellpadding="3.5">
 			<thead>
 				<tr>
 					<th>Date</th>
@@ -245,10 +245,10 @@ $html =
 				
 				$fraisHorsForfait.=
 				'<tr>
-					<td class="alignCenter">'.xss_clean($date).'</td>
-					<td class="alignLeft">'.xss_clean($libelle).$libEtat.'</td>
-					<td class="alignRight">'.xss_clean($montant).'€</td>
-					<td class="alignCenter">'.xss_clean($justificatifNom).'</td>
+					<td class="align-center">'.xss_clean($date).'</td>
+					<td class="align-left">'.xss_clean($libelle).$libEtat.'</td>
+					<td class="align-right">'.xss_clean($montant).'€</td>
+					<td class="align-center">'.xss_clean($justificatifNom).'</td>
 				</tr>';
 			}
 			$fraisHorsForfait.=
@@ -273,7 +273,7 @@ $html =
 	</body>
 </html>';
 
-// print a block of text using writeHTML()
+// output the HTML content
 $pdf->writeHTML($html, true, false, true, false, '');
 
 // ---------------------------------------------------------

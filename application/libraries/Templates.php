@@ -1,15 +1,15 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
- 
+
 class Templates {
 	var $ci;
 	
-	function __construct() 
+	function __construct()
 	{
 		$this->ci =& get_instance();
 	}
 	
-	function load($tpl_view, $body_view = null, $data = null) 
+	function load($tpl_view, $body_view = null, $data = null)
 	{
 		if ( ! is_null($body_view))
 		{

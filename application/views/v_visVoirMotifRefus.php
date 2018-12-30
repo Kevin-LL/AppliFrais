@@ -1,11 +1,11 @@
 <?php
 	$this->load->helper('security');
 ?>
-<div id="contenuTitre">
+<div id="contenu-titre">
 	<h3>Refus de ma fiche de frais du mois <?php echo substr_replace($moisFiche, '-', 4, 0);?></h3>
 </div>
-<div id="contenuList">
-	<div id="motifRefus">
+<div id="contenu-list">
+	<div id="motif-refus">
 		<p>	
 			<?php
 				if ($leMotifRefus != null)

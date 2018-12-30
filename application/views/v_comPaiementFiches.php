@@ -2,8 +2,12 @@
 	$this->load->helper('url');
 	$this->load->helper('form');
 ?>
+<div id="contenu-nav">
+	Fiches mises en paiement /
+	<?php echo anchor('c_comptable/syntheseFiches', 'Fiches remboursées', 'class="link" title="Consulter les fiches de frais remboursées"');?>
+</div>
 <div id="contenu-titre">
-	<h3>Liste des fiches de frais à valider</h3>
+	<h3>Liste des fiches de frais mises en paiement</h3>
 </div>
 <div id="contenu-list">
 	<?php
@@ -65,7 +69,7 @@
 		<?php
 			$aucuneFicheDispo = true;
 			
-			foreach ($validationFiches as $uneFiche)
+			foreach ($paiementFiches as $uneFiche)
 			{
 				if (isset($uneFiche['mois']))
 				{
@@ -73,10 +77,10 @@
 				}
 			}
 			
-			$fiches =
-			'<form method="post" action="'.base_url('c_comptable/validSelect').'">
+			$fiches = 
+			'<form method="post" action="'.base_url('c_comptable/rembourseSelect').'">
 				<p class="form-buttons-container">
-					<input id="select-controller" class="checkbox" type="checkbox"/><input class="button" id="select" value="Tout cocher/décocher" onclick="selectFiches();" type="button"/><input id="valider-ok" class="button" value="Valider la sélection" onclick="return validSelect();" type="submit"/>
+					<input id="select-controller" class="checkbox" type="checkbox"/><input class="button" id="select" value="Tout cocher/décocher" onclick="selectFiches();" type="button"/><input id="rembourser-ok" class="button" value="Rembourser la sélection" onclick="return validSelect();" type="submit"/>
 					<input name="'.$this->security->get_csrf_token_name().'" value="'.$this->security->get_csrf_hash().'" type="hidden"/>
 				</p>
 				<table class="liste-legere">
@@ -87,15 +91,13 @@
 							<th>Visiteur</th>
 							<th>Montant</th>
 							<th>Date modif.</th>
-							<th colspan="3">Actions</th>
+							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody>';
-					foreach ($validationFiches as $uneFiche)
+					foreach ($paiementFiches as $uneFiche)
 					{
-						$action1 = anchor('c_comptable/modFiche/'.$uneFiche['idUtilisateur'].'/'.$uneFiche['mois'], 'Modifier', 'class="cell-button" title="Modifier la fiche"');
-						$action2 = anchor('c_comptable/validFiche/'.$uneFiche['idUtilisateur'].'/'.$uneFiche['mois'], 'Valider', 'class="cell-button" title="Valider la fiche" onclick="return confirm(\'Voulez-vous vraiment valider cette fiche ?\');"');
-						$action3 = anchor('c_comptable/ajouterMotifRefus/'.$uneFiche['idUtilisateur'].'/'.$uneFiche['mois'], 'Refuser', 'class="cell-button" title="Refuser la fiche"');
+						$action = anchor('c_comptable/rembourseFiche/'.$uneFiche['idUtilisateur'].'/'.$uneFiche['mois'], 'Rembourser', 'class="cell-button" title="Rembourser la fiche" onclick="return confirm(\'Voulez-vous vraiment rembourser cette fiche ?\');"');
 						
 						$fiches.= 
 						'<tr>
@@ -104,9 +106,7 @@
 							<td class="text align-left" data-th="Visiteur"><span class="cell-text">'.$uneFiche['idUtilisateur'].' '.$uneFiche['nom'].'</span></td>
 							<td class="text align-right" data-th="Montant"><span class="cell-text">'.$uneFiche['montantValide'].'€</span></td>
 							<td class="text align-center" data-th="Date modif."><span class="cell-text">'.$uneFiche['dateModif'].'</span></td>
-							<td class="action align-center" data-th="Action">'.$action1.'</td>
-							<td class="action align-center" data-th="Action">'.$action2.'</td>
-							<td class="action align-center" data-th="Action">'.$action3.'</td>
+							<td class="action align-center" data-th="Action">'.$action.'</td>
 						</tr>';
 					}
 					$fiches.=

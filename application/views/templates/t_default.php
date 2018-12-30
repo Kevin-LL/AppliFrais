@@ -7,7 +7,7 @@
 		<title>Intranet du Laboratoire Galaxy-Swiss Bourdin</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1">
-		<link rel="icon" type="image/png" href="<?php echo img_url('favicon.png');?>">
+		<link rel="icon" type="image/x-icon" href="<?php echo img_url('favicon.ico');?>">
 		<link rel="stylesheet" type="text/css" href="<?php echo css_url('styles.css');?>">
 		<script src="<?php echo js_url('functions.js');?>"></script>
 	</head>

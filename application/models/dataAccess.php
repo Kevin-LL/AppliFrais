@@ -6,13 +6,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 class DataAccess extends CI_Model {
 	
-    function __construct()
-    {
+	function __construct()
+	{
 		// Call the Model constructor
 		parent::__construct();
-    }
+	}
 	
-    /**
+	/**
 	 * Retourne les éléments nécessaires à l'authentification d'un utilisateur
 	 * 
 	 * @param $login : le login de l'utilisateur
@@ -76,7 +76,7 @@ class DataAccess extends CI_Model {
 	*/
 	public function creeFiche($idUtilisateur, $mois)
 	{
-		$req = "INSERT INTO fichefrais (idUtilisateur, mois, nbJustificatifs, montantValide, dateModif, motifRefus, idEtat) 
+		$req = "INSERT INTO fichefrais (idUtilisateur, mois, nbJustificatifs, montantValide, dateModif, motifRefus, idEtat)
 				VALUES (?, ?, 0, 0, now(), '', 'CR')";
 		$this->db->query($req, array($idUtilisateur, $mois));
 		$lesFF = $this->getLesFraisForfait();
@@ -84,7 +84,7 @@ class DataAccess extends CI_Model {
 		{
 			$unIdFrais = $uneLigneFF['idfrais'];
 			$montantU = $uneLigneFF['montant'];
-			$req = "INSERT INTO lignefraisforfait (idUtilisateur, mois, idFraisForfait, quantite, montantApplique) 
+			$req = "INSERT INTO lignefraisforfait (idUtilisateur, mois, idFraisForfait, quantite, montantApplique)
 					VALUES (?, ?, ?, 0, ?)";
 			$this->db->query($req, array($idUtilisateur, $mois, $unIdFrais, $montantU));
 		}
@@ -94,7 +94,7 @@ class DataAccess extends CI_Model {
 	 * Retourne les dates pour lesquelles les fiches de frais ont été créé pour un visiteur donné
 	 * 
 	 * @param $idUtilisateur : l'identifiant de l'utilisateur
-	 * @return : un tableau associatif comportant les dates de création (au format français jj/mm/aaaa) des fiche de frais
+	 * @return : un tableau associatif comportant les dates (au format français jj/mm/aaaa) de création des fiche de frais
 	*/
 	public function getLesDatesCreation($idUtilisateur)
 	{
@@ -226,13 +226,14 @@ class DataAccess extends CI_Model {
 	}
 	
 	/**
-	 * Obtient toutes les fiches (sans détail) selon un état et une recherche définie
+	 * Obtient toutes les fiches (sans détail) selon un état et des paramètres définis
 	 * 
 	 * @param $etat : etat de la fiche
-	 * @param $recherche : recherche saisie par le comptable
+	 * @param $visiteur : visiteur saisi par le comptable
+	 * @param $mois : mois saisi par le comptable
 	 * @return : les fiches d'un comptable
 	*/
-	public function comGetFiches($etat, $recherche)
+	public function comGetFiches($etat, $visiteur, $mois)
 	{
 		$this->load->model('functionsLib');
 		
@@ -243,8 +244,9 @@ class DataAccess extends CI_Model {
 				INNER JOIN utilisateur ON fichefrais.idUtilisateur = utilisateur.id
 				WHERE fichefrais.idEtat = ?
 					AND fichefrais.idUtilisateur LIKE ?
+					AND fichefrais.mois LIKE ?
 				ORDER BY fichefrais.idUtilisateur, fichefrais.mois DESC";
-		$rs = $this->db->query($req, array($etat, $recherche));
+		$rs = $this->db->query($req, array($etat, $visiteur, $mois));
 		$lesFiches = $rs->result_array();
 		$nbLignes = $rs->num_rows();
 		for ($i = 0; $i < $nbLignes; $i++)
@@ -320,7 +322,7 @@ class DataAccess extends CI_Model {
 			$date = $lesLignes[$i]['date'];
 			$lesLignes[$i]['date'] = $this->functionsLib->dateAnglaisVersFrancais($date);
 		}
-		return $lesLignes; 
+		return $lesLignes;
 	}
 	
 	/**
@@ -521,7 +523,7 @@ class DataAccess extends CI_Model {
 	{
 		$totalFiche = $this->totalFiche($idUtilisateur, $mois);
 		$req = "UPDATE fichefrais
-				SET montantValide = ?, dateModif = now() 
+				SET montantValide = ?, dateModif = now()
 				WHERE idUtilisateur = ? AND mois = ?";
 		$this->db->query($req, array($totalFiche, $idUtilisateur, $mois));
 	}
@@ -692,4 +694,3 @@ class DataAccess extends CI_Model {
 		return $totalHF + $totalF;
 	}
 }
-?>

@@ -15,8 +15,8 @@ h1, h2, h3, h4, h5, h6 {
 	margin: 0;
 }
 
-label {
-	cursor: text;
+ul {
+	padding-left: 2.5rem;
 }
 
 input {
@@ -35,7 +35,7 @@ header {
 	align-items: center;
 	justify-content: center;
 	flex: none;
-	width: 17.1875rem;
+	width: 275px;
 	box-sizing: border-box;
 	padding: 0.625rem;
 }
@@ -57,13 +57,14 @@ header {
 }
 
 /* ASIDE */
-#toggleMenuArea {
+#toggle-menu-container {
 	display: none;
 	padding: 0.625rem;
 	background-color: #343C96;
 }
 
-.toggleMenu {
+.toggle-menu {
+	cursor: pointer;
 	width: 100%;
 	padding: 0.3125rem;
 	border: none;
@@ -74,7 +75,7 @@ header {
 	font-weight: bold;
 }
 
-.toggleMenu:hover {
+.toggle-menu:hover {
 	background-color: #AAAAAA;
 	color: #000000;
 }
@@ -94,7 +95,7 @@ fieldset {
 }
 
 fieldset h4 {
-	margin: 1rem 0 1rem 0;
+	margin: 1rem 0 1rem;
 }
 
 legend {
@@ -107,26 +108,26 @@ legend {
 
 #menu {
 	flex: none;
-	width: 17.1875rem;
+	width: 275px;
 	box-sizing: border-box;
 	padding: 1.5625rem;
 	background-color: #7A7A7A;
 }
 
-#menuList {
+#menu-list {
 	display: flex;
 	flex-direction: column;
 }
 
-#menuList > * {
+#menu-list > * {
 	margin-bottom: 1.5625rem;
 }
 
-#menuList > :last-child {
+#menu-list > :last-child {
 	margin-bottom: 0;
 }
 
-#infosUtil {
+#utilisateur-infos {
 	display: flex;
 	flex-direction: column;
 	padding: 0.9375rem;
@@ -134,20 +135,20 @@ legend {
 	border-radius: 0.3125rem;
 }
 
-#typeUtil {
+#utilisateur-groupe {
 	text-align: center;
 	font-size: 1.125rem;
 	font-weight: bold;
 }
 
-#nomUtil {
+#utilisateur-nom {
 	margin-bottom: 0.625rem;
 	text-align: center;
 	font-size: 1.125rem;
 	font-weight: bold;
 }
 
-.smenuUtil {
+.utilisateur-smenu {
 	line-height: 1.875rem;
 	margin-bottom: 0.625rem;
 	background-color: #DDDDDD;
@@ -158,17 +159,17 @@ legend {
 	font-weight: bold;
 }
 
-.smenuUtil:hover {
+.utilisateur-smenu:hover {
 	background-color: #AAAAAA;
 	color: #000000;
 }
 
-.deconnexion {
+.utilisateur-deconnexion {
 	margin-bottom: 0;
 	background-color: #FF7C66;
 }
 
-.deconnexion:hover {
+.utilisateur-deconnexion:hover {
 	background-color: #DA3C3B;
 }
 
@@ -197,13 +198,24 @@ legend {
 	box-shadow: -0.0625rem 0.125rem 0.625rem 0.1875rem rgba(0, 0, 0, 0.3) inset;
 }
 
-#contenuTitre {
+#contenu-nav {
+	padding: 0.9375rem;
+	background-color: #CDD0F7;
+	border-radius: 0.3125rem 0.3125rem 0 0;
+	font-size: 0.9375rem;
+}
+
+#contenu-titre {
 	padding: 0.9375rem;
 	background-color: #9A9BF4;
 	border-radius: 0.3125rem 0.3125rem 0 0;
 }
 
-#contenuList {
+#contenu-nav + #contenu-titre {
+	border-radius: 0;
+}
+
+#contenu-list {
 	display: flex;
 	flex-direction: column;
 	padding: 1.25rem;
@@ -211,12 +223,12 @@ legend {
 	border-radius: 0 0 0.3125rem 0.3125rem;
 }
 
-#contenuList > * {
+#contenu-list > * {
 	margin-bottom: 1.25rem;
 	overflow: auto;
 }
 
-#contenuList > :last-child {
+#contenu-list > :last-child {
 	margin-bottom: 0;
 }
 
@@ -227,21 +239,21 @@ legend {
 	border-radius: 0.3125rem;
 }
 
-.notify .close {
+.notify-close {
 	align-self: flex-start;
 	cursor: pointer;
 	margin-left: 0.9375rem;
 }
 
-.success {
-	background-color: #67CD5D;
-}
-
-.error {
+.notify-error {
 	background-color: #FF7C66;
 }
 
-#erreur_404 {
+.notify-success {
+	background-color: #67CD5D;
+}
+
+#page-erreur {
 	text-align: center;
 	font-size: 1.5rem;
 }
@@ -252,83 +264,84 @@ legend {
 	flex: 1 0 auto;
 }
 
-#connexion .formButtonsArea .button {
+#connexion .form-buttons-container .button {
 	flex: 1 0 auto;
 }
 
-#securiteUtilisateur .formLabel {
-	width: 12.5rem;
+#w3c img {
+	height: 1.9375rem;
+	width: 5.5rem;
 }
 
-#elementsHorsForfait .formLabel, #rechercherVisiteur .formLabel {
-	width: 6.25rem;
+#elements-forfaitises table.liste-legere .action {
+	width: 25%;
 }
 
-#totalFiche {
+#fiche-frais-total {
 	font-size: 1.125rem;
 	font-weight: bold;
 }
 
-table.listeLegere {
+table.liste-legere {
 	width: 100%;
 	border-collapse: collapse;
 	white-space: nowrap;
 	font-size: 0.9375rem;
 }
 
-table.listeLegere th {
+table.liste-legere th {
 	padding: 0.25rem;
 	background-color: #7A7B91;
-	border: 0.125rem solid #32333D;
+	border: 2px solid #32333D;
 }
 
-table.listeLegere td {
+table.liste-legere td {
 	background-color: #BABCDD;
-	border: 0.125rem solid #32333D;
+	border: 2px solid #32333D;
 }
 
-table.listeLegere .text {
+table.liste-legere .text {
 	padding: 0;
 }
 
-table.listeLegere .action {
+table.liste-legere .action {
 	padding: 0;
 	background-image: repeating-linear-gradient(45deg, #32333D, #32333D 0.3125rem, #BABCDD 0.3125rem, #BABCDD 0.625rem);
 }
 
-table.listeLegere .transparent {
+table.liste-legere .transparent {
 	width: 1.25rem;
 	padding: 0;
 	background-color: transparent;
 	border: none;
 }
 
-table.listeLegere .alignCenter {
+table.liste-legere .align-center {
 	text-align: center;
 }
 
-table.listeLegere .alignLeft {
+table.liste-legere .align-left {
 	text-align: left;
 }
 
-table.listeLegere .alignRight {
+table.liste-legere .align-right {
 	text-align: right;
 }
 
-table.listeLegere .invalid {
+table.liste-legere .invalid {
 	background-color: #FF7C66;
 }
 
-table.listeLegere .valid {
+table.liste-legere .valid {
 	background-color: #67CD5D;
 }
 
-table.listeLegere .textCell {
+table.liste-legere .cell-text {
 	display: block;
 	padding: 0.25rem;
 }
 
-table.listeLegere .inputCell {
+table.liste-legere .cell-input {
 	width: 100%;
 	box-sizing: border-box;
 	padding: 0.25rem;
@@ -336,11 +349,15 @@ table.listeLegere .inputCell {
 	font-size: 0.9375rem;
 }
 
-table.listeLegere .inputCell:hover {
+table.liste-legere .cell-input:hover {
 	background-color: #FAFAE6;
 }
 
-table.listeLegere .anchorCell {
+table.liste-legere .cell-input::-ms-clear {
+	display: none;
+}
+
+table.liste-legere .cell-button {
 	display: block;
 	box-sizing: border-box;
 	padding: 0.25rem;
@@ -350,15 +367,15 @@ table.listeLegere .anchorCell {
 	font-weight: bold;
 }
 
-table.listeLegere .anchorCell:hover {
+table.liste-legere .cell-button:hover {
 	background-color: #343C96;
 }
 
-table.listeLegere .anchorCell:active {
+table.liste-legere .cell-button:active {
 	background-color: #5964FF;
 }
 
-table.listeLegere .customCheckbox {
+table.liste-legere .checkbox-custom {
 	display: flex;
 	cursor: pointer;
 	height: 1.25rem;
@@ -366,14 +383,14 @@ table.listeLegere .customCheckbox {
 	box-sizing: border-box;
 	margin-right: 0.25rem;
 	background-color: #FFFFFF;
-	border: 0.125rem solid #32333D;
+	border: 2px solid #32333D;
 }
 
-table.listeLegere .customCheckbox:hover {
+table.liste-legere .checkbox-custom:hover {
 	background-color: #FAFAE6;
 }
 
-table.listeLegere .checkbox:checked + .customCheckbox:after {
+table.liste-legere .checkbox:checked + .checkbox-custom:after {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -381,30 +398,108 @@ table.listeLegere .checkbox:checked + .customCheckbox:after {
 	content: '✓';
 }
 
-table.listeLegere .anchorText {
-	color: #4750CB;
-	text-decoration: none;
+.form-list p {
+	display: flex;
+	align-items: center;
 }
 
-table.listeLegere .anchorText:hover {
-	color: #343C96;
-	text-decoration: underline;
+.form-label {
+	display: block;
+	flex: none;
+	padding: 0.25rem 0 0.25rem;
+	font-weight: bold;
+}
+
+.label-small, .input-small {
+	width: 7.8125rem;
+}
+
+.label-medium, .input-medium {
+	width: 14.0625rem;
+}
+
+.label-large, .input-large {
+	width: 20.3125rem;
+}
+
+.form-buttons-container .button {
+	margin: 0;
+}
+
+.form-buttons-container .button + .button {
+	margin-left: 0.625rem;
 }
 
 .checkbox {
 	display: none;
 }
 
-.monnaie {
+.input {
+	box-sizing: border-box;
+	padding: 0.25rem;
+	border: 2px solid #32333D;
+	font-size: 0.9375rem;
+}
+
+.input::-ms-clear {
+	display: none;
+}
+
+.input:hover {
+	background-color: #FAFAE6;
+}
+
+.input-monnaie {
 	position: relative;
 }
 
-.monnaie:after {
+.input-monnaie:after {
 	position: absolute;
 	content: "€";
 	transform: translateY(-50%);
 	top: 50%;
 	right: 0.25rem;
+}
+
+.button, .ui-datepicker-trigger {
+	cursor: pointer;
+	margin: 0.625rem;
+	padding: 0.25rem 0.5rem;
+	border: none;
+	background-color: #4750CB;
+	color: #EEEEEE;
+	font-size: 0.9375rem;
+	font-weight: bold;
+}
+
+.ui-datepicker-trigger {
+	margin: 0 0 0 0.3125rem;
+	padding: 0.25rem;
+	font-weight: normal;
+}
+
+.button:hover, .ui-datepicker-trigger:hover {
+	background-color: #343C96;
+}
+
+.button:active, .ui-datepicker-trigger:active {
+	background-color: #5964FF;
+}
+
+.button-upload {
+	cursor: pointer;
+	padding: 0.25rem 0 0.25rem;
+	font-size: 0.9375rem;
+}
+
+.link {
+	color: #4750CB;
+	text-decoration: none;
+}
+
+.link:hover {
+	color: #343C96;
+	text-decoration: underline;
 }
 
 .refus {
@@ -417,58 +512,6 @@ table.listeLegere .anchorText:hover {
 	font-style: italic;
 }
 
-.formList p {
-	display: flex;
-	align-items: center;
-}
-
-.formLabel {
-	display: flex;
-	width: 8.125rem;
-	padding: 0.25rem 0 0.25rem 0;
-	font-weight: bold;
-}
-
-.formButtonsArea .button {
-	margin: 0;
-}
-
-.formButtonsArea .button + .button {
-	margin-left: 0.625rem;
-}
-
-.input {
-	padding: 0.25rem;
-	border: 0.125rem solid #32333D;
-	font-size: 0.9375rem;
-}
-
-.input:hover {
-	background-color: #FAFAE6;
-}
-
-.button {
-	margin: 0.625rem;
-	padding: 0.25rem;
-	border: none;
-	background-color: #4750CB;
-	color: #EEEEEE;
-	font-size: 0.9375rem;
-	font-weight: bold;
-}
-
-.button:hover {
-	background-color: #343C96;
-}
-
-.button:active {
-	background-color: #5964FF;
-}
-
-.uploadButton {
-	font-size: 0.9375rem;
-}
-
 /* FOOTER */
 footer {
 	display: flex;
@@ -479,7 +522,7 @@ footer {
 
 #block {
 	flex: none;
-	width: 17.1875rem;
+	width: 275px;
 	background-color: #7A7A7A;
 }
 
@@ -517,8 +560,8 @@ footer {
 	}
 	
 	/* ASIDE */
-	#toggleMenuArea {
-		display: block;
+	#toggle-menu-container {
+		display: inherit;
 	}
 	
 	/* MAIN */
@@ -538,72 +581,65 @@ footer {
 		box-shadow: none;
 	}
 	
-	#contenuTitre {
+	#contenu-nav, #contenu-titre, #contenu-list {
 		border-radius: 0;
 	}
 	
-	#contenuList {
+	#contenu-list {
 		flex: 1 0 auto;
-		border-radius: 0;
 	}
 	
-	#connexion .formList p {
-		display: flex;
+	#elements-forfaitises table.liste-legere .action {
+		width: inherit;
 	}
 	
-	table.listeLegere tr {
+	table.liste-legere tr {
 		display: block;
 		margin-bottom: 1rem;
 	}
 	
-	table.listeLegere tr:last-child {
+	table.liste-legere tr:last-child {
 		margin-bottom: 0;
 	}
 	
-	table.listeLegere th {
+	table.liste-legere th {
 		display: none;
 	}
 	
-	table.listeLegere td {
+	table.liste-legere td {
 		display: flex;
-		border: 0.1470588235rem solid #32333D;
 		border-bottom: none;
 	}
 	
-	table.listeLegere td:last-child {
-		border-bottom: 0.1470588235rem solid #32333D;
+	table.liste-legere td:last-child {
+		border-bottom: 2px solid #32333D;
 	}
 	
-	table.listeLegere td:not(.transparent):before {
-		width: 7.352941176rem;
+	table.liste-legere td:not(.transparent):before {
+		width: 100px;
 		box-sizing: border-box;
 		padding: 0.25rem;
 		content: attr(data-th);
 		background-color: #707187;
-		border-right: 0.1470588235rem solid #32333D;
+		border-right: 2px solid #32333D;
 		text-align: left;
 		font-weight: bold;
 	}
 	
-	table.listeLegere .inputCell {
-		width: calc(100% - 7.352941176rem);
+	table.liste-legere .cell-input {
+		width: calc(100% - 100px);
 	}
 	
-	table.listeLegere .anchorCell {
-		width: calc(100% - 7.352941176rem);
+	table.liste-legere .cell-button {
+		width: calc(100% - 100px);
 	}
 	
-	table.listeLegere .customCheckbox {
+	table.liste-legere .checkbox-custom {
 		margin-right: 0;
-		border: 0.1470588235rem solid #32333D;
 	}
 	
-	.formList p {
+	.form-list p:not(.form-buttons-container) {
 		display: block;
-	}
-	
-	.input {
-		border: 0.1470588235rem solid #32333D;
 	}
 	
 	/* FOOTER */
@@ -619,33 +655,33 @@ footer {
 	}
 	
 	/* MAIN */
-	table.listeLegere td {
-		border: 0.08928571429rem solid #32333D;
+	table.liste-legere td {
+		border: 1px solid #32333D;
 		border-bottom: none;
 	}
 	
-	table.listeLegere td:last-child {
-		border-bottom: 0.08928571429rem solid #32333D;
+	table.liste-legere td:last-child {
+		border-bottom: 1px solid #32333D;
 	}
 	
-	table.listeLegere td:not(.transparent):before {
-		width: 7.321428571rem;
-		border-right: 0.08928571429rem solid #32333D;
+	table.liste-legere td:not(.transparent):before {
+		width: 82px;
+		border-right: 1px solid #32333D;
 	}
 	
-	table.listeLegere .inputCell {
-		width: calc(100% - 7.321428571rem);
+	table.liste-legere .cell-input {
+		width: calc(100% - 82px);
 	}
 	
-	table.listeLegere .anchorCell {
-		width: calc(100% - 7.321428571rem);
+	table.liste-legere .cell-button {
+		width: calc(100% - 82px);
 	}
 	
-	table.listeLegere .customCheckbox {
-		border: 0.08928571429rem solid #32333D;
+	table.liste-legere .checkbox-custom {
+		border: 1px solid #32333D;
 	}
 	
 	.input {
-		border: 0.08928571429rem solid #32333D;
+		border: 1px solid #32333D;
 	}
 }

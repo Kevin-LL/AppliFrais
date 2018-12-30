@@ -2,11 +2,11 @@
 	$this->load->helper('url');
 	$this->load->helper('security');
 ?>
-<div id="contenuTitre">
+<div id="contenu-titre">
 	<h3>Consulter ma fiche de frais du mois <?php echo substr_replace($moisFiche, '-', 4, 0);?></h3>
 </div>
-<div id="contenuList">
-	<div id="elementsForfaitises">
+<div id="contenu-list">
+	<div id="elements-forfaitises">
 		<fieldset>
 			<legend>Eléments forfaitisés</legend>
 			<?php
@@ -22,7 +22,7 @@
 				
 				$fraisForfait =
 				'<h4>Descriptif des éléments forfaitisés :</h4>
-				<table class="listeLegere">
+				<table class="liste-legere">
 					<thead>
 						<tr>
 							<th>Libellé</th>
@@ -40,10 +40,10 @@
 						
 						$fraisForfait.=
 						'<tr>
-							<td class="text alignLeft" data-th="Libellé"><span class="textCell">'.$libelle.'</span></td>
-							<td class="text alignLeft" data-th="Quantité"><span class="textCell">'.xss_clean($quantite).'</span></td>
-							<td class="text alignRight" data-th="Montant"><span class="textCell">'.xss_clean($montant).'€</span></td>
-							<td class="text alignRight" data-th="Total"><span class="textCell">'.number_format($quantite * $montant, 2).'€</span></td>
+							<td class="text align-left" data-th="Libellé"><span class="cell-text">'.$libelle.'</span></td>
+							<td class="text align-left" data-th="Quantité"><span class="cell-text">'.xss_clean($quantite).'</span></td>
+							<td class="text align-right" data-th="Montant"><span class="cell-text">'.xss_clean($montant).'€</span></td>
+							<td class="text align-right" data-th="Total"><span class="cell-text">'.number_format($quantite * $montant, 2).'€</span></td>
 						</tr>';
 					}
 					$fraisForfait.=
@@ -62,7 +62,7 @@
 			?>
 		</fieldset>
 	</div>
-	<div id="elementsHorsForfait">
+	<div id="elements-hors-forfait">
 		<fieldset>
 			<legend>Elément(s) hors forfait</legend>
 			<?php
@@ -78,7 +78,7 @@
 				
 				$fraisHorsForfait =
 				'<h4>Descriptif des éléments hors forfait :</h4>
-				<table class="listeLegere">
+				<table class="liste-legere">
 					<thead>
 						<tr>
 							<th>Date</th>
@@ -103,7 +103,7 @@
 						
 						if ($justificatifFichier != null)
 						{
-							$justificatifNom = anchor('c_visiteur/telJustificatif/'.$mois.'/'.$id.'/'.$justificatifFichier, $justificatifNom, 'class="anchorText" title="Télécharger le justificatif"');
+							$justificatifNom = anchor('c_visiteur/telJustificatif/'.$mois.'/'.$id.'/'.$justificatifFichier, $justificatifNom, 'class="link" title="Télécharger le justificatif"');
 						}
 						else
 						{
@@ -121,10 +121,10 @@
 						
 						$fraisHorsForfait.=
 						'<tr>
-							<td class="text alignCenter'.$status .'" data-th="Date"><span class="textCell">'.xss_clean($date).'</span></td>
-							<td class="text alignLeft'.$status .'" data-th="Libellé"><span class="textCell">'.xss_clean($libelle).$libEtat.'</span></td>
-							<td class="text alignRight'.$status .'" data-th="Montant"><span class="textCell">'.xss_clean($montant).'€</span></td>
-							<td class="text alignCenter'.$status .'" data-th="Justificatif"><span class="textCell">'.xss_clean($justificatifNom).'</span></td>
+							<td class="text align-center'.$status .'" data-th="Date"><span class="cell-text">'.xss_clean($date).'</span></td>
+							<td class="text align-left'.$status .'" data-th="Libellé"><span class="cell-text">'.xss_clean($libelle).$libEtat.'</span></td>
+							<td class="text align-right'.$status .'" data-th="Montant"><span class="cell-text">'.xss_clean($montant).'€</span></td>
+							<td class="text align-center'.$status .'" data-th="Justificatif"><span class="cell-text">'.xss_clean($justificatifNom).'</span></td>
 						</tr>';
 					}
 					$fraisHorsForfait.=
@@ -143,8 +143,8 @@
 			?>
 		</fieldset>
 	</div>
-	<div id="totalFiche">
+	<div id="fiche-frais-total">
 		TOTAL :
-		<span id="totalFinal"><?php echo $infosFiche['montantValide'];?>€</span>
+		<?php echo $infosFiche['montantValide'];?>€
 	</div>
 </div>

@@ -1,7 +1,7 @@
-<div id="contenuTitre">
+<div id="contenu-titre">
 	<h3>Gestion des frais des visiteurs</h3>
 </div>
-<div id="contenuList">
+<div id="contenu-list">
 	<div id="accueil">
 		<p>Bienvenue dans votre application de gestion des frais de déplacements.</p>
 		<p>Afin de couvrir les frais que vous avez engagés lors de vos déplacements professionnels, vous devez compléter des fiches de frais mensuelles.</p>

@@ -32,4 +32,3 @@ if ( ! function_exists('jquery_url'))
 		return base_url().'assets/js/jquery/'.$nom;
 	}
 }
-?>

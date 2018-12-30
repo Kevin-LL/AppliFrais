@@ -3,14 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class A_comptable extends CI_Model {
 	
-    function __construct()
-    {
-        // Call the Model constructor
-        parent::__construct();
+	function __construct()
+	{
+		// Call the Model constructor
+		parent::__construct();
 		
 		// chargement du modèle d'accès aux données qui est utile à toutes les méthodes
 		$this->load->model('dataAccess');
-    }
+	}
 	
 	/**
 	 * Accueil du comptable
@@ -66,16 +66,17 @@ class A_comptable extends CI_Model {
 	 * Liste les fiches signées à valider pour le comptable connecté et
 	 * donne accès aux fonctionnalités associées
 	 * 
-	 * @param $laRecherche : chaîne de caractères permettant au comptable de trier les fiches de frais
+	 * @param $visiteur : chaîne de caractères permettant au comptable de trier les fiches de frais par visiteur
+	 * @param $mois : chaîne de caractères permettant au comptable de trier les fiches de frais par mois
 	 * @param $messageAction : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
 	 * @param $messageErreur : message facultatif destiné à notifier l'utilisateur d'une erreur
 	*/
-	public function validationFiches($laRecherche = '%', $messageAction = null, $messageErreur = null)
+	public function validationFiches($visiteur = '%', $mois = '%', $messageAction = null, $messageErreur = null)
 	{
 		$data['notifySuccess'] = $messageAction;
 		$data['notifyError'] = $messageErreur;
 		$data['lesVisiteurs'] = $this->dataAccess->getVisiteurs();
-		$data['validationFiches'] = $this->dataAccess->comGetFiches('CL', $laRecherche);
+		$data['validationFiches'] = $this->dataAccess->comGetFiches('CL', $visiteur, $mois);
 		
 		$this->templates->load('t_comptable', 'v_comValidationFiches', $data);
 	}
@@ -84,18 +85,34 @@ class A_comptable extends CI_Model {
 	 * Liste les fiches mises en paiement à rembourser pour le comptable connecté et
 	 * donne accès aux fonctionnalités associées
 	 * 
-	 * @param $laRecherche : chaîne de caractères permettant au comptable de trier les fiches de frais
+	 * @param $visiteur : chaîne de caractères permettant au comptable de trier les fiches de frais par visiteur
+	 * @param $mois : chaîne de caractères permettant au comptable de trier les fiches de frais par mois
 	 * @param $messageAction : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
 	 * @param $messageErreur : message facultatif destiné à notifier l'utilisateur d'une erreur
 	*/
-	public function suiviPaiement($laRecherche = '%', $messageAction = null, $messageErreur = null)
+	public function paiementFiches($visiteur = '%', $mois = '%', $messageAction = null, $messageErreur = null)
 	{
 		$data['notifySuccess'] = $messageAction;
 		$data['notifyError'] = $messageErreur;
 		$data['lesVisiteurs'] = $this->dataAccess->getVisiteurs();
-		$data['suiviPaiement'] = $this->dataAccess->comGetFiches('VA', $laRecherche);
+		$data['paiementFiches'] = $this->dataAccess->comGetFiches('VA', $visiteur, $mois);
 		
-		$this->templates->load('t_comptable', 'v_comSuiviPaiement', $data);
+		$this->templates->load('t_comptable', 'v_comPaiementFiches', $data);
+	}
+	
+	/**
+	 * Synthèse des fiches remboursées pour le comptable connecté et
+	 * donne accès aux fonctionnalités associées
+	 * 
+	 * @param $visiteur : chaîne de caractères permettant au comptable de trier les fiches de frais par visiteur
+	 * @param $mois : chaîne de caractères permettant au comptable de trier les fiches de frais par mois
+	*/
+	public function syntheseFiches($visiteur = '%', $mois = '%')
+	{
+		$data['lesVisiteurs'] = $this->dataAccess->getVisiteurs();
+		$data['syntheseFiches'] = $this->dataAccess->comGetFiches('RB', $visiteur, $mois);
+		
+		$this->templates->load('t_comptable', 'v_comSyntheseFiches', $data);
 	}
 	
 	/**

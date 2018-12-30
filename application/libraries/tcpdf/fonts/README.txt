@@ -1,2 +1,2 @@
-Pour gagner de la place, les polices autres que Helvetica ont été supprimé.
+Pour gagner de la place, les polices autres que Helvetica ont Ã©tÃ© supprimÃ©es.
 Le reste est disponible ici : https://github.com/tecnickcom/TCPDF/tree/master/fonts

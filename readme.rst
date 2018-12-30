@@ -51,3 +51,4 @@ Credits
 -  `jQuery <https://jquery.com/>`_
 -  `jQuery UI <https://jqueryui.com/>`_
 -  `jQuery Mask Plugin <https://igorescobar.github.io/jQuery-Mask-Plugin/>`_
+-  `jQuery UI Month Picker Plugin <https://kidsysco.github.io/jquery-ui-month-picker/>`_
