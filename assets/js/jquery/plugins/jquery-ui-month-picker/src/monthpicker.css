@@ -89,7 +89,6 @@ and removes the pointer cursor from the buttons in the heading (year-table).
 	cursor: default;
 	margin: 0;
 	background: none;
-	color: #333;
 }
 
 .month-picker-year-table .month-picker-title {

@@ -35,7 +35,7 @@ class FunctionsLib extends CI_Model {
 	}
 	
 	/**
-	 * retourne le mois d'une date au format aaaamm 
+	 * retourne le mois d'une date au format aaaamm
 	 * 
 	 * @param $date : la date au format format français jj/mm/aaaa
 	 * @return : le mois au format aaaamm
@@ -51,7 +51,7 @@ class FunctionsLib extends CI_Model {
 	}
 	
 	/**
-	 * retourne, sous la forme d'un tableau, les 6 derniers mois 
+	 * retourne, sous la forme d'un tableau, les 6 derniers mois
 	 * à partir d'aujourd'hui au format aaaamm, y compris le mois courant
 	 * A noter: compte-tenu du fonctionnement de la méthode DateTime::sub,
 	 * il peut arriver que l'on retrouve 2 fois le même mois parmi
@@ -126,7 +126,7 @@ class FunctionsLib extends CI_Model {
 	}
 	
 	/**
-	 * Vérifie la validité du format d'une date française jj/mm/aaaa 
+	 * Vérifie la validité du format d'une date française jj/mm/aaaa
 	 * 
 	 * @param $date : la date saisie en paramètre
 	 * @return : vrai ou faux
@@ -157,7 +157,7 @@ class FunctionsLib extends CI_Model {
 	}
 	
 	/**
-	 * Vérifie que le tableau de frais ne contient que des valeurs numériques 
+	 * Vérifie que le tableau de frais ne contient que des valeurs numériques
 	 * 
 	 * @param $lesFrais : le tableau de frais
 	 * @return : vrai ou faux

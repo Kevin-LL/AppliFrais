@@ -8,7 +8,7 @@ class C_visiteur extends CI_Controller {
 	
 	/**
 	 * Aiguillage des demandes faites au contrôleur
-	 * La fonction _remap est une fonctionnalité offerte par CI destinée à remplacer 
+	 * La fonction _remap est une fonctionnalité offerte par CI destinée à remplacer
 	 * le comportement habituel de la fonction index. Grâce à _remap, on dispose
 	 * d'une fonction unique capable d'accepter un nombre variable de paramètres.
 	 * 
@@ -24,14 +24,14 @@ class C_visiteur extends CI_Controller {
 		if ( ! $this->authentif->estConnecte())
 		{
 			// l'utilisateur n'est pas authentifié, on envoie la vue de connexion
-			$data = array();
+			$data = array('erreur' => '<li>Vous devez être connecté en tant que visiteur pour accéder à ce contenu.</li>');
 			$this->templates->load('t_default', 'v_connexion', $data);
 		}
 		// contrôle si l'utilisateur est un visiteur
 		elseif ($this->session->userdata('idProfil') != 'VIS')
 		{
 			// l'utilisateur n'est pas visiteur, on envoie la vue de connexion
-			$data = array();
+			$data = array('erreur' => '<li>Vous devez être connecté en tant que visiteur pour accéder à ce contenu.</li>');
 			$this->templates->load('t_default', 'v_connexion', $data);
 		}
 		else

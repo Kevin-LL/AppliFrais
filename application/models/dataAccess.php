@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * Modèle qui implémente les fonctions d'accès aux données 
+ * Modèle qui implémente les fonctions d'accès aux données
 */
 class DataAccess extends CI_Model {
 	
@@ -16,7 +16,7 @@ class DataAccess extends CI_Model {
 	 * Retourne les éléments nécessaires à l'authentification d'un utilisateur
 	 * 
 	 * @param $login : le login de l'utilisateur
-	 * @return : l'id, le type de profil, le nom et le prénom sous la forme d'un tableau associatif 
+	 * @return : l'id, le type de profil, le nom et le prénom sous la forme d'un tableau associatif
 	*/
 	public function authentifierUtilisateur($login)
 	{
@@ -184,7 +184,7 @@ class DataAccess extends CI_Model {
 	}
 	
 	/**
-	 * Obtient toutes les fiches (sans détail) d'un visiteur donné 
+	 * Obtient toutes les fiches (sans détail) d'un visiteur donné
 	 * 
 	 * @param $idUtilisateur : l'identifiant de l'utilisateur
 	 * @return : les fiches d'un visiteur
@@ -262,13 +262,13 @@ class DataAccess extends CI_Model {
 	 * 
 	 * @param $idUtilisateur : l'identifiant de l'utilisateur
 	 * @param $mois : le mois sous la forme aaaamm
-	 * @return : un tableau avec des champs de jointure entre une fiche de frais et la ligne d'état 
+	 * @return : un tableau avec des champs de jointure entre une fiche de frais et la ligne d'état
 	*/
 	public function getLesInfosFicheFrais($idUtilisateur, $mois)
 	{
 		$req = "SELECT fichefrais.nbJustificatifs, fichefrais.montantValide, fichefrais.dateModif, fichefrais.motifRefus, fichefrais.idEtat, etatfichefrais.libelle AS libEtat
 				FROM fichefrais
-				INNER JOIN etatfichefrais ON fichefrais.idEtat = etatfichefrais.id 
+				INNER JOIN etatfichefrais ON fichefrais.idEtat = etatfichefrais.id
 				WHERE fichefrais.idUtilisateur = ? AND fichefrais.mois = ?";
 		$rs = $this->db->query($req, array($idUtilisateur, $mois));
 		$laLigne = $rs->row_array();
@@ -303,13 +303,13 @@ class DataAccess extends CI_Model {
 	 * 
 	 * @param $idUtilisateur : l'identifiant de l'utilisateur
 	 * @param $mois : le mois sous la forme aaaamm
-	 * @return : tous les champs des lignes de frais hors forfait sous la forme d'un tableau associatif 
+	 * @return : tous les champs des lignes de frais hors forfait sous la forme d'un tableau associatif
 	*/
 	public function getLesLignesHorsForfait($idUtilisateur, $mois)
 	{
 		$this->load->model('functionsLib');
 		
-		$req = "SELECT lignefraishorsforfait.id, lignefraishorsforfait.idUtilisateur, lignefraishorsforfait.mois, lignefraishorsforfait.libelle, lignefraishorsforfait.date, 
+		$req = "SELECT lignefraishorsforfait.id, lignefraishorsforfait.idUtilisateur, lignefraishorsforfait.mois, lignefraishorsforfait.libelle, lignefraishorsforfait.date,
 				lignefraishorsforfait.montant, lignefraishorsforfait.justificatifNom, lignefraishorsforfait.justificatifFichier, lignefraishorsforfait.idEtat, etatfraishorsforfait.libelle AS libEtat
 				FROM lignefraishorsforfait
 				INNER JOIN etatfraishorsforfait ON lignefraishorsforfait.idEtat = etatfraishorsforfait.id
@@ -545,7 +545,7 @@ class DataAccess extends CI_Model {
 		$this->load->model('functionsLib');
 		
 		$dateFr = $this->functionsLib->dateFrancaisVersAnglais($date);
-		$req = "INSERT INTO lignefraishorsforfait 
+		$req = "INSERT INTO lignefraishorsforfait
 				VALUES ('', ?, ?, ?, ?, ?, ?, ?, 'EA')";
 		$this->db->query($req, array($idUtilisateur, $mois, $libelle, $dateFr, $montant, $justificatifNom, $justificatifFichier));
 	}
@@ -677,7 +677,7 @@ class DataAccess extends CI_Model {
 	{
 		// obtention du total hors forfait
 		$req = "SELECT SUM(montant) AS totalHF
-				FROM lignefraishorsforfait 
+				FROM lignefraishorsforfait
 				WHERE idUtilisateur = ? AND mois = ?";
 		$rs = $this->db->query($req, array($idUtilisateur, $mois));
 		$laLigne = $rs->row_array();
@@ -685,7 +685,7 @@ class DataAccess extends CI_Model {
 		
 		// obtention du total forfaitisé
 		$req = "SELECT SUM(montantApplique * quantite) AS totalF
-				FROM lignefraisforfait 
+				FROM lignefraisforfait
 				WHERE idUtilisateur = ? AND mois = ?";
 		$rs = $this->db->query($req, array($idUtilisateur, $mois));
 		$laLigne = $rs->row_array();

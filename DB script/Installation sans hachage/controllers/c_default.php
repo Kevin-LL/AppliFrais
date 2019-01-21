@@ -6,14 +6,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * Si aucune spécification de contrôleur n'est précisée dans l'URL du navigateur
  * c'est le contrôleur par défaut qui sera invoqué. Son rôle est :
  * 		+ d'orienter vers le bon contrôleur selon la situation
- * 		+ de traiter le retour du formulaire de connexion 
+ * 		+ de traiter le retour du formulaire de connexion
 */
 class C_default extends CI_Controller {
 	
 	/**
-	 * Fonctionnalité par défaut du contrôleur. 
+	 * Fonctionnalité par défaut du contrôleur.
 	 * Vérifie l'existence d'une connexion :
-	 * Soit elle existe et on redirige vers le contrôleur de VISITEUR ou COMPTABLE, 
+	 * Soit elle existe et on redirige vers le contrôleur de VISITEUR ou COMPTABLE,
 	 * soit elle n'existe pas et on envoie la vue de connexion
 	*/
 	public function index()

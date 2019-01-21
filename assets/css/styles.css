@@ -441,12 +441,12 @@ table.liste-legere .checkbox:checked + .checkbox-custom:after {
 	font-size: 0.9375rem;
 }
 
-.input::-ms-clear {
-	display: none;
-}
-
 .input:hover {
 	background-color: #FAFAE6;
+}
+
+.input::-ms-clear {
+	display: none;
 }
 
 .input-monnaie {
