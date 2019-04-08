@@ -1,7 +1,7 @@
 /**
  * Gère l'affichage du menu lorsque la page est en mode responsive
  */
-function displayMenu() {
+function toggleMenu() {
 	var menu = document.getElementById("menu");
 	var contenu = document.getElementById("contenu");
 	if (menu.style.display == 'none' || menu.style.display == '') {

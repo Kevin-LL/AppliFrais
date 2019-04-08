@@ -1,17 +1,17 @@
 <?php
 	$this->load->helper('url');
 ?>
-<div id="contenu-titre">
-	<h3>Identification utilisateur</h3>
+<div id="vue-titre">
+	<h2>Identification utilisateur</h2>
 </div>
-<div id="contenu-list">
+<div id="vue-contenu">
 	<?php
 		if (isset($erreur))
 		{
 			echo
 			'<div class="notify notify-error">
 				<div>
-					<h4>Une erreur est survenue !</h4>
+					<strong>Une erreur est survenue !</strong>
 					<ul>'.$erreur.'</ul>
 				</div>
 				<span class="notify-close" onclick="closeNotify(this);">&#10006;</span>
@@ -37,7 +37,7 @@
 		</form>
 	</div>
 	<div id="w3c">
-		<img src="<?php echo img_url('html5valid.png');?>" alt="The W3C Markup Validation Service" title="The W3C Markup Validation Service">
-		<img src="<?php echo img_url('css3valid.png');?>" alt="The W3C CSS Validation Service" title="The W3C CSS Validation Service">
+		<img src="<?php echo img_url('html5valid.png');?>" alt="Icône validation HTML" title="The W3C Markup Validation Service">
+		<img src="<?php echo img_url('css3valid.png');?>" alt="Icône validation CSS" title="The W3C CSS Validation Service">
 	</div>
 </div>

@@ -2,17 +2,17 @@
 	$this->load->helper('url');
 	$this->load->helper('security');
 ?>
-<div id="contenu-titre">
-	<h3>Refuser la fiche de frais du mois <?php echo substr_replace($moisFiche, '-', 4, 0).' | Visiteur : '.$infosUtil['id'].' '.$infosUtil['nom'];?></h3>
+<div id="vue-titre">
+	<h2>Refuser la fiche de frais du mois <?php echo substr_replace($moisFiche, '-', 4, 0).' | Visiteur : '.$infosUtil['id'].' '.$infosUtil['nom'];?></h2>
 </div>
-<div id="contenu-list">
+<div id="vue-contenu">
 	<?php
 		if (isset($notifyError))
 		{
 			echo
 			'<div class="notify notify-error">
 				<div>
-					<h4>Une erreur est survenue !</h4>
+					<strong>Une erreur est survenue !</strong>
 					<ul>'.$notifyError.'</ul>
 				</div>
 				<span class="notify-close" onclick="closeNotify(this);">&#10006;</span>
@@ -27,7 +27,7 @@
 					{
 						echo
 						'<p>
-							<label class="form-label label-small">Ancien motif :</label>
+							<span class="form-label label-small">Ancien motif :</span>
 							<span class="refus">'.xss_clean($leMotifRefus).'</span>
 						</p>';
 					}

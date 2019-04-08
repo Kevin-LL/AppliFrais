@@ -601,18 +601,18 @@ class C_visiteur extends CI_Controller {
 										else
 										{
 											// si le dépôt des justificatifs est vide on le supprime
-											$dossierMois = count(scandir('application/views/uploads/'.$idUtilisateur.'/'.$mois));
-											if ($dossierMois <= 2)
+											$dossierMois = 'application/views/uploads/'.$idUtilisateur.'/'.$mois;
+											$dossierUtilisateur = 'application/views/uploads/'.$idUtilisateur;
+											$dossierUploads = 'application/views/uploads';
+											if (file_exists($dossierMois) && count(scandir($dossierMois)) <= 2)
 											{
-												rmdir('application/views/uploads/'.$idUtilisateur.'/'.$mois);
-												$dossierUtilisateur = count(scandir('application/views/uploads/'.$idUtilisateur));
-												if ($dossierUtilisateur <= 2)
+												rmdir($dossierMois);
+												if (file_exists($dossierUtilisateur) && count(scandir($dossierUtilisateur)) <= 2)
 												{
-													rmdir('application/views/uploads/'.$idUtilisateur);
-													$dossierUploads = count(scandir('application/views/uploads'));
-													if ($dossierUploads <= 2)
+													rmdir($dossierUtilisateur);
+													if (file_exists($dossierUploads) && count(scandir($dossierUploads)) <= 2)
 													{
-														rmdir('application/views/uploads/');
+														rmdir($dossierUploads);
 													}
 												}
 											}
@@ -680,21 +680,24 @@ class C_visiteur extends CI_Controller {
 						if ($leFrais['justificatifFichier'] != null)
 						{
 							// on supprime le fichier associé au frais hors forfait
-							unlink('application/views/uploads/'.$idUtilisateur.'/'.$mois.'/'.$leFrais['justificatifFichier']);
+							if (file_exists('application/views/uploads/'.$idUtilisateur.'/'.$mois.'/'.$leFrais['justificatifFichier']))
+							{
+								unlink('application/views/uploads/'.$idUtilisateur.'/'.$mois.'/'.$leFrais['justificatifFichier']);
+							}
 							
 							// si le dépôt des justificatifs est vide on le supprime
-							$dossierMois = count(scandir('application/views/uploads/'.$idUtilisateur.'/'.$mois));
-							if ($dossierMois <= 2)
+							$dossierMois = 'application/views/uploads/'.$idUtilisateur.'/'.$mois;
+							$dossierUtilisateur = 'application/views/uploads/'.$idUtilisateur;
+							$dossierUploads = 'application/views/uploads';
+							if (file_exists($dossierMois) && count(scandir($dossierMois)) <= 2)
 							{
-								rmdir('application/views/uploads/'.$idUtilisateur.'/'.$mois);
-								$dossierUtilisateur = count(scandir('application/views/uploads/'.$idUtilisateur));
-								if ($dossierUtilisateur <= 2)
+								rmdir($dossierMois);
+								if (file_exists($dossierUtilisateur) && count(scandir($dossierUtilisateur)) <= 2)
 								{
-									rmdir('application/views/uploads/'.$idUtilisateur);
-									$dossierUploads = count(scandir('application/views/uploads'));
-									if ($dossierUploads <= 2)
+									rmdir($dossierUtilisateur);
+									if (file_exists($dossierUploads) && count(scandir($dossierUploads)) <= 2)
 									{
-										rmdir('application/views/uploads/');
+										rmdir($dossierUploads);
 									}
 								}
 							}
@@ -736,10 +739,8 @@ class C_visiteur extends CI_Controller {
 					// si l'identifiant du frais hors forfait existe
 					if (isset($leFrais['id']))
 					{
-						// on recherche l'emplacement du fichier
+						// si l'emplacement du fichier existe on lance le téléchargement
 						$path = 'application/views/uploads/'.$idUtilisateur.'/'.$mois.'/'.$name;
-						
-						// si l'emplacement existe on lance le téléchargement
 						if (file_exists($path))
 						{
 							$data = file_get_contents($path);

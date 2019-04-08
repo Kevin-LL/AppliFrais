@@ -1,17 +1,17 @@
 <?php
 	$this->load->helper('url');
 ?>
-<div id="contenu-titre">
-	<h3>Liste de mes fiches de frais</h3>
+<div id="vue-titre">
+	<h2>Liste de mes fiches de frais</h2>
 </div>
-<div id="contenu-list">
+<div id="vue-contenu">
 	<?php
 		if (isset($notifySuccess))
 		{
 			echo
 			'<div class="notify notify-success">
 				<div>
-					<h4>Action(s) validée(s) :</h4>
+					<strong>Action(s) validée(s) :</strong>
 					<ul>'.$notifySuccess.'</ul>
 				</div>
 				<span class="notify-close" onclick="closeNotify(this);">&#10006;</span>
@@ -22,7 +22,7 @@
 			echo
 			'<div class="notify notify-error">
 				<div>
-					<h4>Une erreur est survenue !</h4>
+					<strong>Une erreur est survenue !</strong>
 					<ul>'.$notifyError.'</ul>
 				</div>
 				<span class="notify-close" onclick="closeNotify(this);">&#10006;</span>
@@ -96,8 +96,8 @@
 						
 						if ($uneFiche['id'] == 'CR' || $uneFiche['id'] == 'RE')
 						{
-							$action1 = anchor('c_visiteur/modFiche/'.$uneFiche['mois'], 'Modifier', 'class="cell-button" title="Modifier la fiche"');
-							$action2 = anchor('c_visiteur/signeFiche/'.$uneFiche['mois'], 'Signer', 'class="cell-button" title="Signer la fiche" onclick="return confirm(\'Voulez-vous vraiment signer cette fiche ?\');"');
+							$action1 = anchor('c_visiteur/modFiche/'.$uneFiche['mois'], 'Modifier', 'class="cell-link" title="Modifier la fiche"');
+							$action2 = anchor('c_visiteur/signeFiche/'.$uneFiche['mois'], 'Signer', 'class="cell-link" title="Signer la fiche" onclick="return confirm(\'Voulez-vous vraiment signer cette fiche ?\');"');
 							if ($uneFiche['id'] == 'RE')
 							{
 								$motifRefus = ', '.anchor('c_visiteur/voirMotifRefus/'.$uneFiche['mois'], 'voir le motif', 'class="link" title="Consulter le motif de refus"');
@@ -107,7 +107,7 @@
 						elseif ($uneFiche['id'] == 'CL' || $uneFiche['id'] == 'VA' || $uneFiche['id'] == 'RB')
 						{
 							$checkboxes = '';
-							$action1 = anchor('c_visiteur/impFiche/'.$uneFiche['mois'], 'Imprimer', 'class="cell-button" title="Imprimer la fiche"');
+							$action1 = anchor('c_visiteur/impFiche/'.$uneFiche['mois'], 'Imprimer', 'class="cell-link" title="Imprimer la fiche"');
 							$action2 = '';
 							if ($uneFiche['id'] == 'VA' || $uneFiche['id'] == 'RB')
 							{
@@ -117,7 +117,7 @@
 						elseif ($uneFiche['id'] == 'IN')
 						{
 							$checkboxes = '';
-							$action1 = anchor('c_visiteur/supprFiche/'.$uneFiche['mois'], 'Supprimer', 'class="cell-button" title="Supprimer la fiche" onclick="return confirm(\'Voulez-vous vraiment supprimer cette fiche ?\');"');
+							$action1 = anchor('c_visiteur/supprFiche/'.$uneFiche['mois'], 'Supprimer', 'class="cell-link" title="Supprimer la fiche" onclick="return confirm(\'Voulez-vous vraiment supprimer cette fiche ?\');"');
 							$action2 = '';
 							$status = ' invalid';
 						}
@@ -134,7 +134,7 @@
 						$fiches.=
 						'<tr>
 							'.$checkboxesColumn.'
-							<td class="action align-center" data-th="Mois">'.anchor('c_visiteur/voirFiche/'.$uneFiche['mois'], substr_replace($uneFiche['mois'], '-', 4, 0), 'class="cell-button" title="Consulter la fiche"').'</td>
+							<td class="action align-center" data-th="Mois">'.anchor('c_visiteur/voirFiche/'.$uneFiche['mois'], substr_replace($uneFiche['mois'], '-', 4, 0), 'class="cell-link" title="Consulter la fiche"').'</td>
 							<td class="text align-left'.$status.'" data-th="Etat"><span class="cell-text">'.$uneFiche['libelle'].$motifRefus.'</span></td>
 							<td class="text align-right'.$status.'" data-th="Montant"><span class="cell-text">'.$uneFiche['montantValide'].'€</span></td>
 							<td class="text align-center'.$status.'" data-th="Date modif."><span class="cell-text">'.$uneFiche['dateModif'].'</span></td>
@@ -150,9 +150,7 @@
 			if ($aucuneFicheDispo == true)
 			{
 				$fiches =
-				'<p>
-					Aucune fiche de frais disponible.
-				</p>';
+				'<p>Aucune fiche de frais disponible.</p>';
 			}
 			
 			echo $fiches;

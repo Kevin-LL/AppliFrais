@@ -2,17 +2,17 @@
 	$this->load->helper('url');
 	$this->load->helper('security');
 ?>
-<div id="contenu-titre">
-	<h3>Détails de mon compte</h3>
+<div id="vue-titre">
+	<h2>Détails de mon compte</h2>
 </div>
-<div id="contenu-list">
+<div id="vue-contenu">
 	<?php
 		if (isset($notifySuccess))
 		{
 			echo
 			'<div class="notify notify-success">
 				<div>
-					<h4>Action(s) validée(s) :</h4>
+					<strong>Action(s) validée(s) :</strong>
 					<ul>'.$notifySuccess.'</ul>
 				</div>
 				<span class="notify-close" onclick="closeNotify(this);">&#10006;</span>
@@ -23,7 +23,7 @@
 			echo
 			'<div class="notify notify-error">
 				<div>
-					<h4>Une erreur est survenue !</h4>
+					<strong>Une erreur est survenue !</strong>
 					<ul>'.$notifyError.'</ul>
 				</div>
 				<span class="notify-close" onclick="closeNotify(this);">&#10006;</span>
@@ -42,27 +42,27 @@
 					$dateEmbauche = $infosUtil['dateEmbauche'];
 				?>
 				<p>
-					<label class="form-label label-small">Groupe :</label>
+					<span class="form-label label-small">Groupe :</span>
 					Visiteur
 				</p>
 				<p>
-					<label class="form-label label-small">Identifiant :</label>
+					<span class="form-label label-small">Identifiant :</span>
 					<?php echo $id;?>
 				</p>
 				<p>
-					<label class="form-label label-small">Nom :</label>
+					<span class="form-label label-small">Nom :</span>
 					<?php echo $nom;?>
 				</p>
 				<p>
-					<label class="form-label label-small">Prénom :</label>
+					<span class="form-label label-small">Prénom :</span>
 					<?php echo $prenom;?>
 				</p>
 				<p>
-					<label class="form-label label-small">Login :</label>
+					<span class="form-label label-small">Login :</span>
 					<?php echo $login;?>
 				</p>
 				<p>
-					<label class="form-label label-small">Embauché le :</label>
+					<span class="form-label label-small">Embauché le :</span>
 					<?php echo $dateEmbauche;?>
 				</p>
 			</div>

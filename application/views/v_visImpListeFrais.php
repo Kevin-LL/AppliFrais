@@ -76,31 +76,22 @@ $pdf->SetFont('helvetica', '', 9.5);
 // add a page
 $pdf->AddPage();
 
-// create some HTML content
+// create some HTML content with style
 $html =
 '<html>
 	<head>
 		<style>
-			.fiche {
+			h1 {
 				text-align: center;
 				text-decoration: underline;
 				font-size: 16px;
 				font-weight: bold;
 			}
 			
-			.frais {
+			h2 {
 				text-decoration: underline;
 				font-size: 12px;
 				font-weight: bold;
-			}
-			
-			.info {
-				font-size: 12px;
-				font-weight: bold;
-			}
-			
-			.note {
-				font-style: italic;
 			}
 			
 			table.liste-legere {
@@ -113,36 +104,40 @@ $html =
 				font-weight: bold;
 			}
 			
-			.align-center {
+			table.liste-legere .align-center {
 				text-align: center;
 			}
 			
-			.align-left {
+			table.liste-legere .align-left {
 				text-align: left;
 			}
 			
-			.align-right {
+			table.liste-legere .align-right {
 				text-align: right;
+			}
+			
+			.note {
+				font-style: italic;
+			}
+			
+			.label, .total {
+				font-weight: bold;
 			}
 		</style>
 	</head>
 	<body>
+		<h1>Fiche de frais du mois '.substr_replace($moisFiche, '-', 4, 0).'</h1>
 		<p>
-			<span class="fiche">Fiche de frais du mois '.substr_replace($moisFiche, '-', 4, 0).'</span>
-		</p>
-		<p>
-			<span class="info">Visiteur :</span> '.$this->session->userdata('idUser').' '.$this->session->userdata('nom').'<br>
-			<span class="info">Etat :</span> '.$infosFiche['libEtat'];
-			if ($infosFiche['motifRefus'] != null)
-			{
-				$html.=
-				'<br><br><span class="note">Note : cette fiche a été précédemment refusée.</span>';
-			}
+			<span class="label">Visiteur :</span> '.$this->session->userdata('idUser').' '.$this->session->userdata('nom').'<br />
+			<span class="label">Etat :</span> '.$infosFiche['libEtat'].
+		'</p>';
+		if ($infosFiche['motifRefus'] != null)
+		{
+			$html.=
+			'<p class="note">Note : cette fiche a été précédemment refusée.</p>';
+		}
 		$html.=
-		'</p>
-		<p>
-			<span class="frais">Eléments forfaitisés :</span>
-		</p>';
+		'<h2>Eléments forfaitisés :</h2>';
 		
 		$aucunFraisForfaitDispo = true;
 		
@@ -186,18 +181,14 @@ $html =
 		if ($aucunFraisForfaitDispo == true)
 		{
 			$fraisForfait =
-			'<p>
-				Aucun frais au forfait disponible.
-			</p>';
+			'<p>Aucun frais au forfait disponible.</p>';
 		}
 		
 		$html.=
 		$fraisForfait;
 		
 		$html.=
-		'<p>
-			<span class="frais">Elément(s) hors forfait :</span>
-		</p>';
+		'<h2>Elément(s) hors forfait :</h2>';
 		
 		$aucunFraisHorsForfaitDispo = true;
 		
@@ -231,16 +222,13 @@ $html =
 				$justificatifFichier = $unFraisHorsForfait['justificatifFichier'];
 				$libEtat = ' ['.$unFraisHorsForfait['libEtat'].']';
 				
-				if (isset($justificatifFichier))
+				if ($justificatifFichier != null)
 				{
-					if ($justificatifFichier != null)
-					{
-						$justificatifNom = anchor('c_visiteur/telJustificatif/'.$mois.'/'.$id.'/'.$justificatifFichier, $justificatifNom);
-					}
-					else
-					{
-						$justificatifNom = 'Aucun';
-					}
+					$justificatifNom = anchor('c_visiteur/telJustificatif/'.$mois.'/'.$id.'/'.$justificatifFichier, $justificatifNom);
+				}
+				else
+				{
+					$justificatifNom = 'Aucun';
 				}
 				
 				$fraisHorsForfait.=
@@ -258,18 +246,14 @@ $html =
 		if ($aucunFraisHorsForfaitDispo == true)
 		{
 			$fraisHorsForfait =
-			'<p>
-				Aucun frais hors forfait disponible.
-			</p>';
+			'<p>Aucun frais hors forfait disponible.</p>';
 		}
 		
 		$html.=
 		$fraisHorsForfait;
 		
 		$html.=
-		'<p>
-			<span class="info">TOTAL : '.$infosFiche['montantValide'].'€</span>
-		</p>
+		'<p><span class="total">TOTAL : '.$infosFiche['montantValide'].'€</span></p>
 	</body>
 </html>';
 

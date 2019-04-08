@@ -1,10 +1,10 @@
 <?php
 	$this->load->helper('security');
 ?>
-<div id="contenu-titre">
-	<h3>Refus de ma fiche de frais du mois <?php echo substr_replace($moisFiche, '-', 4, 0);?></h3>
+<div id="vue-titre">
+	<h2>Refus de ma fiche de frais du mois <?php echo substr_replace($moisFiche, '-', 4, 0);?></h2>
 </div>
-<div id="contenu-list">
+<div id="vue-contenu">
 	<div id="motif-refus">
 		<p>	
 			<?php

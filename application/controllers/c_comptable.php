@@ -262,7 +262,7 @@ class C_comptable extends CI_Controller {
 						else
 						{
 							// sinon on active la liste
-							$this->a_comptable->$liste();
+							$this->a_comptable->$liste('', '');
 						}
 					}
 					else
@@ -911,7 +911,7 @@ class C_comptable extends CI_Controller {
 				// si les paramètres 0, 1, 2 et 3 de telJustificatif sont initialisés
 				if (isset($params[0], $params[1], $params[2], $params[3]))
 				{
-					// charge le helper download et charge le modèle comptable
+					// charge le helper download et le modèle comptable
 					$this->load->helper('download');
 					$this->load->model('a_comptable');
 					
@@ -924,10 +924,8 @@ class C_comptable extends CI_Controller {
 					// si l'identifiant du frais hors forfait existe
 					if (isset($leFrais['id']))
 					{
-						// on recherche l'emplacement du fichier
+						// si l'emplacement du fichier existe on lance le téléchargement
 						$path = 'application/views/uploads/'.$idUtilisateur.'/'.$mois.'/'.$name;
-						
-						// si l'emplacement existe on lance le téléchargement
 						if (file_exists($path))
 						{
 							$data = file_get_contents($path);

@@ -4,7 +4,8 @@ Options -Indexes
 RewriteEngine on
 #   Fixe les règles de réécriture d'URL. Ici, nous utilisons une liste blanche.
 #   Toutes les URL qui ne correspondent pas à ces masques sont réécrites.
-RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond $1 !^(index\.php|assets/|robots\.txt)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 #   Toutes les autres URL vont être redirigées vers le fichier index.php.
 RewriteRule ^(.*)$ index.php/$1 [L]

@@ -2,10 +2,10 @@
 	$this->load->helper('url');
 	$this->load->helper('security');
 ?>
-<div id="contenu-titre">
-	<h3>Consulter la fiche de frais du mois <?php echo substr_replace($moisFiche, '-', 4, 0).' | Visiteur : '.$infosUtil['id'].' '.$infosUtil['nom'];?></h3>
+<div id="vue-titre">
+	<h2>Consulter la fiche de frais du mois <?php echo substr_replace($moisFiche, '-', 4, 0).' | Visiteur : '.$infosUtil['id'].' '.$infosUtil['nom'];?></h2>
 </div>
-<div id="contenu-list">
+<div id="vue-contenu">
 	<div id="elements-forfaitises">
 		<fieldset>
 			<legend>Eléments forfaitisés</legend>
@@ -21,8 +21,8 @@
 				}
 				
 				$fraisForfait =
-				'<h4>Descriptif des éléments forfaitisés :</h4>
-				<table class="liste-legere">
+				'<table class="liste-legere">
+					<caption>Descriptif des éléments forfaitisés :</caption>
 					<thead>
 						<tr>
 							<th>Libellé</th>
@@ -53,9 +53,7 @@
 				if ($aucunFraisForfaitDispo == true)
 				{
 					$fraisForfait =
-					'<p>
-						Aucun frais au forfait disponible.
-					</p>';
+					'<p>Aucun frais au forfait disponible.</p>';
 				}
 				
 				echo $fraisForfait;
@@ -77,8 +75,8 @@
 				}
 				
 				$fraisHorsForfait =
-				'<h4>Descriptif des éléments hors forfait :</h4>
-				<table class="liste-legere">
+				'<table class="liste-legere">
+					<caption>Descriptif des éléments hors forfait :</caption>
 					<thead>
 						<tr>
 							<th>Date</th>
@@ -135,9 +133,7 @@
 				if ($aucunFraisHorsForfaitDispo == true)
 				{
 					$fraisHorsForfait =
-					'<p>
-						Aucun frais hors forfait disponible.
-					</p>';
+					'<p>Aucun frais hors forfait disponible.</p>';
 				}
 				
 				echo $fraisHorsForfait;
@@ -145,7 +141,6 @@
 		</fieldset>
 	</div>
 	<div id="fiche-frais-total">
-		TOTAL :
-		<?php echo $infosFiche['montantValide'];?>€
+		<p>TOTAL : <?php echo $infosFiche['montantValide'];?>€</p>
 	</div>
 </div>
