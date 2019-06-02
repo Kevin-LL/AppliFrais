@@ -265,4 +265,3 @@ $pdf->writeHTML($html, true, false, true, false, '');
 // Close and output PDF document
 $pdf->Output($moisFiche.'.pdf', 'I');
 ob_end_flush();
-?>

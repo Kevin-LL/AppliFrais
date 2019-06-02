@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Contrôleur du module VISITEUR de l'application
-*/
+ */
 class C_visiteur extends CI_Controller {
 	
 	/**
@@ -14,7 +14,7 @@ class C_visiteur extends CI_Controller {
 	 * 
 	 * @param $action : l'action demandée par le visiteur
 	 * @param $params : les éventuels paramètres transmis pour la réalisation de cette action
-	*/
+	 */
 	public function _remap($action, $params = array())
 	{
 		// chargement du modèle d'authentification

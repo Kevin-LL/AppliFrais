@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Contrôleur du module COMPTABLE de l'application
-*/
+ */
 class C_comptable extends CI_Controller {
 	
 	/**
@@ -14,7 +14,7 @@ class C_comptable extends CI_Controller {
 	 * 
 	 * @param $action : l'action demandée par le comptable
 	 * @param $params : les éventuels paramètres transmis pour la réalisation de cette action
-	*/
+	 */
 	public function _remap($action, $params = array())
 	{
 		// chargement du modèle d'authentification
@@ -254,7 +254,7 @@ class C_comptable extends CI_Controller {
 						{
 							// obtention des données postées : $visiteur, $mois
 							$visiteur = $this->input->post('visiteur') ?: '%';
-							$mois = str_replace('-', '', $this->input->post('mois')) ?: '%';
+							$mois = substr_replace($this->input->post('mois'), '', 4, 1) ?: '%';
 							
 							// on active la liste du modèle comptable
 							$this->a_comptable->$liste($visiteur, $mois);

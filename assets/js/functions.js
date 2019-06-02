@@ -64,7 +64,7 @@ function selectFiches() {
 }
 
 /**
- * Valide la sélection des fiches de frais. 
+ * Valide la sélection des fiches de frais.
  * Si au moins une fiche de frais est cochée envoie une demande confirmation
  */
 function validSelect() {

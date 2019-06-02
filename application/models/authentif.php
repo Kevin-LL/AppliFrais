@@ -22,7 +22,7 @@ class Authentif extends CI_Model {
 	/**
 	 * Enregistre dans une variable session les infos d'un utilisateur
 	 * 
-	 * @param $id
+	 * @param $idUser
 	 * @param $idProfil
 	 * @param $nom
 	 * @param $prenom

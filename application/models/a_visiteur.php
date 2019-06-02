@@ -18,7 +18,7 @@ class A_visiteur extends CI_Model {
 	 * fiches de frais sur les 6 derniers mois.
 	 * Si l'une d'elle est absente, elle est créée.
 	 * Enfin elle contrôle les fiches non signées de plus de 12 mois.
-	*/
+	 */
 	public function accueil()
 	{
 		// chargement du modèle contenant les fonctions génériques
@@ -62,7 +62,7 @@ class A_visiteur extends CI_Model {
 	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $messageAction : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
 	 * @param $messageErreur : message facultatif destiné à notifier l'utilisateur d'une erreur
-	*/
+	 */
 	public function monCompte($idUtilisateur, $messageAction = null, $messageErreur = null)
 	{
 		$data['notifySuccess'] = $messageAction;
@@ -77,7 +77,7 @@ class A_visiteur extends CI_Model {
 	 * 
 	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $leMdp : le mot de passe à mettre à jour
-	*/
+	 */
 	public function majSecurite($idUtilisateur, $leMdp)
 	{
 		$this->dataAccess->majSecurite($idUtilisateur, $leMdp);
@@ -88,7 +88,7 @@ class A_visiteur extends CI_Model {
 	 * 
 	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $uneResidence : les informations concernant le lieu de résidence
-	*/
+	 */
 	public function majResidence($idUtilisateur, $uneResidence)
 	{
 		$ville = $uneResidence['ville'];
@@ -105,7 +105,7 @@ class A_visiteur extends CI_Model {
 	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $messageAction : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
 	 * @param $messageErreur : message facultatif destiné à notifier l'utilisateur d'une erreur
-	*/
+	 */
 	public function mesFiches($idUtilisateur, $messageAction = null, $messageErreur = null)
 	{
 		$data['notifySuccess'] = $messageAction;
@@ -120,7 +120,7 @@ class A_visiteur extends CI_Model {
 	 * 
 	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $mois : le mois de la fiche à consulter
-	*/
+	 */
 	public function voirFiche($idUtilisateur, $mois)
 	{
 		$data['moisFiche'] = $mois;
@@ -137,7 +137,7 @@ class A_visiteur extends CI_Model {
 	 * 
 	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $mois : le mois de la fiche dont on souhaite consulter le motif de refus
-	*/
+	 */
 	public function voirMotifRefus($idUtilisateur, $mois)
 	{
 		$data['moisFiche'] = $mois;
@@ -154,7 +154,7 @@ class A_visiteur extends CI_Model {
 	 * @param $mois : le mois de la fiche à modifier
 	 * @param $messageAction : message facultatif destiné à notifier l'utilisateur du résultat d'une action précédemment exécutée
 	 * @param $messageErreur : message facultatif destiné à notifier l'utilisateur d'une erreur
-	*/
+	 */
 	public function modFiche($idUtilisateur, $mois, $messageAction = null, $messageErreur = null)
 	{
 		$data['notifySuccess'] = $messageAction;
@@ -173,7 +173,7 @@ class A_visiteur extends CI_Model {
 	 * 
 	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $mois : le mois de la fiche à signer
-	*/
+	 */
 	public function signeFiche($idUtilisateur, $mois)
 	{
 		$this->dataAccess->signeFiche($idUtilisateur, $mois);
@@ -184,7 +184,7 @@ class A_visiteur extends CI_Model {
 	 * 
 	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $mois : le mois de la fiche à imprimer
-	*/
+	 */
 	public function impFiche($idUtilisateur, $mois)
 	{
 		$data['moisFiche'] = $mois;
@@ -201,7 +201,7 @@ class A_visiteur extends CI_Model {
 	 * 
 	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $mois : le mois de la fiche à supprimer
-	*/
+	 */
 	public function supprFiche($idUtilisateur, $mois)
 	{
 		$this->dataAccess->supprimeFiche($idUtilisateur, $mois);
@@ -213,7 +213,7 @@ class A_visiteur extends CI_Model {
 	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $mois : le mois de la fiche concernée
 	 * @param $lesQuantites : les quantités liées à chaque type de frais, sous la forme d'un tableau
-	*/
+	 */
 	public function majForfait($idUtilisateur, $mois, $lesQuantites)
 	{
 		$this->dataAccess->visMajLignesForfait($idUtilisateur, $mois, $lesQuantites);
@@ -226,7 +226,7 @@ class A_visiteur extends CI_Model {
 	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $mois : le mois de la fiche concernée
 	 * @param $uneLigne : les informations du frais à ajouter, sous la forme d'un tableau
-	*/
+	 */
 	public function ajouteFrais($idUtilisateur, $mois, $uneLigne)
 	{
 		$dateFrais = $uneLigne['dateFrais'];
@@ -246,7 +246,7 @@ class A_visiteur extends CI_Model {
 	 * @param $idUtilisateur : l'id du visiteur
 	 * @param $mois : le mois de la fiche concernée
 	 * @param $idLigneFrais : l'id de la ligne à supprimer
-	*/
+	 */
 	public function supprLigneFrais($idUtilisateur, $mois, $idLigneFrais)
 	{
 		$this->dataAccess->supprimerLigneHorsForfait($idLigneFrais);

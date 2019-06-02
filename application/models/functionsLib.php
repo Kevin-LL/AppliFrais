@@ -12,9 +12,9 @@ class FunctionsLib extends CI_Model {
 	/**
 	 * Transforme une date au format français jj/mm/aaaa vers le format anglais aaaa-mm-jj
 	 * 
-	 * @param $madate : la date au format français jj/mm/aaaa
+	 * @param $maDate : la date au format français jj/mm/aaaa
 	 * @return : la date au format anglais aaaa-mm-jj
-	*/
+	 */
 	function dateFrancaisVersAnglais($maDate)
 	{
 		@list ($jour, $mois, $annee) = explode('/', $maDate);
@@ -22,11 +22,11 @@ class FunctionsLib extends CI_Model {
 	}
 	
 	/**
-	 * Transforme une date au format format anglais aaaa-mm-jj vers le format français jj/mm/aaaa 
+	 * Transforme une date au format format anglais aaaa-mm-jj vers le format français jj/mm/aaaa
 	 * 
-	 * @param $madate : la date au format anglais aaaa-mm-jj
+	 * @param $maDate : la date au format anglais aaaa-mm-jj
 	 * @return : la date au format format français jj/mm/aaaa
-	*/
+	 */
 	function dateAnglaisVersFrancais($maDate)
 	{
 		@list($annee, $mois, $jour) = explode('-', $maDate);
@@ -39,7 +39,7 @@ class FunctionsLib extends CI_Model {
 	 * 
 	 * @param $date : la date au format format français jj/mm/aaaa
 	 * @return : le mois au format aaaamm
-	*/
+	 */
 	function getMois($date)
 	{
 		@list ($jour, $mois, $annee) = explode('/', $date);
@@ -58,7 +58,7 @@ class FunctionsLib extends CI_Model {
 	 * les 6 mois résultants. On aura, dans ce cas, que 5 mois distincts.
 	 * 
 	 * @return : un tableau contenant les 6 mois au format aaaamm
-	*/
+	 */
 	function getSixDerniersMois()
 	{
 		$lesMois = array();
@@ -84,7 +84,7 @@ class FunctionsLib extends CI_Model {
 	 * 
 	 * @param $valeur : la valeur saisie en paramètre
 	 * @return : vrai ou faux
-	*/
+	 */
 	public function estEntierPositif($valeur)
 	{
 		return preg_match('/[^0-9]/', $valeur) == 0;
@@ -95,7 +95,7 @@ class FunctionsLib extends CI_Model {
 	 * 
 	 * @param $tabEntiers : le tableau saisie en paramètre
 	 * @return : vrai ou faux
-	*/
+	 */
 	public function estTableauEntiers($tabEntiers)
 	{
 		$ok = true;
@@ -114,7 +114,7 @@ class FunctionsLib extends CI_Model {
 	 * 
 	 * @param $dateTestee : la date testée
 	 * @return : vrai ou faux
-	*/
+	 */
 	function estDateDepassee($dateTestee)
 	{
 		$dateActuelle = date('d/m/Y');
@@ -130,7 +130,7 @@ class FunctionsLib extends CI_Model {
 	 * 
 	 * @param $date : la date saisie en paramètre
 	 * @return : vrai ou faux
-	*/
+	 */
 	function estDateValide($date)
 	{
 		$tabDate = explode('/', $date);
@@ -161,7 +161,7 @@ class FunctionsLib extends CI_Model {
 	 * 
 	 * @param $lesFrais : le tableau de frais
 	 * @return : vrai ou faux
-	*/
+	 */
 	function lesQteFraisValides($lesFrais)
 	{
 		return $this->estTableauEntiers($lesFrais);
